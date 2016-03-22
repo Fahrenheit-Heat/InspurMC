@@ -1,0 +1,4 @@
+eclipse.preferences.version=1
+encoding//src/resource/log4j.properties=UTF-8
+encoding//webapp/sql/oracle/0_mc/INIT/0_Create/0_mc.sql=UTF-8
+encoding/<project>=UTF-8

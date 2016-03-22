@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"classpath:/mybatis-3-config.dtd">
+
+<configuration>
+	<plugins>
+		<plugin interceptor="org.loushang.framework.mybatis.PageInterceptorPlugin">
+			<!-- 是否返回总条数，默认为false，若设置为true可能会影响性能 -->
+			<property name="totalCount" value="true" />
+		</plugin>
+		<plugin interceptor="tk.mybatis.mapper.mapperhelper.MapperInterceptor">
+			<property name="mappers" value="org.loushang.framework.mybatis.mapper.EntityMapper" />
+		</plugin>
+	</plugins>
+</configuration>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inspur.gcloud.mc.core.dao.EnvelopeDao">
+
+    <resultMap type="com.inspur.gcloud.mc.core.data.Envelope" id="envelopeResultMap">
+    	<id property="id" column="id" />
+        <!--<collection property="archive" column="id" select="com.inspur.gcloud.demo.user.dao.ArchiveDao.getArchiveById" ></collection>-->
+    </resultMap>
+	
+	<!-- 通过databaseId指定数据库的类型 -->
+    <select id="findList" resultMap="envelopeResultMap" parameterType="map">
+        SELECT 
+            id,
+            message_id, 
+            message_topic,
+            sender_id,
+            send_time,
+            read_time
+            
+        FROM mc_envelope  
+        <where>
+        	<if test="messageType != null and messageType!= '' ">
+			 	message_type = '${messageType}'
+			</if>
+			<if test="receiverId != null and receiverId!= '' ">
+			 	and receiver_id = '${receiverId}'
+			</if>
+			<if test="senderId != null and senderId!= '' ">
+			 	and sender_id = '${senderId}'
+			</if>
+			<if test="sendState != null and senderId!= '' ">
+				and sender_state = '${sendState}'
+			</if>
+        </where>
+        <if test="orderfield != null" >
+         order by 
+        	<choose>    
+                <when test="orderfield == 'senderId'">    
+                    sender_id ${orderdir} 
+                </when>  
+                 <when test="orderfield == 'receiverId'">    
+                    receiver_id ${orderdir} 
+                </when>  
+                <otherwise> 
+               		send_time ${orderdir}   
+                </otherwise>    
+            </choose>    
+        </if>
+    </select>
+	
+	<select id="getByParams" parameterType="map" resultMap="envelopeResultMap">
+		select * from mc_envelope
+		<where>
+			<if test="messageTopic != null and messageTopic!= '' ">
+			 	message_topic like '%${messageTopic}%'
+			</if>
+			<if test="receiveState != null and receiveState!= '' ">
+			 	and receive_state like '%${receiveState}%'
+			</if>
+			<if test="senderId != null and senderId != '' ">
+			 	and sender_Id like '%${senderId}%'
+			</if>
+			<if test="receiverId != null and receiverId != '' ">
+			 	and receiver_Id like '%${receiverId}%'
+			</if>
+		</where>				
+	</select>
+	<update id="changeState" parameterType="string">
+		update mc_envelope 
+		<set>
+			<if test="boxType = 'in' or boxType = 'draft'">
+				receive_state = '2'
+			</if>
+			<if test="boxType = 'out'">
+				send_state = '2'
+			</if>
+		</set>
+		<where>
+			id = '${id}'
+		</where>
+	</update>
+
+</mapper>
