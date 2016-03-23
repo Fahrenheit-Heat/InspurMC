@@ -39,7 +39,12 @@ public class SubscribeCommand {
     public String querySubscribe() {
         return "mc/messagesubscribe/subscribe_query";
     }
-	
+    
+    /**
+     * 初始化订阅表
+     * @param parameters
+     * @return subscribeData
+     */
 	@RequestMapping("/inSubscribeList")
 	@ResponseBody
 	public Map getInSubscribeList(@RequestBody Map<String,Object> parameters){
@@ -53,6 +58,11 @@ public class SubscribeCommand {
 		return subscribeData;
 	}
 	
+	/**
+	 * 模糊查询订阅信息
+	 * @param parameters
+	 * @return subscribedata
+	 */
 	@RequestMapping("/query")
 	@ResponseBody
 	public 	Map<String,Object> getByParams(@RequestBody Map<String,String> parameters){
@@ -65,7 +75,6 @@ public class SubscribeCommand {
         subscribedata.put("total", total != -1 ? total : subscribes.size());
         return subscribedata;
 	}
-	
 	
     /**
      * 新增、修改订阅的保存操作
@@ -98,6 +107,11 @@ public class SubscribeCommand {
         return model;
     }
     
+    /**
+     * 新增、编辑订阅信息
+     * @param id
+     * @return ModelAndView
+     */
     @RequestMapping(value = "/edit")
     public ModelAndView editpage(@RequestParam(value = "id",required = false)String id){
     	Subscribe subscribe = null;

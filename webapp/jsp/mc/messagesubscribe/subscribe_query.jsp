@@ -34,9 +34,6 @@
 							<button class="btn btn-danger" type="button" id="delBtn">
 								<i class="fa fa-trash-o fa-fw"></i>删除订阅
 							</button>
-							<button class="btn btn-default" type="button" id="retBtn">
-								<i class="fa fa-share "></i>返回
-							</button>
 						</div>
 					</form>
 					<div class="panel panel-default">

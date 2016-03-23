@@ -157,6 +157,13 @@ function rendertype(data, type, full) {
 	}
 	return data;
 }
+/**
+ * 渲染是否开启订阅
+ * @param data
+ * @param type
+ * @param full
+ * @returns {String}
+ */
 function renderopen(data, type, full) {
 	if (data != "" || data != null) {
 		if (data == "1") {

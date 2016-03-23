@@ -71,7 +71,8 @@
 							<div class="col-sm-6 text-left">
 								<label class="radio-inline"><input type="radio"
 									name="subscribeOpen" value="1"
-									<c:if test="${subscribe.subscribeOpen=='1'}">checked="checked"</c:if> />是
+									<c:if test="${subscribe.subscribeOpen=='1'}">checked="checked"</c:if>
+									<c:if test="${subscribe.subscribeOpen==null}">checked="checked"</c:if> />是
 								</label> 
 								<label class="radio-inline"><input type="radio"
 									name="subscribeOpen" value="0"

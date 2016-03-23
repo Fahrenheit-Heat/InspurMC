@@ -16,7 +16,6 @@ import com.inspur.gcloud.mc.core.data.Subscribe;
  */
 public interface SubscribeDao extends EntityMapper<Subscribe>{
 	
-	// ///////////////// 查询  //////////////////////
 	/**
 	 * 查询当前用户的组织代码,订阅模块,提醒方式,是否开启订阅,备注
 	 * @param map,key 分别为

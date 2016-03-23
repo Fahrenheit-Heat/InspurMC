@@ -26,6 +26,6 @@ $(function() {
 		return false;
 	});
 	$("#returnBtn").click(function() {
-		G3.forward(context + "mc/core/subscribe");
+		G3.closeModalDialog("0");
 	});
 });

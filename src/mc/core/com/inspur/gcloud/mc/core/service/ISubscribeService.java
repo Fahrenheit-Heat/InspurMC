@@ -30,12 +30,19 @@ public interface ISubscribeService {
 	 */
 	public List<Subscribe> getByParams(Map<String,String> map);
 	
-	
-	public Subscribe save(Subscribe subscribe);
-	
+	/**
+	 * 根据订阅id查询订阅
+	 * @param id
+	 * @return
+	 */
 	public Subscribe findOne(String id);
 	
-    // ////////////////////////////////删除//////////////////////////////////
+	/**
+	 * 保存操作
+	 * @param subscribe
+	 * @return
+	 */
+	public Subscribe save(Subscribe subscribe);
 
     /**
      * 根据ID删除订阅

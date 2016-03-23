@@ -27,7 +27,9 @@ public class SubscribeServiceImpl implements ISubscribeService {
 	
 	@Autowired
 	private SubscribeDao subscribeDao;
-	
+	/**
+	 * 模板事务
+	 */
 	@Resource(name = "transactionTemplate")
 	private TransactionTemplate transactionTemplate;
 	
@@ -40,12 +42,18 @@ public class SubscribeServiceImpl implements ISubscribeService {
 	}
 
 	/**
-	 * 
+     * 根据 查找信息
+     * @param map key分别为： 
+     *             
+     * @return List， 内容为 Subscribe对象列表
 	 */
 	public List<Subscribe> getByParams(Map<String, String> parameters) {
 		return subscribeDao.getByParams(parameters);
 	}
 
+	/**
+	 * 保存操作
+	 */
 	@Transactional
 	public Subscribe save(Subscribe subscribe) {
 		if(subscribe.getId() != null && !subscribe.getId().equals("")){
@@ -64,11 +72,17 @@ public class SubscribeServiceImpl implements ISubscribeService {
 		return subscribeDao.get(id);
 	}
 
+	/**
+	 * 删除信息
+	 */
 	@Transactional
 	public void delete(String id) {
 		subscribeDao.delete(id);
 	}
-
+	
+	/**
+	 * 批量删除
+	 */
 	@Override
 	public void delete(final String[] ids) {
 		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
