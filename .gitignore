@@ -1,0 +1,6 @@
+/.settings
+/webapp/WEB-INF
+/webapp/sql
+/webapp/skins
+mc-deploy-local.xml
+project.properties

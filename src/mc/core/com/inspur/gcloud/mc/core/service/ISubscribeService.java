@@ -33,5 +33,23 @@ public interface ISubscribeService {
 	
 	public Subscribe save(Subscribe subscribe);
 	
+	public Subscribe findOne(String id);
 	
+    // ////////////////////////////////删除//////////////////////////////////
+
+    /**
+     * 根据ID删除订阅
+     * 
+     * @param id [ID主键]
+     * 
+     */
+    public void delete(String id);
+
+    /**
+     * 根据ID批量删除订阅
+     * 
+     * @param ids [ID主键数组]
+     * 
+     */
+    public void delete(String[] ids);
 }

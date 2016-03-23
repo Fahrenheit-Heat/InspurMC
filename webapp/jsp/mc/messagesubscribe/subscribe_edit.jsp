@@ -25,7 +25,7 @@
 								</button>
 							</div>
 						</legend>
-						<input type="hidden" value="${subscribe.organId}" name="organId" />
+						<input type="hidden" value="${subscribe.id}" name="id" />
 						<div class="form-group">
 							<label class="col-xs-3 col-md-3 control-label"><em>*</em>订阅模块：</label>
 							<div class="col-sm-6">
@@ -82,8 +82,8 @@
 						<div class="form-group">
 							<label class="col-xs-3 col-md-3 control-label">备注：</label>
 							<div class="col-sm-6">
-								<textarea rows="8" cols="90" class="form-conrtol" 
-									id="remark" name="remark" ></textarea>
+								<textarea rows="8" class="form-conrtol col-sm-12"
+									id="remark" name="remark" >${subscribe.remark}</textarea>
 							</div>
 						</div>
 					</form>
