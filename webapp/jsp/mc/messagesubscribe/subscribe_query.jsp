@@ -26,13 +26,13 @@
 							class="fa fa-angle-double-down"></i>更多查询</a>
 						<div class="pull-right">
 							<button class="btn btn-primary" type="button" id="addBtn">
-								<i class="fa fa-plus fa-fw"></i>新增订阅
+								<i class="fa fa-plus fa-fw"></i>增加
 							</button>
 							<button class="btn btn-primary" type="button" id="editBtn">
-								<i class="fa fa-edit fa-fw"></i>编辑订阅
+								<i class="fa fa-edit fa-fw"></i>编辑
 							</button>
 							<button class="btn btn-danger" type="button" id="delBtn">
-								<i class="fa fa-trash-o fa-fw"></i>删除订阅
+								<i class="fa fa-trash-o fa-fw"></i>删除
 							</button>
 						</div>
 					</form>
@@ -61,18 +61,30 @@
 		<table class="table table-moresearch">
 			<tr>
 				<td class="fieldInput"><label>是否订阅</label>
-					<input type="text" id="subscribeOpen" class="form-control" placeholder="是否开启订阅">
+					<label class="radio-inline"><input type="radio"
+						name="subscribeOpen" value="1"
+						checked="checked" />是
+					</label> 
+					<label class="radio-inline"><input type="radio"
+						name="subscribeOpen" value="0"
+						/>否
+					</label> 
 				</td>
 				<td class="fieldInput"><label>提醒方式</label>
-					<input type="text" id="warnType" class="form-control" placeholder="提醒方式">
-				</td>
-			</tr>
-			<tr>
-				<td class="fieldInput"><label>备注</label>
-					<input type="text" id="remark" class="form-control" placeholder="备注">
-				</td>
-				<td class="fieldInput"><label>组织代码</label>
-					<input type="text" id="organId" class="form-control" placeholder="组织代码">
+					<select class="form-control input-sm" id="warnType">
+						<option value=""
+							>请选择</option>
+						<option value="A"
+							>全部方式</option>
+						<option value="M"
+							>站内消息</option>
+						<option value="W"
+							>站内邮件</option>
+						<option value="S"
+							>短信</option>
+						<option value="E"
+							>电子邮件</option>
+					</select>
 				</td>
 			</tr>
 			<tr>

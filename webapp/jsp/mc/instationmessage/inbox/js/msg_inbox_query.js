@@ -26,99 +26,25 @@ $('#sendTimeTo').datetimepicker({
  * 页面初始化
  */
 $(function() {
-	//初始化表格
-	var url = "mc/core/instationmessage/instationMsgList";
-	grid = new G3.Grid("instationMsgList");
-	//设置数据请求地址
-	grid.setAjaxUrl(url);
-	//初始化
-	grid.init();
+	
+	// 表格初始化查询
+	initGrid();
 
-	// 增加
+	// 增加按钮事件
 	$("#addBtn").bind("click", function () {
-		var url = G3.cmdPath + "/mc/core/instationmessage/edit";
-		
-		G3.showModalDialog("新建消息", url, {
-			width : 800,
-			height : 500
-		}, function(e, ret) {
-			if (ret == "1") {
-				grid.reload();
-			}
-		});
+		newMessage();
 	});
 	
 	//回复
 	$("#replyBtn").click(function (){
-		var records = grid.getSelectedRow();
-		if (records.length == 1) {
-			var data = records[0];
-			var url = G3.cmdPath + "demo/user/edit";
-			if (data.id != undefined && data.id != "" && data.id != "null") {
-				url += "?id=" + data.id;
-			}
-			
-			G3.showModalDialog("回复邮件", url, {
-				width : 800,
-				height : 500
-			}, function(e, ret) {
-				if (ret == "1") {
-					grid.reload();
-				}
-			});
-		} else {
-			G3.alert("提示", "请选择要回复的邮件！");
-		}
+		replayMessage();
 	});
 	
 	//转发
 	$("#forwardBtn").click(function (){
-		var records = grid.getSelectedRow();
-		if (records.length == 1) {
-			var data = records[0];
-			var url = G3.cmdPath + "mc/core/forward";
-			if (data.id != undefined && data.id != "" && data.id != "null") {
-				url += "?id=" + data.id;
-			}
-			
-			G3.showModalDialog("回复邮件", url, {
-				width : 800,
-				height : 500
-			}, function(e, ret) {
-				if (ret == "1") {
-					grid.reload();
-				}
-			});
-		} else {
-			G3.alert("提示", "请选择要回复的邮件！");
-		}
+		forwardMessage();
 	});
 	
-	//增加（跳转）
-	$("#addLink").click(function (){
-		//页面跳转
-		var url = G3.cmdPath + "mc/core/forward_edit";
-		G3.forward(url);
-	});
-	
-	//修改（跳转）
-	$("#editLink").click(function (){
-		var records = grid.getSelectedRow();
-		if (records.length == 1) {
-			var data = records[0];
-			var url = G3.cmdPath + "demo/user/forward_edit";
-			if (data.id != undefined && data.id != "" && data.id != "null") {
-				url += "?id=" + data.id;
-			}
-			
-			G3.forward(url);
-		} else {
-			G3.alert("提示", "请选择一个用户！");
-		}
-	});
-	
-	
-
 	// 条件查询
 	$("#queryBtn").click(query);
 	
@@ -150,22 +76,81 @@ $(function() {
 });
 
 /**
- * 渲染账户状态
- * @param data
- * @param type
- * @param full
- * @returns {String}
+ * 表格初始化查询
  */
-function renderstatus(data, type, full) {
-	if (data != "" || data != null) {
-		if (data == "N") {
-			data = "启用";
+function initGrid(){
+	//初始化表格
+	var url = "mc/core/instationmessage/instationMsgList";
+	grid = new G3.Grid("instationMsgList");
+	//设置数据请求地址
+	grid.setAjaxUrl(url);
+	//初始化
+	grid.init();
+}
+
+/**
+ * 新建消息
+ */
+function newMessage(){
+	var url = G3.cmdPath + "/mc/core/instationmessage/newMessage";
+	G3.showModalDialog("新建消息", url, {
+		width : 800,
+		height : 500
+	}, function(e, ret) {
+		if (ret == "1") {
+			grid.reload();
 		}
-		if (data == "X") {
-			data = "停用";
+	});
+}
+
+/**
+ * 回复消息
+ */
+function replayMessage(){
+	var records = grid.getSelectedRow();
+	if (records.length == 1) {
+		var data = records[0];
+		var url = G3.cmdPath + "/mc/core/instationmessage/replayMessage";
+		if (data.id != undefined && data.id != "" && data.id != "null") {
+			url += "?id=" + data.id;
 		}
+		
+		G3.showModalDialog("回复消息", url, {
+			width : 800,
+			height : 500
+		}, function(e, ret) {
+			if (ret == "1") {
+				grid.reload();
+			}
+		});
+	} else {
+		G3.alert("提示", "请选择要回复的邮件！");
 	}
-	return data;
+}
+
+/**
+ * 转发消息
+ */
+function forwardMessage(){
+	var records = grid.getSelectedRow();
+	if (records.length == 1) {
+		var data = records[0];
+		var url = G3.cmdPath + "/mc/core/instationmessage/forwardMessage";
+		if (data.id != undefined && data.id != "" && data.id != "null") {
+			url += "?id=" + data.id;
+		}
+		
+		G3.showModalDialog("转发消息", url, {
+			width : 800,
+			height : 500
+		}, function(e, ret) {
+			if (ret == "1") {
+				grid.reload();
+			}
+		});
+	} else {
+		G3.alert("提示", "请选择要回复的邮件！");
+	}
 }
 
 /**
@@ -179,7 +164,7 @@ function query() {
 		userId = "";
 	}
 	
-	var url = "demo/user/query";
+	var url = "/mc/core/instationmessage/";
 	grid.setAjaxUrl(url);
 	grid.setParameter("userId", userId);
 	grid.setParameter("userName", userName);

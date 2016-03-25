@@ -40,5 +40,7 @@ function initUESettings(selector, type){
 		           ],
 		           initialFrameHeight:400
 	});
+	
+	return ue;
 }
 

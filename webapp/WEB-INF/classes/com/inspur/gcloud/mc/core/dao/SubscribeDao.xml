@@ -5,7 +5,8 @@
 	<resultMap type="com.inspur.gcloud.mc.core.data.Subscribe" id="subscribeResultMap">
 		<id property="id" column="id"></id>
 	</resultMap>
-
+	
+	<!-- 查询当前用户的组织代码,订阅模块,提醒方式,是否开启订阅,备注 -->
 	<select id="findAll"
 		resultMap="subscribeResultMap" 
 		parameterType="map" databaseId="mysql">
@@ -18,6 +19,8 @@
 			REMARK
 		FROM mc_subscribe
 	</select>
+	
+	<!-- 根据订阅模块、提醒方式、是否开启订阅查找信息 -->
 	<select id="getByParams" parameterType="map" resultMap="subscribeResultMap">
 		select * from mc_subscribe
 		<where>

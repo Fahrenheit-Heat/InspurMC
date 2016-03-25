@@ -13,7 +13,7 @@ import javax.persistence.Table;
  * @author ZXh
  *
  */
-@Table(name = "mc_subscribe")//MC_SUBSCRIBE
+@Table(name = "MC_SUBSCRIBE")
 public class Subscribe {
 
 	// 主键

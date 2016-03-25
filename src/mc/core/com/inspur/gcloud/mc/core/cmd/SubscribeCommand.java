@@ -21,7 +21,7 @@ import com.inspur.gcloud.mc.core.service.ISubscribeService;
 /**
  * Controller层，用于前后台交互、前后台数据格式转换
  * 订阅Command
- * @author Howard
+ * @author 赵振华
  *
  */
 @Controller
@@ -29,16 +29,6 @@ import com.inspur.gcloud.mc.core.service.ISubscribeService;
 public class SubscribeCommand {
 	@Autowired
 	private ISubscribeService subscribeService;
-	
-    /**
-     * 跳转到列表页
-     * 
-     * @return  订阅列表
-     */
-    @RequestMapping
-    public String querySubscribe() {
-        return "mc/messagesubscribe/subscribe_query";
-    }
     
     /**
      * 初始化订阅表
@@ -60,8 +50,8 @@ public class SubscribeCommand {
 	
 	/**
 	 * 模糊查询订阅信息
-	 * @param parameters
-	 * @return subscribedata
+	 * @param Map<String,String>
+	 * @return Map<String,Object>
 	 */
 	@RequestMapping("/query")
 	@ResponseBody
@@ -79,7 +69,7 @@ public class SubscribeCommand {
     /**
      * 新增、修改订阅的保存操作
      * 
-     * @param 
+     * @param Subscribe
      * 
      * @return 订阅列表页面路径
      * 

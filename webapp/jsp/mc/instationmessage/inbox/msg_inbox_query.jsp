@@ -71,7 +71,7 @@
 				<td class="fieldInput">
 					<label>开始于</label>
 					<div class="input-group" style="display:inline-table">
-					     <input type="text" class="form-control"  id="sendTimeFrom" data-bind="value:sendTime" readOnly style="display:inline-table;width: 100%;"></input>
+					     <input type="text" class="form-control"  id="sendTimeFrom" data-bind="value:startTime" readOnly style="display:inline-table;width: 100%;"></input>
 						 <span class="input-group-addon " onclick="selectCalendar(this);"><i class="fa fa-calendar"></i></span>
 					</div>
 				</td>

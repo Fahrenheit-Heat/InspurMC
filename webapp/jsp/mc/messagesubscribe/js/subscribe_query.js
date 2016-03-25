@@ -11,78 +11,19 @@ $(function(){
 	
 	//增加	
 	$("#addBtn").bind("click", function () {
-		var url = G3.cmdPath + "mc/core/subscribe/edit";
-		
-		G3.showModalDialog("维护", url, {
-			width : 800,
-			height : 500
-		}, function(e, ret) {
-			if (ret == "1") {
-				grid.reload();
-			}
-		});
+		add();
 	});
 	
 	//修改
 	$("#editBtn").click(function (){
-		var records = grid.getSelectedRow();
-		if (records.length == 1) {
-			var data = records[0];
-			var url = G3.cmdPath + "mc/core/subscribe/edit";
-			if (data.id != undefined && data.id != "" && data.id != "null") {
-				url += "?id=" + data.id;
-			}
-			
-			G3.showModalDialog("维护", url, {
-				width : 800,
-				height : 500
-			}, function(e, ret) {
-				if (ret == "1") {
-					grid.reload();
-				}
-			});
-		} else {
-			G3.alert("提示", "请选择一个用户！");
-		}
+		edit();
 	});
 	
 	// 删除
 	$("#delBtn").click(
 		function() {
-			var records = grid.getSelectedRow();
-			if (records.length != 0) {
-				
-				var recordIds = [];
-				//循环遍历获取订阅ID 
-				$.each(records, function(index, item){
-					recordIds.push(item.id);
-				});
-				
-				//删除警告框
-				G3.confirm("提示", "确认删除记录？",
-					function() {
-						var requestUrl = G3.cmdPath+"mc/core/subscribe/ajaxdelete/"+recordIds;
-						$.ajax({
-							type : "post",
-							dataType : "json",
-							url: requestUrl,
-							error:function(data){
-								G3.alert("提示","删除失败！");
-							},
-							success:function(data){
-								//弹框方式
-								G3.alert("提示","删除成功！",function(){
-									grid.reload();
-								},"success");
-							}
-						});
-					}
-				);
-			} else {
-				G3.alert("提示", "请选择用户！");
-			}
-		}
-	);
+			del();
+		});
 	
 	// 条件查询
 	$("#queryBtn").click(query);
@@ -93,9 +34,7 @@ $(function(){
 	//重置
 	$("body").on("click", "#resetBtn", function(){
 		$("#subscribeModule").val("");
-		$("#subscribeOpen").val("");
 		$("#warnType").val("");
-		$("#remark").val("");
 	});
 	
 	// 查询更多查询条件初始化
@@ -177,24 +116,96 @@ function renderopen(data, type, full) {
 }
 
 /**
- * 查询数据
+ * 增加
+ */
+function add(){
+	var url = G3.cmdPath + "mc/core/subscribe/edit";
+	G3.showModalDialog("维护", url, {
+		width : 800,
+		height : 500
+	}, function(e, ret) {
+		if (ret == "1") {
+			grid.reload();
+		}
+	});
+}
+
+/**
+ * 编辑
+ */
+function edit(){
+	var records = grid.getSelectedRow();
+	if (records.length == 1) {
+		var data = records[0];
+		var url = G3.cmdPath + "mc/core/subscribe/edit";
+		if (data.id != undefined && data.id != "" && data.id != "null") {
+			url += "?id=" + data.id;
+		}
+		
+		G3.showModalDialog("维护", url, {
+			width : 800,
+			height : 500
+		}, function(e, ret) {
+			if (ret == "1") {
+				grid.reload();
+			}
+		});
+	} else {
+		G3.alert("提示", "请选择一个用户！");
+	}
+}
+
+/**
+ * 删除
+ */
+function del(){
+	var records = grid.getSelectedRow();
+	if (records.length != 0) {
+		
+		var recordIds = [];
+		//循环遍历获取订阅ID 
+		$.each(records, function(index, item){
+			recordIds.push(item.id);
+		});
+		
+		//删除警告框
+		G3.confirm("提示", "确认删除记录？",
+			function() {
+				var requestUrl = G3.cmdPath+"mc/core/subscribe/ajaxdelete/"+recordIds;
+				$.ajax({
+					type : "post",
+					dataType : "json",
+					url: requestUrl,
+					error:function(data){
+						G3.alert("提示","删除失败！");
+					},
+					success:function(data){
+						//弹框方式
+						G3.alert("提示","删除成功！",function(){
+							grid.reload();
+						},"success");
+					}
+				});
+			}
+		);
+	} else {
+		G3.alert("提示", "请选择用户！");
+	}
+}
+
+/**
+ * 查询
  */
 function query() {
-	var organId = $("#organId").val();
-	var warnType = $("#warnType").val();
+	var warnType = $("#warnType").find("option:selected").val();
+	//var warnType = $("#warnType").val();
 	var subscribeModule = $("#subscribeModule").val();
-	var subscribeOpen = $("#subscribeOpen").val();
-	var remark = $("#remark").val();
-	if (organId == undefined) {
-		organId = "";
-	}
+	var subscribeOpen = $("input[name='subscribeOpen']:checked").val();
 	
 	var url = "mc/core/subscribe/query";
 	grid.setAjaxUrl(url);
-	grid.setParameter("organId", organId);
 	grid.setParameter("warnType", warnType);
 	grid.setParameter("subscribeModule", subscribeModule);
 	grid.setParameter("subscribeOpen", subscribeOpen);
-	grid.setParameter("remark", remark);
 	grid.load();
 }

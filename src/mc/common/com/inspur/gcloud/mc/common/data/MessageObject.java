@@ -9,15 +9,11 @@ import com.inspur.gcloud.mc.core.data.Envelope;
 import com.inspur.gcloud.mc.core.data.Message;
 
 /**
- * 消息服务平台Message对象
+ * <p>消息服务平台Message对象</p>
  * 
  * @author Songh
  * @version 1.0
  * @since 2016年3月19日 
- */
-/**
- * @author sh955
- *
  */
 public class MessageObject {
 	

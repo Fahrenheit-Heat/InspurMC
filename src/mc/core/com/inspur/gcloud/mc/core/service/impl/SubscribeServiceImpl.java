@@ -19,7 +19,9 @@ import com.inspur.gcloud.mc.core.service.ISubscribeService;
 /**
  * 订阅服务实现类
  * 
- * @author Howard
+ * Service层 实现类，用于业务逻辑处理，事务控制等
+ * 
+ * @author 赵振华
  *
  */
 @Service
@@ -70,14 +72,6 @@ public class SubscribeServiceImpl implements ISubscribeService {
 	 */
 	public Subscribe findOne(String id) {
 		return subscribeDao.get(id);
-	}
-
-	/**
-	 * 删除信息
-	 */
-	@Transactional
-	public void delete(String id) {
-		subscribeDao.delete(id);
 	}
 	
 	/**

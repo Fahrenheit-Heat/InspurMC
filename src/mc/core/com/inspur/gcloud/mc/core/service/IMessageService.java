@@ -21,7 +21,7 @@ public interface IMessageService {
      * @return Envelope
      * 
      */
-    public Message saveMessage(Message message);
+    public String saveMessage(Message message);
 
 	
 	

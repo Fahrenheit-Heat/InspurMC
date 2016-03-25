@@ -29,20 +29,26 @@ public class MessageServiceImpl implements IMessageService {
      * @return message
      * 
      */
-    @Transactional
-    public Message saveMessage(Message message) {
+	 @Transactional
+    public String saveMessage(Message message) {
     	
         if (message.getId() != null && !message.getId().equals("")) {
             // 更新消息信息
-        	messageDao.update(message);
+        	if(messageDao.update(message) == 1){
+        		return message.getId();
+        	}else{
+        		return null;
+        	}
         } else {
             // 保存消息信息
-        	message.setId(GCloudUtil.getInstance().getNextSeqId(32));
-        	//String id = message.getId();
-        	messageDao.insert(message);
+        	String id = GCloudUtil.getInstance().getNextSeqId(32);
+        	message.setId(id);
+        	if(messageDao.insert(message) == 1){
+        		 return id;
+        	}else{
+        		return null;
+        	}
         }
-        
-        return message;
     }
 
 }

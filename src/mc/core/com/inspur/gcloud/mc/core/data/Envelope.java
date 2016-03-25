@@ -83,7 +83,7 @@ public class Envelope implements Serializable{
     
     // 发送时间
     @Column(name = "SEND_TIME")
-    private String sendTime;
+    private Date sendTime;
     
     // 阅读时间
     @Column(name = "READ_TIME")
@@ -235,11 +235,11 @@ public class Envelope implements Serializable{
 		this.sendLevel = sendLevel;
 	}
 
-	public String getSendTime() {
+	public Date getSendTime() {
 		return sendTime;
 	}
 
-	public void setSendTime(String sendTime) {
+	public void setSendTime(Date sendTime) {
 		this.sendTime = sendTime;
 	}
 

@@ -51,6 +51,11 @@ public class McConstants {
 	public static final String ERROR_TYPE_DISPATCHER = "errorDispatcher";
 	
 	/**
+	 * 错误类型-消息解析器
+	 */
+	public static final String ERROR_TYPE_PARSER = "errorParser";
+	
+	/**
 	 * 错误类型-消息发送器
 	 */
 	public static final String ERROR_TYPE_SENDER = "errorSender";

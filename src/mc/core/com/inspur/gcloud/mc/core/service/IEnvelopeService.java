@@ -77,7 +77,15 @@ public interface IEnvelopeService {
      * @return Envelope
      * 
      */
-    public Envelope save(Envelope envelope);
+    public int saveEnvelope(Envelope envelope, String messageId);
+    
+    /**
+     * 批量保存信封信息
+     * @param envelopeList 信封表列表
+     * @param messageId 消息Id
+     * @return 
+     */
+    public int batchSaveEnvelope(List<Envelope> envelopeList, String messageId);
 
     // ////////////////////////////////删除//////////////////////////////////
 

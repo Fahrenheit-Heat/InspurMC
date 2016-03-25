@@ -1,12 +1,11 @@
-/**
- * 
- */
 package com.inspur.gcloud.mc.core.cmd;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.persistence.Transient;
 
 import org.loushang.framework.mybatis.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +19,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.inspur.gcloud.mc.common.data.MessageObject;
+import com.inspur.gcloud.mc.common.data.MessageView;
 import com.inspur.gcloud.mc.common.data.ResultMap;
 import com.inspur.gcloud.mc.core.data.Envelope;
 import com.inspur.gcloud.mc.core.data.Message;
 import com.inspur.gcloud.mc.core.service.IEnvelopeService;
 import com.inspur.gcloud.mc.core.service.IMessageService;
-import com.inspur.gcloud.mc.engine.dispatcher.MessageObjectDispatcher;
+import com.inspur.gcloud.mc.engine.dispatcher.service.IMessageDispatcherService;
+import com.inspur.gcloud.mc.engine.parser.service.IMessageParserService;
 
 
 /**
@@ -43,21 +44,20 @@ public class instationMsgCommand {
 	@Autowired
     private IEnvelopeService envelopeService;
 	@Autowired
-//	private MessageObjectDispatcher mod;
+	private IMessageDispatcherService messageDispatcherService;
+	@Autowired
+	private IMessageParserService messageParserService;
 	
-	
-	@RequestMapping("/inMessageList")
+	@RequestMapping("/instationMsgList")
 	@ResponseBody
-	public Map getInMessageList(@RequestBody Map<String, Object> parameters) {
+	public Map<String, Object> getInMessageList(@RequestBody Map<String, String> parameters) {
 		Map<String,Object> envelopeMap = new HashMap<String, Object>();
 		List<Envelope> envelopeList = envelopeService.findList(parameters);
 		envelopeMap.put("data", envelopeList);
 		// 获取总记录条数
 		int total = PageUtil.getTotalCount();
 		envelopeMap.put("total", total != -1 ? total : envelopeList.size());
-		
 		return envelopeMap;
-		
 	}
 	
 	/**
@@ -87,6 +87,41 @@ public class instationMsgCommand {
         envelopedata.put("total", total != -1 ? total : envelopes.size());
         return envelopedata;
     }
+	
+	 /**
+     * 用户修改页面的弹出
+     * 
+     * @param id [主键ID]
+     * 
+     * @return Map key为
+     *          <code>user<code>[User对象]
+     * 
+     */
+    @RequestMapping("/newMessage")
+    public ModelAndView newMessage(@RequestParam(value = "id", required = false) String id) {
+        Envelope envelope = null;
+        if (id != null && !"".equals(id)) {
+        	envelope = envelopeService.findOne(id);
+        }
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("envelope", envelope);
+        return new ModelAndView("mc/instationmessage/newmessage/msg_create", model);
+    }
+    
+    
+    @RequestMapping("/replayMessage")
+    public ModelAndView replayMessage(@RequestParam(value = "id", required = true) String id){
+    	
+    	return new ModelAndView("", null);
+    }
+    
+    @RequestMapping("/forwardMessage")
+    public ModelAndView forwardMessage(@RequestParam(value = "id", required = true) String id){
+    	
+    	return new ModelAndView("", null);
+    }
+	
+	
     
     /**
      * 新增、修改用户的保存操作
@@ -96,9 +131,24 @@ public class instationMsgCommand {
      * @return 用户列表页面路径
      * 
      */
-    @RequestMapping(value = "/save")
-    public String saveEnvelope(MessageObject messageObject) {
-//    	ResultMap resultMap = mod.messageDispatcher(messageObject);
+    @RequestMapping(value = "/send")
+    public String sendInstationMsg(MessageView messageView) {
+    	// 解析视图消息对象
+    	ResultMap parserResultMap = messageParserService.instationMsgParser(messageView);
+    	if(parserResultMap.isSuccess()){
+    		// 解析成功
+    		MessageObject messageObject = (MessageObject)parserResultMap.get("messageObject");
+    		// 消息转发
+    		ResultMap dispatcherResultMap = messageDispatcherService.messageDispatcher(messageObject);
+    		if(dispatcherResultMap.isSuccess()){
+    			// 转发成功
+    			
+    		}else{
+    			// 转发失败
+    		}
+    	}else{
+    		// 解析出错
+    	}
         //页面重定向
         return "redirect:/command/mc/core";
     } 
@@ -118,7 +168,7 @@ public class instationMsgCommand {
     	Message me = en.getMessage();
     	messageService.saveMessage(me);
     	en.setMessageId(me.getId());
-    	envelopeService.save(en);
+//    	envelopeService.save(en);
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("success", true);
         return model;
@@ -137,26 +187,8 @@ public class instationMsgCommand {
              envelopeService.delete(envelopeMap);;
          }
          return "redirect:/command/mc/core";
-    	
     }
-    /**
-     * 用户修改页面的弹出
-     * 
-     * @param id [主键ID]
-     * 
-     * @return Map key为
-     *          <code>user<code>[User对象]
-     * 
-     */
-    @RequestMapping("/edit")
-    public ModelAndView editPage(@RequestParam(value = "id", required = false) String id) {
-        Envelope envelope = null;
-        if (id != null && !"".equals(id)) {
-        	envelope = envelopeService.findOne(id);
-        }
-        Map<String, Object> model = new HashMap<String, Object>();
-        model.put("envelope", envelope);
-        return new ModelAndView("mc/instationmessage/newmessage/msg_create", model);
-    }
+    
+   
 
 }

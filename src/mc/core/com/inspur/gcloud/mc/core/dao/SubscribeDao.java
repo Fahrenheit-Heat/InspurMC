@@ -11,7 +11,7 @@ import com.inspur.gcloud.mc.core.data.Subscribe;
  * 
  * 订阅接口类
  * 
- * @author Howard
+ * @author 赵振华
  *
  */
 public interface SubscribeDao extends EntityMapper<Subscribe>{
@@ -34,8 +34,17 @@ public interface SubscribeDao extends EntityMapper<Subscribe>{
 	
 	/**
 	 * 根据订阅模块、提醒方式、是否开启订阅查找信息
-	 * @param map
-	 * @return
+	 * @param map,key 分别为
+	 * 				<code>organId</code>[组织代码]
+	 * 				<code>subscribeModule</code>[订阅模块]
+	 * 				<code>warnType</code>[提醒方式]
+	 * 				<code>subscribeOpen</code>[是否开启订阅]
+	 * 				<code>remark</code>[备注]
+     *              <code>orderfield<code>[排序列 ]
+     *              <code>orderdir<code>[排序方向desc或asc] 
+     *              <code>start<code>[起始行]
+     *              <code>limit<code>[每页显示条数]
+	 * @return List, 内容为Subscribe对象列表
 	 */
 	public List<Subscribe> getByParams(Map map);
 }
