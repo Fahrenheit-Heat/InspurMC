@@ -6,7 +6,7 @@
 
     <resultMap type="com.inspur.gcloud.mc.core.data.Envelope" id="envelopeResultMap">
     	<id property="id" column="id" />
-        <!--<collection property="archive" column="id" select="com.inspur.gcloud.demo.user.dao.ArchiveDao.getArchiveById" ></collection>-->
+        <collection property="message" column="message_id" select="com.inspur.gcloud.mc.core.dao.MessageDao.getMessageById" ></collection>
     </resultMap>
 	
 	<!-- 通过databaseId指定数据库的类型 -->
@@ -14,24 +14,25 @@
         SELECT 
             id,
             message_id, 
-            message_topic,
             sender_id,
+            receiver_id,
             send_time,
-            read_time
+            read_time,
+            send_state
             
         FROM mc_envelope  
         <where>
-        	<if test="messageType != null and messageType!= '' ">
+        	<if test="messageType != null and messageType != '' ">
 			 	message_type = '${messageType}'
 			</if>
-			<if test="receiverId != null and receiverId!= '' ">
+			<if test="receiverId != null and receiverId != '' ">
 			 	and receiver_id = '${receiverId}'
 			</if>
-			<if test="senderId != null and senderId!= '' ">
+			<if test="senderId != null and senderId != '' ">
 			 	and sender_id = '${senderId}'
 			</if>
-			<if test="sendState != null and senderId!= '' ">
-				and sender_state = '${sendState}'
+			<if test="sendState != null and sendState != '' ">
+				and send_state = '${sendState}'
 			</if>
         </where>
         <if test="orderfield != null" >
@@ -51,11 +52,22 @@
     </select>
 	
 	<select id="getByParams" parameterType="map" resultMap="envelopeResultMap">
-		select * from mc_envelope
+		select 
+		message_id,
+		message_Type,
+		sender_Id,
+		receiver_Id,
+		send_time,
+		create_time,
+		receive_state,
+		send_State,
+		m_id,
+		message_level,
+		message_topic,
+		message_content
+		from mc_envelope,mc_message
 		<where>
-			<if test="messageTopic != null and messageTopic!= '' ">
-			 	message_topic like '%${messageTopic}%'
-			</if>
+			message_id=m_id
 			<if test="receiveState != null and receiveState!= '' ">
 			 	and receive_state like '%${receiveState}%'
 			</if>
@@ -64,6 +76,15 @@
 			</if>
 			<if test="receiverId != null and receiverId != '' ">
 			 	and receiver_Id like '%${receiverId}%'
+			</if>
+			<if test="sendState != null and sendState != '' ">
+				and send_State like '%${sendState}%'
+			</if>
+			<if test="messageType != null and messageType != '' ">
+				and message_Type like '%${messageType}%'
+			</if>
+			<if test="messageTopic != null and messageTopic !='' ">
+				and message_topic like '%${messageTopic}%'
 			</if>
 		</where>				
 	</select>

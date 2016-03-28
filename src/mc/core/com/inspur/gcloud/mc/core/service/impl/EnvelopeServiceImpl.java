@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.inspur.gcloud.mc.core.dao.EnvelopeDao;
+import com.inspur.gcloud.mc.core.dao.MessageDao;
 import com.inspur.gcloud.mc.core.data.Envelope;
+import com.inspur.gcloud.mc.core.data.Message;
 import com.inspur.gcloud.mc.core.service.IEnvelopeService;
 import com.lc.gcloud.framework.util.GCloudUtil;
 
@@ -17,6 +19,9 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	
 	@Autowired
 	private EnvelopeDao envelopeDao;
+	
+	@Autowired
+	private MessageDao messageDao;
 
 	@Override
 	public List<Envelope> findList(Map parameters) {
@@ -30,21 +35,31 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 
 	@Override
 	public Envelope findOne(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return envelopeDao.get(id);
+	}
+	
+	@Override
+	public Message findMessage(String id) {
+		return messageDao.get(id);
 	}
 
 	@Override
 	public int saveEnvelope(Envelope envelope, String messageId) {
 		int count = 0;
 		if (envelope.getId() != null && !envelope.getId().equals("")) {
-            // 更新消息信息
+            // 更新信封信息
         	count = envelopeDao.update(envelope);
+        	//更新消息信息
+        	envelope.getMessage().setId(messageId);
+        	messageDao.update(envelope.getMessage());
         } else {
-            // 保存消息信息
+            // 保存信封信息
         	envelope.setId(GCloudUtil.getInstance().getNextSeqId(32));
         	envelope.setMessageId(messageId);
         	count = envelopeDao.insert(envelope);
+        	// 保存消息信息
+        	envelope.getMessage().setId(messageId);
+        	messageDao.insert(envelope.getMessage());
         }
         return count;
 	}
@@ -66,5 +81,7 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 		}
 		return envelopeDao.batchInsert(envelopeList);
 	}
+
+
 
 }

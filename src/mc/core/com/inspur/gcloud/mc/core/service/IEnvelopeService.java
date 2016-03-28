@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.inspur.gcloud.mc.core.data.Envelope;
+import com.inspur.gcloud.mc.core.data.Message;
 
 /**
  * 信封接口类
@@ -65,7 +66,7 @@ public interface IEnvelopeService {
      * @return UserArchive
      * 
      */
-  // public UserArchive findArchive(String id);
+   public Message findMessage(String id);
 
     // ////////////////////////////////新增、修改//////////////////////////////////
 

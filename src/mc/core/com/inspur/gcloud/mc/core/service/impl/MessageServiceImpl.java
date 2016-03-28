@@ -51,4 +51,10 @@ public class MessageServiceImpl implements IMessageService {
         }
     }
 
+	@Override
+	public Message findOne(String id) {
+		
+		return messageDao.get(id);
+	}
+
 }

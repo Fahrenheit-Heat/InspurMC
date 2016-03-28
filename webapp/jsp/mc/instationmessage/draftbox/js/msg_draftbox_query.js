@@ -27,25 +27,22 @@ $('#sendTimeTo').datetimepicker({
  */
 $(function() {
 	//初始化表格
-	var url = "mc/core/inMessageList";
+	var url = "mc/core/instationmessage/instationMsgList";
 	grid = new G3.Grid("inEnvelopeList");
+	//设置过滤条件：草稿
+	var sendState = "0";
+	//设置过滤条件：消息
+	var messageType = "m";
 	//设置数据请求地址
 	grid.setAjaxUrl(url);
+	grid.setParameter("sendState", sendState);
+	grid.setParameter("messageType", messageType);
 	//初始化
 	grid.init();
 
 	// 增加
-	$("#addBtn").bind("click", function () {
-		var url = G3.cmdPath + "mc/core/edit";
-		
-		G3.showModalDialog("新建邮件", url, {
-			width : 800,
-			height : 500
-		}, function(e, ret) {
-			if (ret == "1") {
-				grid.reload();
-			}
-		});
+	$("#editBtn").bind("click", function () {
+		edit();
 	});
 	
 	//回复
@@ -127,13 +124,14 @@ $(function() {
 		"title" : "",
 		"content" : template('mypopover', {})
 	});
-
+	
 	// 更多查询
 	$("body").on("click", "#moreQueryBtn", query);
 	//重置
 	$("body").on("click", "#resetBtn", function(){
-		$("#receiveState").val("");
-		$("#senderName").val("");
+		$("#messageTopic").val("");
+		$("#sendState").val("");
+		$("#receiverName").val("");
 		$("#sendTimeFrom").val("");
 		$("#sendTimeTo").val("");
 		
@@ -148,6 +146,31 @@ $(function() {
 	});
 
 });
+
+/**
+ * 编辑
+ */
+function edit(){
+	var records = grid.getSelectedRow();
+	if (records.length == 1) {
+		var data = records[0];
+		var url = G3.cmdPath + "mc/core/instationmessage/edit";
+//		if (data.id != undefined && data.id != "" && data.id != "null") {
+//			url += "?id=" + data.id;
+//		}
+		
+		G3.showModalDialog("维护", url, {
+			width : 800,
+			height : 500
+		}, function(e, ret) {
+			if (ret == "1") {
+				grid.reload();
+			}
+		});
+	} else {
+		G3.alert("提示", "请选择一条消息！");
+	}
+}
 
 /**
  * 渲染账户状态
@@ -172,17 +195,27 @@ function renderstatus(data, type, full) {
  * 查询数据
  */
 function query() {
-	var userId = $("#userId").val();
-	var userName = $("#userName").val();
-	var nickname = $("#nickname").val();
-	if (userId == undefined) {
-		userId = "";
+	var messageTopic = $("#messageTopic").val();
+	var sendState = $("#sendState").val();
+	var receiverName = $("#receiverName").val();
+	var sendTimeFrom = $("#sendTimeFrom").val();
+	var sendTimeTo = $("#sendTimeTo").val();
+	//设置过滤条件：草稿
+	if(sendState == undefined || sendState == ""){
+		var sendState = "0";
+	}
+	//设置过滤条件：消息
+	var messageType = "m";
+	if (messageTopic == undefined) {
+		messageTopic = "";
 	}
 	
-	var url = "demo/user/query";
+	var url = "mc/core/instationmessage/query";
 	grid.setAjaxUrl(url);
-	grid.setParameter("userId", userId);
-	grid.setParameter("userName", userName);
-	grid.setParameter("nickname", nickname);
+	grid.setParameter("messageTopic", messageTopic);
+	grid.setParameter("sendState", sendState);
+	grid.setParameter("receiverName", receiverName);
+	grid.setParameter("sendState", sendState);
+	grid.setParameter("messageType", messageType);
 	grid.load();
 }

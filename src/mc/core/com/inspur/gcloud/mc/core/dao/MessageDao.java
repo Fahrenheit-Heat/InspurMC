@@ -44,7 +44,4 @@ List<Message> getByParams(Map map);
 */
 void delete(Map map);
 
-
-
-
 }

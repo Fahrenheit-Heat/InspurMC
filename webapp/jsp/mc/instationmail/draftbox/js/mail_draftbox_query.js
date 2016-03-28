@@ -27,10 +27,15 @@ $('#sendTimeTo').datetimepicker({
  */
 $(function() {
 	//初始化表格
-	var url = "mc/core/inMessageList";
+	var url = "mc/core/instationmessage/instationMsgList";
 	grid = new G3.Grid("inEnvelopeList");
+	//设置过滤条件：草稿
+	var sendState = "0";
+	var messageType = "w";
 	//设置数据请求地址
 	grid.setAjaxUrl(url);
+	grid.setParameter("sendState", sendState);
+	grid.setParameter("messageType", messageType);
 	//初始化
 	grid.init();
 

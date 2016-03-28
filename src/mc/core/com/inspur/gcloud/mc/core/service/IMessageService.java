@@ -23,6 +23,11 @@ public interface IMessageService {
      */
     public String saveMessage(Message message);
 
-	
+    /**
+     * 
+     * @param id
+     * @return Message
+     */
+	public Message findOne(String id);
 	
 }

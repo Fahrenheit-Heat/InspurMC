@@ -15,7 +15,7 @@
 						<div class="input-group">
 							<input type="text" class="form-control" placeholder="主题"
 								id="messageTopic">
-							<div class="input-group-addon" id="query">
+							<div class="input-group-addon" id="queryBtn">
 								<span class="fa fa-search"></span>
 							</div>
 						</div>
@@ -24,7 +24,7 @@
 							class="fa fa-angle-double-down"></i>更多查询</a>
 						<div class="pull-right">
 							<button class="btn btn-primary" type="button" id="editBtn">
-								<i class="fa fa-plus fa-fw"></i>编辑
+								<i class="fa fa-edit fa-fw"></i>编辑
 							</button>
 							<button class="btn btn-primary" type="button" id="sendBtn">
 								<i class="fa fa-share "></i>发送
@@ -41,8 +41,8 @@
 									<tr>
 										<th data-number="true">
 										<th data-checkbox="true">
-										<th width="15%" data-field="senderId" data-sortable="false">收件人</th>
-										<th width="25%" data-field="messageTopic">主题</th>
+										<th width="15%" data-field="receiverId" data-sortable="false">收件人</th>
+										<th width="25%" data-field="message.messageTopic">主题</th>
 										<th width="25%" data-field="sendTime">日期</th>
 										<th width="25%" data-field="sendState">状态</th>
 									</tr>
@@ -53,7 +53,7 @@
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript" src="<ui:context/>jsp/mc/inmessage/js/inmessage_query.js"></script>
+		<script type="text/javascript" src="<ui:context/>jsp/mc/instationmessage/draftbox/js/msg_draftbox_query.js"></script>
 		<script id="mypopover" type="text/html">
 		<table class="table table-moresearch">
 			<tr>

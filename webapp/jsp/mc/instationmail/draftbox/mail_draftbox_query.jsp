@@ -41,7 +41,7 @@
 									<tr>
 										<th data-number="true">
 										<th data-checkbox="true">
-										<th width="15%" data-field="senderId" data-sortable="false">发件人</th>
+										<th width="15%" data-field="receiverId" data-sortable="false">收件人</th>
 										<th width="25%" data-field="messageTopic">主题</th>
 										<th width="25%" data-field="sendTime">日期</th>
 										<th width="25%" data-field="sendState">状态</th>
@@ -53,7 +53,7 @@
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript" src="<ui:context/>jsp/mc/inmessage/js/inmessage_query.js"></script>
+		<script type="text/javascript" src="<ui:context/>jsp/mc/instationmail/draftbox/js/mail_draftbox_query.js"></script>
 		<script id="mypopover" type="text/html">
 		<table class="table table-moresearch">
 			<tr>

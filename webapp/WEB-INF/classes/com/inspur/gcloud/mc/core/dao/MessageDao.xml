@@ -5,7 +5,7 @@
 <mapper namespace="com.inspur.gcloud.mc.core.dao.MessageDao">
 
     <resultMap type="com.inspur.gcloud.mc.core.data.Message" id="MessageResultMap">
-    	<id property="id" column="id" />
+    	<id property="id" column="message_id" />
     </resultMap>
 	
 	<!-- 通过databaseId指定数据库的类型 -->
@@ -26,6 +26,15 @@
 			</if>
 		</where>				
 	</select>
+	
+	<select id="getMessageById" resultMap="MessageResultMap" parameterType="String">
+        SELECT * FROM mc_Message
+        <where>
+        	<if test="1 == 1">
+        		m_id = #{id}
+        	</if>
+        </where>
+    </select>
 	
 
 </mapper>
