@@ -154,10 +154,10 @@ function edit(){
 	var records = grid.getSelectedRow();
 	if (records.length == 1) {
 		var data = records[0];
-		var url = G3.cmdPath + "mc/core/instationmessage/edit";
-//		if (data.id != undefined && data.id != "" && data.id != "null") {
-//			url += "?id=" + data.id;
-//		}
+		var url = G3.cmdPath + "mc/core/instationmessage/editdraft";
+		if (data.id != undefined && data.id != "" && data.id != "null") {
+			url += "?id=" + data.id;
+		}
 		
 		G3.showModalDialog("维护", url, {
 			width : 800,

@@ -31,7 +31,7 @@
         SELECT * FROM mc_Message
         <where>
         	<if test="1 == 1">
-        		m_id = #{id}
+        		id = #{id}
         	</if>
         </where>
     </select>

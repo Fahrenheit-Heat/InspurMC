@@ -16,7 +16,7 @@ import javax.persistence.Transient;
 @Table(name = "MC_MESSAGE")
 public class Message implements Serializable{
 	// 主键
-    @Id
+	@Id
     private String id;
     
     // 消息级别：0为最低级别，9为最高级别
@@ -33,7 +33,7 @@ public class Message implements Serializable{
     
     // 备注
     @Column(name = "REMARK")
-    private String remark;
+    private String Remark;
     
     @Transient
     private Attach attach;
@@ -95,20 +95,12 @@ public class Message implements Serializable{
 		this.messageContent = messageContent;
 	}
 
-	/**
-	 * 属性remark的get方法
-	 * @return remark String
-	 */
 	public String getRemark() {
-		return remark;
+		return Remark;
 	}
 
-	/**
-	 * 属性remark的set方法
-	 * @param remark String
-	 */
 	public void setRemark(String remark) {
-		this.remark = remark;
+		Remark = remark;
 	}
 
 	/**

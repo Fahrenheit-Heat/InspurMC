@@ -44,4 +44,6 @@ List<Message> getByParams(Map map);
 */
 void delete(Map map);
 
+Message getMessageById(String id);
+
 }

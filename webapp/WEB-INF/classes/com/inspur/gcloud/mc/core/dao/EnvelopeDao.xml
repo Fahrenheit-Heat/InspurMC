@@ -53,41 +53,50 @@
 	
 	<select id="getByParams" parameterType="map" resultMap="envelopeResultMap">
 		select 
-		message_id,
-		message_Type,
-		sender_Id,
-		receiver_Id,
-		send_time,
-		create_time,
-		receive_state,
-		send_State,
-		m_id,
-		message_level,
-		message_topic,
-		message_content
-		from mc_envelope,mc_message
+		e.id,
+		e.message_id,
+		e.message_Type,
+		e.sender_Id,
+		e.sender_Name,
+		e.receiver_Id,
+		e.receiver_Name,
+		e.send_time,
+		e.create_time,
+		e.receive_state,
+		e.send_State,
+		m.id,
+		m.message_level,
+		m.message_topic,
+		m.message_content,
+		m.remark
+		from mc_envelope e,mc_message m
 		<where>
-			message_id=m_id
+			e.id=m.id
 			<if test="receiveState != null and receiveState!= '' ">
-			 	and receive_state like '%${receiveState}%'
+			 	and e.receive_state like '%${receiveState}%'
 			</if>
 			<if test="senderId != null and senderId != '' ">
-			 	and sender_Id like '%${senderId}%'
+			 	and e.sender_Id like '%${senderId}%'
 			</if>
 			<if test="receiverId != null and receiverId != '' ">
-			 	and receiver_Id like '%${receiverId}%'
+			 	and e.receiver_Id like '%${receiverId}%'
 			</if>
 			<if test="sendState != null and sendState != '' ">
-				and send_State like '%${sendState}%'
+				and e.send_State like '%${sendState}%'
 			</if>
 			<if test="messageType != null and messageType != '' ">
-				and message_Type like '%${messageType}%'
+				and e.message_Type like '%${messageType}%'
 			</if>
 			<if test="messageTopic != null and messageTopic !='' ">
-				and message_topic like '%${messageTopic}%'
+				and m.message_topic like '%${messageTopic}%'
 			</if>
 		</where>				
 	</select>
+	
+	<select id="getMessageId" parameterType="string" resultType="string">
+		select message_id from mc_envelope where id = #{id}
+	</select>
+	
 	<update id="changeState" parameterType="string">
 		update mc_envelope 
 		<set>

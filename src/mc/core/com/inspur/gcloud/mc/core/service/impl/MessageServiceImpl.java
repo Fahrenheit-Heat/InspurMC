@@ -56,5 +56,4 @@ public class MessageServiceImpl implements IMessageService {
 		
 		return messageDao.get(id);
 	}
-
 }

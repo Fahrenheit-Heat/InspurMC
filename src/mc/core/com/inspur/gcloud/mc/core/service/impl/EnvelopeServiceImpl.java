@@ -82,6 +82,11 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 		return envelopeDao.batchInsert(envelopeList);
 	}
 
+	@Override
+	public String findMessageId(String id) {
+		return envelopeDao.getMessageId(id);
+	}
+
 
 
 }

@@ -46,7 +46,7 @@
 								<div class="fieldInput">
 									<input type="hidden" id="receiverId" name="receiverId" value="${messageView.receiverId}" />
 									<input type="text" class="form-control" id="receiverName" name="receiverName"
-										value="${messageView.receiverName}" placeholder="收件人" />
+										value="${envelope.receiverId}" placeholder="收件人" />
 								</div>
 							</div>
 							
@@ -56,7 +56,7 @@
 								</div>
 								<div class="fieldInput">
 									<input type="text" class="form-control" id="messageTopic" name="messageTopic"
-										value="${messageView.messageTopic}" placeholder="主题" />
+										value="${envelope.message.messageTopic}" placeholder="主题" />
 								</div>
 							</div>
 							<div id="editor" style="width:100%; height:120px;"></div>

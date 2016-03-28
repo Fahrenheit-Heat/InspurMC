@@ -25,10 +25,6 @@ public class Envelope implements Serializable{
     @Column(name = "MESSAGE_ID")
     private String messageId;
     
-    // 消息主题
-    @Column(name = "MESSAGE_TOPIC")
-    private String messageTopic;
-    
     // 消息类型：M：站内消息；W：站内邮件；S：短信；E：电子邮件
     @Column(name = "MESSAGE_TYPE")
     private String messageType;
@@ -101,7 +97,31 @@ public class Envelope implements Serializable{
     @Column(name = "REMARK")
     private String remark;
     
-    @Transient
+    //发送人名称
+    @Column(name = "SENDER_NAME")
+    private String senderName;
+    
+    //接受人名称
+    @Column(name = "RECEIVER_NAME")
+    private String receiverName;
+    
+    public String getSenderName() {
+		return senderName;
+	}
+
+	public void setSenderName(String senderName) {
+		this.senderName = senderName;
+	}
+
+	public String getReceiverName() {
+		return receiverName;
+	}
+
+	public void setReceiverName(String receiverName) {
+		this.receiverName = receiverName;
+	}
+
+	@Transient
     private Message message ;
     
     @Transient
@@ -121,14 +141,6 @@ public class Envelope implements Serializable{
 
 	public void setMessageId(String messageId) {
 		this.messageId = messageId;
-	}
-
-	public String getMessageTopic() {
-		return messageTopic;
-	}
-
-	public void setMessageTopic(String messageTopic) {
-		this.messageTopic = messageTopic;
 	}
 
 	public String getMessageType() {

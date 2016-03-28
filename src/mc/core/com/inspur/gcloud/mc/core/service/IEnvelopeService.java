@@ -57,6 +57,13 @@ public interface IEnvelopeService {
      * 
      */
     public Envelope findOne(String id);
+    
+    /**
+     * 根据信封Id查找消息Message_Id
+     * @param id
+     * @return Message_Id
+     */
+    public String findMessageId(String id);
 
     /**
      * 根据id查询用户档案信息

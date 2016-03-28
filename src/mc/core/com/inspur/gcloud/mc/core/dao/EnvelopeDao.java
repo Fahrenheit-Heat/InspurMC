@@ -49,6 +49,13 @@ public interface EnvelopeDao extends EntityMapper<Envelope> {
      */
     List<Envelope> getByParams(Map map);
     
+    /**
+     * 根据Envelope的id找对应的MessageId
+     * @param id
+     * @return MessageId
+     */
+    String getMessageId(String id);
+    
     //////////// 删除   ///////////////////////////
     
     /**

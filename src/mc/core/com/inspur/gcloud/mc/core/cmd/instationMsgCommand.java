@@ -208,14 +208,19 @@ public class instationMsgCommand {
      * @param id
      * @return ModelAndView
      */
-    @RequestMapping(value = "/edit")
+    @RequestMapping(value = "/editdraft")
     public ModelAndView editDraft(@RequestParam(value = "id",required = false)String id){
-    	Message message = null;
+    	Envelope envelope = null;
     	if(id != null && !"".equals(id)){
-    		message = messageService.findOne(id);
+    		envelope = envelopeService.findOne(id);
+    		if(envelope != null){
+    			String messageId = envelopeService.findMessageId(id);
+    			Message temp = messageService.findOne(messageId);
+    			envelope.setMessage(temp);
+    		}
     	}
     	 Map<String, Object> model = new HashMap<String, Object>();
-    	 model.put("message", message);
+    	 model.put("envelope", envelope);
     	 return new ModelAndView("mc/instationmessage/newmessage/msg_create",model);
     }
     
