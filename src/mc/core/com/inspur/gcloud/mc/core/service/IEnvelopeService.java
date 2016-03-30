@@ -4,6 +4,7 @@ package com.inspur.gcloud.mc.core.service;
 import java.util.List;
 import java.util.Map;
 
+import com.inspur.gcloud.mc.common.data.MessageObject;
 import com.inspur.gcloud.mc.core.data.Envelope;
 import com.inspur.gcloud.mc.core.data.Message;
 
@@ -16,6 +17,8 @@ import com.inspur.gcloud.mc.core.data.Message;
  *
  */
 public interface IEnvelopeService {
+	
+	public MessageObject makeUpMessageObject(Envelope envelope,String messageId);
 	
 	 // ////////////////////////////////查询//////////////////////////////////
 
@@ -94,6 +97,8 @@ public interface IEnvelopeService {
      * @return 
      */
     public int batchSaveEnvelope(List<Envelope> envelopeList, String messageId);
+    
+    public int batchUpdateEnvelope(List<Envelope> envelopeList, String messageId);
 
     // ////////////////////////////////删除//////////////////////////////////
 

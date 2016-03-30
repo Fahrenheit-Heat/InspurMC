@@ -43,6 +43,10 @@ public class MessageParserService implements IMessageParserService {
 			message.setMessageContent(messageView.getMessageContent());
 			message.setMessageLevel("");
 			message.setRemark("");
+			//涉及到修改时
+			if(messageView.getMessageId() != null && !messageView.getMessageId().equals("")){
+				message.setId(messageView.getMessageId());
+			}
 			
 			// 解析envelope对象
 			List<String> receiverIdList = messageView.getReceiverIdList();
@@ -51,13 +55,18 @@ public class MessageParserService implements IMessageParserService {
 			if(receiverIdList.size() > 0){
 				for(int i = 0; i < receiverIdList.size(); i++){
 					Envelope envelope = new Envelope();
+					if(messageView.getEnvelopeId() != null && !messageView.getEnvelopeId().equals("")){
+						envelope.setId(messageView.getEnvelopeId());
+					}
 					envelope.setMessageType(messageView.getMessageType());
 					envelope.setRelatedMessageId("");
 					envelope.setRelatedPath("");
-					envelope.setSenderId(messageView.getSendId());
+					envelope.setSenderId(messageView.getSenderId());
+					envelope.setSenderName(messageView.getSenderName());
 					envelope.setReceiverId(receiverIdList.get(i));
+					envelope.setReceiverName(messageView.getReceiverName());
 					envelope.setReceiverType("");
-					envelope.setSendState("");
+					envelope.setSendState(messageView.getSendState());
 					envelope.setIsSchedule("");
 					envelope.setIsReadReceipt("");
 					envelope.setHasReceipt("");

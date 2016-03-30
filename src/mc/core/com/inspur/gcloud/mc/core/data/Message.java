@@ -36,6 +36,17 @@ public class Message implements Serializable{
     private String Remark;
     
     @Transient
+    private Envelope envelope;
+    
+    public Envelope getEnvelope() {
+		return envelope;
+	}
+
+	public void setEnvelope(Envelope envelope) {
+		this.envelope = envelope;
+	}
+
+	@Transient
     private Attach attach;
     
 

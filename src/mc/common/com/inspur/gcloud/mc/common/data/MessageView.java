@@ -13,6 +13,12 @@ import java.util.List;
  */
 public class MessageView {
 	
+	//信封Id
+	private String envelopeId;
+	
+	//消息Id
+	private String messageId;
+	
 	// 消息主题
 	private String messageTopic;
 	
@@ -20,7 +26,10 @@ public class MessageView {
 	private String messageType;
 	
 	// 发送人Id
-	private String sendId;
+	private String senderId;
+	
+	//发送人姓名串
+	private String senderName;
 	
 	// 接收人Id串
 	private String receiverId;
@@ -36,6 +45,9 @@ public class MessageView {
 	
 	// 发送类型
 	private String sendType;
+	
+	//发送状态
+	private String sendState;
 	
 	// 消息级别
 	private String messageLevel;
@@ -59,12 +71,12 @@ public class MessageView {
 		this.messageType = messageType;
 	}
 
-	public String getSendId() {
-		return sendId;
+	public String getSenderId() {
+		return senderId;
 	}
 
-	public void setSendId(String sendId) {
-		this.sendId = sendId;
+	public void setSenderId(String sendId) {
+		this.senderId = sendId;
 	}
 
 	public String getReceiverId() {
@@ -147,6 +159,38 @@ public class MessageView {
 
 	public void setMessageContent(String messageContent) {
 		this.messageContent = messageContent;
+	}
+
+	public String getSenderName() {
+		return senderName;
+	}
+
+	public void setSenderName(String senderName) {
+		this.senderName = senderName;
+	}
+
+	public String getEnvelopeId() {
+		return envelopeId;
+	}
+
+	public void setEnvelopeId(String envelopeId) {
+		this.envelopeId = envelopeId;
+	}
+
+	public String getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(String messageId) {
+		this.messageId = messageId;
+	}
+
+	public String getSendState() {
+		return sendState;
+	}
+
+	public void setSendState(String sendState) {
+		this.sendState = sendState;
 	}
 	
 }

@@ -31,26 +31,26 @@ public class MessageServiceImpl implements IMessageService {
      */
 	 @Transactional
     public String saveMessage(Message message) {
-    	
-        if (message.getId() != null && !message.getId().equals("")) {
-            // 更新消息信息
-        	if(messageDao.update(message) == 1){
-        		return message.getId();
-        	}else{
-        		return null;
-        	}
-        } else {
-            // 保存消息信息
-        	String id = GCloudUtil.getInstance().getNextSeqId(32);
-        	message.setId(id);
-        	if(messageDao.insert(message) == 1){
-        		 return id;
-        	}else{
-        		return null;
-        	}
-        }
+        // 保存消息信息
+    	String id = GCloudUtil.getInstance().getNextSeqId(32);
+    	message.setId(id);
+    	if(messageDao.insert(message) == 1){
+    		 return id;
+    	}else{
+    		return null;
+    	}
     }
-
+	 
+	 @Transactional
+	 public String updateMessage(Message message){
+         // 更新消息信息
+     	if(messageDao.update(message) == 1){
+     		return message.getId();
+     	}else{
+     		return null;
+     	}
+	 }
+	 
 	@Override
 	public Message findOne(String id) {
 		

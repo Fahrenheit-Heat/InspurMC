@@ -26,16 +26,20 @@
 					<div class="bank1"></div>
 					<div class="panel-body">
 						<div class="form-simple form-simple-edit no-border-bottom form-simple-modal">
+							<input type="hidden" id="envelopeId" name="envelopeId" value="${messageView.envelopeId}">
+							<input type="hidden" id="messageId" name="messageId" value="${messageView.messageId}">
 							<input type="hidden" id="sendType" name="sendType" value="${messageView.sendType }" >
-							<input type="hidden" id="messageContent" name="messageContent" value="${messageView.messageContent }"/>
+							<input type="hidden" id="messageContent" name="messageContent" value="${messageView.messageContent}"/>
 							<input type="hidden" id="messageType" name="messageType" value="m"/>
-							<input type="hidden" id="sendId" name="sendId" value="${messageView.senderId}">
+							<input type="hidden" id="senderId" name="senderId" value="${messageView.senderId}">
+							<input type="hidden" id="senderName" name="senderName" value="${messageView.senderName}">
+							<input type="hidden" id="sendState" name="sendState" value="${messageView.sendState}">
 							<div class="form-hr">
 								<div class="fieldLabel" title="发件人">
 									<i class="fa fa-user"></i>发件人：
 								</div>
 								<div class="fieldInput">
-									<span id="loginUserName">"${messageView.sendName}"</span>
+									<span id="loginUserName">"${messageView.senderName}"</span>
 								</div>
 							</div>
 							
@@ -46,7 +50,7 @@
 								<div class="fieldInput">
 									<input type="hidden" id="receiverId" name="receiverId" value="${messageView.receiverId}" />
 									<input type="text" class="form-control" id="receiverName" name="receiverName"
-										value="${envelope.receiverId}" placeholder="收件人" />
+										value="${messageView.receiverName}" placeholder="收件人" />
 								</div>
 							</div>
 							
@@ -56,7 +60,7 @@
 								</div>
 								<div class="fieldInput">
 									<input type="text" class="form-control" id="messageTopic" name="messageTopic"
-										value="${envelope.message.messageTopic}" placeholder="主题" />
+										value="${messageView.messageTopic}" placeholder="主题" />
 								</div>
 							</div>
 							<div id="editor" style="width:100%; height:120px;"></div>

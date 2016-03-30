@@ -122,7 +122,7 @@ public class Envelope implements Serializable{
 	}
 
 	@Transient
-    private Message message ;
+    private Message message;
     
     @Transient
     private Attach attach;

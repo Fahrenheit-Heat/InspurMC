@@ -28,12 +28,7 @@
 	</select>
 	
 	<select id="getMessageById" resultMap="MessageResultMap" parameterType="String">
-        SELECT * FROM mc_Message
-        <where>
-        	<if test="1 == 1">
-        		id = #{id}
-        	</if>
-        </where>
+        SELECT * FROM mc_Message where id = #{id}
     </select>
 	
 

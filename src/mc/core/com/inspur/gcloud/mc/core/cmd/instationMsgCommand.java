@@ -88,35 +88,7 @@ public class instationMsgCommand {
         envelopedata.put("total", total != -1 ? total : envelopes.size());
         return envelopedata;
     }
-    
-	/**
-     * 根据主题、发件人、收件人或日期、信封状态查找用户
-     *
-     * @param map key分别为： 
-     *              <code>messageTopic<code>[消息主题]
-     *              <code>senderName<code>[发件人]
-     *              <code>receiverName<code>[收件人]
-     *              <code>receiveState<code>[收件状态]
-     *              <code>sendTimeFrom<code>[发送时间]
-     *              <code>sendTimeTo<code>[发送时间]
-     * @return Map key分别为：
-     *              <code>total<code>[总记录条数] 
-     *              <code>data<code>[用户信息列表], List 内容为 User
-     * 
-     */
-    @RequestMapping("/detailquery")
-    @ResponseBody
-    public Map<String, Object> getDetailByParams(@RequestBody Map<String, String> parameters) {
-        Map<String, Object> envelopedata = new HashMap<String, Object>();
-        List<Envelope> envelopes = new ArrayList<Envelope>();
-        envelopes = envelopeService.getByParams(parameters);
-        envelopedata.put("data", envelopes);
-        // 获取总记录条数
-        int total = PageUtil.getTotalCount();
-        envelopedata.put("total", total != -1 ? total : envelopes.size());
-        return envelopedata;
-    }
-	
+
 	 /**
      * 用户修改页面的弹出
      * 
@@ -128,10 +100,15 @@ public class instationMsgCommand {
      */
     @RequestMapping("/newMessage")
     public ModelAndView newMessage(@RequestParam(value = "id", required = false) String id) {
-        Envelope envelope = null;
-        if (id != null && !"".equals(id)) {
-        	envelope = envelopeService.findOne(id);
-        }
+    	Envelope envelope = null;
+    	if(id != null && !"".equals(id)){
+    		envelope = envelopeService.findOne(id);
+    		if(envelope != null){
+    			String messageId = envelopeService.findMessageId(id);
+    			Message temp = messageService.findOne(messageId);
+    			envelope.setMessage(temp);
+    		}
+    	}
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("envelope", envelope);
         return new ModelAndView("mc/instationmessage/newmessage/msg_create", model);
@@ -183,7 +160,7 @@ public class instationMsgCommand {
     } 
     
     /**
-     * 新增、修改用户的异步保存操作
+     * 修改用户的异步保存操作
      * 
      * @param message
      * 
@@ -192,12 +169,39 @@ public class instationMsgCommand {
      */
     @RequestMapping(value = "/ajaxsave", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> ajaxSave(Envelope envelope) {
-    	Envelope en = envelope; 
-    	Message me = en.getMessage();
-    	messageService.saveMessage(me);
-    	en.setMessageId(me.getId());
-//    	envelopeService.save(en);
+    public Map<String, Object> ajaxSave(MessageView messageView) {
+    	List<Envelope> envelopeList = null;
+    	String messageId = null;
+    	ResultMap parserResultMap = messageParserService.instationMsgParser(messageView);
+    	MessageObject messageObject = (MessageObject) parserResultMap.get("messageObject");
+    	messageService.updateMessage(messageObject.getMessage());
+    	messageId = messageObject.getMessage().getId();
+    	envelopeList = messageObject.getEnvelopeList();
+    	envelopeService.batchUpdateEnvelope(envelopeList, messageId);
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("success", true);
+        return model;
+    }
+    
+    /**
+     * 新增用户的异步保存操作
+     * 
+     * @param message
+     * 
+     * @return 用户列表页面路径
+     * 
+     */
+    @RequestMapping(value = "/ajaxnewsave", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> ajaxNewSave(MessageView messageView) {
+    	List<Envelope> envelopeList = null;
+    	String messageId = null;
+    	ResultMap parserResultMap = messageParserService.instationMsgParser(messageView);
+    	MessageObject messageObject = (MessageObject) parserResultMap.get("messageObject");
+    	messageService.updateMessage(messageObject.getMessage());
+    	messageId = messageObject.getMessage().getId();
+    	envelopeList = messageObject.getEnvelopeList();
+    	envelopeService.batchSaveEnvelope(envelopeList, messageId);
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("success", true);
         return model;
@@ -208,21 +212,47 @@ public class instationMsgCommand {
      * @param id
      * @return ModelAndView
      */
-    @RequestMapping(value = "/editdraft")
-    public ModelAndView editDraft(@RequestParam(value = "id",required = false)String id){
+	@RequestMapping(value = "/editdraft")
+    public ModelAndView editNewDraft(@RequestParam(value = "id",required = false)String id){
+    	MessageView messageView = new MessageView();
     	Envelope envelope = null;
     	if(id != null && !"".equals(id)){
     		envelope = envelopeService.findOne(id);
     		if(envelope != null){
     			String messageId = envelopeService.findMessageId(id);
-    			Message temp = messageService.findOne(messageId);
-    			envelope.setMessage(temp);
+    			Message message = messageService.findOne(messageId);
+    			envelope.setMessage(message);
     		}
+    		messageView = makeUpMessageView(envelope);
     	}
-    	 Map<String, Object> model = new HashMap<String, Object>();
-    	 model.put("envelope", envelope);
-    	 return new ModelAndView("mc/instationmessage/newmessage/msg_create",model);
+    	Map<String, Object> model = new HashMap<String, Object>();
+    	model.put("messageView", messageView);
+    	return new ModelAndView("mc/instationmessage/newmessage/msg_create",model);
     }
+	
+	/**
+	 * 用于组装对编辑页面进行展示的MessageView
+	 * @param envelope
+	 * @return MessageView
+	 */
+	public MessageView makeUpMessageView(Envelope envelope){
+		MessageView messageView = new MessageView();
+		messageView.setEnvelopeId(envelope.getId());
+		messageView.setMessageId(envelope.getMessageId());
+		messageView.setMessageTopic(envelope.getMessage().getMessageTopic());
+		messageView.setMessageType(envelope.getMessageType());
+		messageView.setSenderId(envelope.getSenderId());
+		messageView.setSenderName(envelope.getSenderName());
+		messageView.setReceiverId(envelope.getReceiverId());
+		messageView.setReceiverName(envelope.getReceiverName());
+		messageView.setIsSchedule(envelope.getIsSchedule());
+		messageView.setIsReadReceipt(envelope.getIsReadReceipt());
+		messageView.setSendType(envelope.getSendType());
+		messageView.setSendState(envelope.getSendState());
+		messageView.setMessageLevel(envelope.getMessage().getMessageLevel());
+		messageView.setMessageContent(envelope.getMessage().getMessageContent());
+		return messageView;
+	}
     
     @RequestMapping("/delete/{ids,boxType}")
     public String delete(@PathVariable String ids, String boxType){
@@ -237,7 +267,4 @@ public class instationMsgCommand {
          }
          return "redirect:/command/mc/core";
     }
-    
-   
-
 }

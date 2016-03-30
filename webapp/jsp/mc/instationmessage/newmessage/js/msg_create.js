@@ -5,6 +5,11 @@ $(function() {
 	
 	// 初始化UE编辑器
 	var ue = initUESettings("editor", "");
+	//设置编辑器内容
+	ue.ready(function(){
+		var content = document.getElementById("messageContent").value;
+		ue.setContent(content);
+	});
 	
 	// 通讯录
 	$("#bookBtn").click(function(){
@@ -64,11 +69,11 @@ function sendCheck(ue){
  * @param ue
  */
 function save(ue){
-	var requestUrl = context + "/mc/core/instationmessage/send";
+	var requestUrl = context + "/mc/core/instationmessage/ajaxsave";
 	$("#messageContent").val(ue.getContent());
 	$("#sendType").val("0");
 	$("#receiverId").val('1234');
-	$("#sendId").val("senderId");
+	$("#sendState").val("0");
 	//表单的异步提交
 	$("#form").ajaxSubmit({
 		type : "post",

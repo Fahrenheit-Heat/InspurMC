@@ -41,10 +41,10 @@
 									<tr>
 										<th data-number="true">
 										<th data-checkbox="true">
-										<th width="15%" data-field="receiverId" data-sortable="false">收件人</th>
+										<th width="15%" data-field="receiverName" data-sortable="false">收件人</th>
 										<th width="25%" data-field="message.messageTopic">主题</th>
 										<th width="25%" data-field="sendTime">日期</th>
-										<th width="25%" data-field="sendState">状态</th>
+										<th width="25%" data-field="sendState" data-render="renderstatus">状态</th>
 									</tr>
 								</thead>
 							</table>
@@ -69,13 +69,13 @@
 					
 					<label>从</label>
 					<div class="input-group sameline">
-					     <input type="text" class="form-control"  id="sendTimeFrom" data-bind="value:sendTime" ></input>
-						 <span class="input-group-addon " onclick="selectCalendar(this);"><i class="fa fa-calendar"></i></span>
+					     <input type="text" class="form-control"  id="sendTimeFrom"></input>
+						 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 					     </div>
 					<label>至</label>
 					<div class="input-group sameline">
-						 <input type="text" class="form-control "  id="sendTimeTo" data-bind="value:sendTime" ></input>
-						 <span class="input-group-addon " onclick="selectCalendar(this);"><i class="fa fa-calendar"></i></span>
+						 <input type="text" class="form-control"  id="sendTimeTo"></input>
+						 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 				    </div>
 
 				</td>

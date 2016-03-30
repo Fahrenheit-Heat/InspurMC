@@ -22,6 +22,8 @@ public interface IMessageService {
      * 
      */
     public String saveMessage(Message message);
+    
+    public String updateMessage(Message message);
 
     /**
      * 

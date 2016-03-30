@@ -6,7 +6,9 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.inspur.gcloud.mc.common.data.MessageObject;
 import com.inspur.gcloud.mc.core.dao.EnvelopeDao;
 import com.inspur.gcloud.mc.core.dao.MessageDao;
 import com.inspur.gcloud.mc.core.data.Envelope;
@@ -22,6 +24,8 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	
 	@Autowired
 	private MessageDao messageDao;
+	
+	private MessageObject messageObject;
 
 	@Override
 	public List<Envelope> findList(Map parameters) {
@@ -69,7 +73,7 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 		// TODO Auto-generated method stub
 
 	}
-
+	//插入新信封
 	@Override
 	public int batchSaveEnvelope(List<Envelope> envelopeList, String messageId) {
 		List<Envelope> newEnvelopeList = new ArrayList<Envelope>();
@@ -79,12 +83,29 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 			envelope.setMessageId(messageId);
 			newEnvelopeList.add(envelope);
 		}
-		return envelopeDao.batchInsert(envelopeList);
+		return envelopeDao.batchInsert(newEnvelopeList);
+	}
+	//更新原有信封
+	public int batchUpdateEnvelope(List<Envelope> envelopeList, String messageId){
+		List<Envelope> newEnvelopeList = new ArrayList<Envelope>();
+		for(int i = 0; i < envelopeList.size(); i++){
+			Envelope envelope = envelopeList.get(i);
+			envelope.setMessageId(messageId);
+			newEnvelopeList.add(envelope);
+		}
+		return envelopeDao.batchUpdate(newEnvelopeList);
 	}
 
 	@Override
 	public String findMessageId(String id) {
 		return envelopeDao.getMessageId(id);
+	}
+
+	@Override
+	public MessageObject makeUpMessageObject(Envelope envelope,String messageId) {
+		messageObject.setEnvelopeList(envelopeDao.getAll());//!!!
+		messageObject.setMessage(messageDao.getMessageById(messageId));
+		return messageObject;
 	}
 
 

@@ -13,13 +13,27 @@
     <select id="findList" resultMap="envelopeResultMap" parameterType="map">
         SELECT 
             id,
-            message_id, 
+            message_id,
+            message_type,
+            related_message_id,
+            related_path,
             sender_id,
+            sender_name,
             receiver_id,
+            receiver_name,
+            receive_state,
+            send_state,
+            is_schedule,
+            is_read_receipt,
+            has_receipt,
+            send_type,
+            receiver_type,
+            send_level,
             send_time,
             read_time,
-            send_state
-            
+            create_time,
+            update_time,
+            remark
         FROM mc_envelope  
         <where>
         	<if test="messageType != null and messageType != '' ">
@@ -52,26 +66,35 @@
     </select>
 	
 	<select id="getByParams" parameterType="map" resultMap="envelopeResultMap">
-		select 
-		e.id,
-		e.message_id,
-		e.message_Type,
-		e.sender_Id,
-		e.sender_Name,
-		e.receiver_Id,
-		e.receiver_Name,
-		e.send_time,
-		e.create_time,
-		e.receive_state,
-		e.send_State,
+		select
+        e.message_id,
+        e.message_type,
+        e.related_message_id,
+        e.related_path,
+        e.sender_id,
+        e.sender_name,
+        e.receiver_id,
+        e.receiver_name,
+        e.receive_state,
+        e.send_state,
+        e.is_schedule,
+        e.is_read_receipt,
+        e.has_receipt,
+        e.send_type,
+        e.receiver_type,
+        e.send_level,
+        e.send_time,
+        e.read_time,
+        e.create_time,
+        e.update_time,
 		m.id,
 		m.message_level,
 		m.message_topic,
 		m.message_content,
 		m.remark
-		from mc_envelope e,mc_message m
+		from mc_envelope as e,mc_message as m
 		<where>
-			e.id=m.id
+			e.message_id=m.id
 			<if test="receiveState != null and receiveState!= '' ">
 			 	and e.receive_state like '%${receiveState}%'
 			</if>
@@ -87,8 +110,12 @@
 			<if test="messageType != null and messageType != '' ">
 				and e.message_Type like '%${messageType}%'
 			</if>
-			<if test="messageTopic != null and messageTopic !='' ">
+			<if test="messageTopic != null and messageTopic != '' ">
 				and m.message_topic like '%${messageTopic}%'
+			</if>
+			<if test="sendTimeFrom != null and sendTimeFrom != '' 
+					and sendTimeTo != null and sendTimeTo != '' ">
+				and e.create_time between '%${sendTimeFrom}%' and '%${sendTimeTo}%'
 			</if>
 		</where>				
 	</select>
