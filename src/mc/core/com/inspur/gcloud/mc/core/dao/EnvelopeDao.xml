@@ -104,6 +104,9 @@
 			<if test="receiverId != null and receiverId != '' ">
 			 	and e.receiver_Id like '%${receiverId}%'
 			</if>
+			<if test="receiverName != null and receiverName != '' ">
+			 	and e.receiver_Name like '%${receiverName}%'
+			</if>
 			<if test="sendState != null and sendState != '' ">
 				and e.send_State like '%${sendState}%'
 			</if>
@@ -115,7 +118,7 @@
 			</if>
 			<if test="sendTimeFrom != null and sendTimeFrom != '' 
 					and sendTimeTo != null and sendTimeTo != '' ">
-				and e.create_time between '%${sendTimeFrom}%' and '%${sendTimeTo}%'
+				and e.create_time between '${sendTimeFrom}' and '${sendTimeTo}'
 			</if>
 		</where>				
 	</select>

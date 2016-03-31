@@ -38,7 +38,7 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	}
 
 	@Override
-	public Envelope findOne(String id) {
+	public Envelope findEnvelopeById(String id) {
 		return envelopeDao.get(id);
 	}
 	
@@ -70,8 +70,13 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 
 	@Override
 	public void delete(Map map) {
-		// TODO Auto-generated method stub
 
+		String ids = (String) map.get("ids");
+		String messageIds = (String) map.get("messageIdArray");
+		String[] messageIdArray = messageIds.split(",");
+		String[] idArray = ids.split(",");
+		envelopeDao.batchDelete(idArray);
+		messageDao.batchDelete(messageIdArray);
 	}
 	//插入新信封
 	@Override

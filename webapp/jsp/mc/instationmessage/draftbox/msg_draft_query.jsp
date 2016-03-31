@@ -69,12 +69,12 @@
 					
 					<label>从</label>
 					<div class="input-group sameline">
-					     <input type="text" class="form-control"  id="sendTimeFrom"></input>
+					     <input type="text" class="form-control"  id="sendTimeFrom" onclick="selectTime(this)"></input>
 						 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 					     </div>
 					<label>至</label>
 					<div class="input-group sameline">
-						 <input type="text" class="form-control"  id="sendTimeTo"></input>
+						 <input type="text" class="form-control"  id="sendTimeTo" onclick="selectTime(this)"></input>
 						 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 				    </div>
 

@@ -59,7 +59,7 @@ public interface IEnvelopeService {
      * @return Envelope
      * 
      */
-    public Envelope findOne(String id);
+    public Envelope findEnvelopeById(String id);
     
     /**
      * 根据信封Id查找消息Message_Id

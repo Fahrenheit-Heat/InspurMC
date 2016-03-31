@@ -102,10 +102,10 @@ public class instationMsgCommand {
     public ModelAndView newMessage(@RequestParam(value = "id", required = false) String id) {
     	Envelope envelope = null;
     	if(id != null && !"".equals(id)){
-    		envelope = envelopeService.findOne(id);
+    		envelope = envelopeService.findEnvelopeById(id);
     		if(envelope != null){
     			String messageId = envelopeService.findMessageId(id);
-    			Message temp = messageService.findOne(messageId);
+    			Message temp = messageService.findMessageById(messageId);
     			envelope.setMessage(temp);
     		}
     	}
@@ -217,10 +217,10 @@ public class instationMsgCommand {
     	MessageView messageView = new MessageView();
     	Envelope envelope = null;
     	if(id != null && !"".equals(id)){
-    		envelope = envelopeService.findOne(id);
+    		envelope = envelopeService.findEnvelopeById(id);
     		if(envelope != null){
     			String messageId = envelopeService.findMessageId(id);
-    			Message message = messageService.findOne(messageId);
+    			Message message = messageService.findMessageById(messageId);
     			envelope.setMessage(message);
     		}
     		messageView = makeUpMessageView(envelope);
@@ -254,17 +254,28 @@ public class instationMsgCommand {
 		return messageView;
 	}
     
-    @RequestMapping("/delete/{ids,boxType}")
-    public String delete(@PathVariable String ids, String boxType){
+    @RequestMapping(value = "/delete/{ids}/type/{boxType}",method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> delete(@PathVariable("ids") String ids,@PathVariable("boxType") String boxType){
     	 if (ids != null) {
              String[] idArray = ids.split(",");
+             String messageIdArray = null;
     		 Map<String, String> envelopeMap = new HashMap<String, String>();
-             for(int i = 0; i < idArray.length; i++){
-            	 envelopeMap.put("id", idArray[i]);
-            	 envelopeMap.put("boxType", boxType);
-             }
-             envelopeService.delete(envelopeMap);;
+    		 for(int i = 0;i < idArray.length; i++){
+    			 if(i != 0){
+    				 messageIdArray = messageIdArray + "," + envelopeService.findMessageId(idArray[i]);
+    			 }else{
+    				 messageIdArray = envelopeService.findMessageId(idArray[i]);
+    			 }
+    		 }
+    		 envelopeMap.put("ids", ids);
+    		 envelopeMap.put("messageIdArray",messageIdArray);
+    		 envelopeMap.put("boxType", boxType);
+             envelopeService.delete(envelopeMap);
          }
-         return "redirect:/command/mc/core";
+    	 Map<String, Object> model = new HashMap<String, Object>();
+    	 model.put("success", true);
+         return model;
     }
+ 
 }

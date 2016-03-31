@@ -30,6 +30,6 @@ public interface IMessageService {
      * @param id
      * @return Message
      */
-	public Message findOne(String id);
+	public Message findMessageById(String id);
 	
 }

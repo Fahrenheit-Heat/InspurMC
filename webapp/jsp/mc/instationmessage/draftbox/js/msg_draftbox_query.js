@@ -27,6 +27,12 @@ $(function() {
 		reply();
 	});
 
+	// 删除
+	$("#delBtn").click(
+		function() {
+			del();
+		});
+	
 	//转发
 	$("#forwardBtn").click(function (){
 		forward();
@@ -62,34 +68,77 @@ $(function() {
 		event.stopPropagation();
 	});
 	
-});
+	/**
+	 * 开始日期
+	 */
+	$('#sendTimeFrom').datetimepicker({
+		minView: "month", //选择日期后，不会再跳转去选择时分秒
+		format: "yyyy-mm-dd", //选择日期后，文本框显示的日期格式 　　
+		language: 'zh-CN', //汉化 　
+		autoclose:true //选择日期后自动关闭
+	});
 
-
-/**
- * 开始日期
- */
-$('#sendTimeFrom').datetimepicker({
-	minView: "month", //选择日期后，不会再跳转去选择时分秒
-	format: "yyyy-mm-dd", //选择日期后，文本框显示的日期格式 　　
-	language: 'zh-CN', //汉化 　
-	autoclose:true //选择日期后自动关闭
-});
-
-/**
- * 截止日期
- */
-$('#sendTimeTo').datetimepicker({
-	minView: "month", //选择日期后，不会再跳转去选择时分秒 　　
-	format: "yyyy-mm-dd", //选择日期后，文本框显示的日期格式 　　
-	language: 'zh-CN', //汉化 　
-	autoclose:true //选择日期后自动关闭
+	/**
+	 * 截止日期
+	 */
+	$('#sendTimeTo').datetimepicker({
+		minView: "month", //选择日期后，不会再跳转去选择时分秒 　　
+		format: "yyyy-mm-dd", //选择日期后，文本框显示的日期格式 　　
+		language: 'zh-CN', //汉化 　
+		autoclose:true //选择日期后自动关闭
+	});
+	
 });
 
 /***
 *选择日期
 **/
-function selectCalendar(obj){
-    $(obj).prev().datetimepicker('show');
+//function selectCalendar(obj){
+//    $(obj).prev().datetimepicker('show');
+//}
+
+function selectTime(obj){
+	$(obj).datetimepicker({format: 'yyyy-mm-dd',minView: "month"});
+}
+
+/**
+ * 删除
+ */
+function del(){
+	var records = grid.getSelectedRow();
+	if (records.length != 0) {
+		
+		var recordIds = [];
+		//循环遍历获取ID 
+		$.each(records, function(index, item){
+			recordIds.push(item.id);
+		});
+		//草稿箱类型
+		var boxType = "draftbox";
+		
+		//删除警告框
+		G3.confirm("提示", "确认删除记录？",
+			function() {
+				var requestUrl = G3.cmdPath+"mc/core/instationmessage/delete/"+recordIds+"/type/"+boxType;
+				$.ajax({
+					type : "post",
+					dataType : "json",
+					url: requestUrl,
+					error:function(data){
+						G3.alert("提示","删除失败！");
+					},
+					success:function(data){
+						//弹框方式
+						G3.alert("提示","删除成功！",function(){
+							grid.reload();
+						},"success");
+					}
+				});
+			}
+		);
+	} else {
+		G3.alert("提示", "请选择用户！");
+	}
 }
 
 /**
