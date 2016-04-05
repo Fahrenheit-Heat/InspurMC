@@ -1,10 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false"%>
+<%@page import="com.inspur.gcloud.bsp.BspUtil"%>
 <%@ taglib prefix="ui" uri="/tags/GCloud-UI"%>
+<%
+	//登录用户的用户名
+	String loginName = BspUtil.getInstance().getLoginUserName();
+	// 获取当前登录用户id
+	String loginId = BspUtil.getInstance().getLoginUserOrganId();
+%>
 <html>
 <head>
 <title>新建消息</title>
 <ui:ScriptManager></ui:ScriptManager>
+<script type="text/javascript">
+	var loginName = '<%=loginName%>';
+	var loginId = '<%=loginId%>';
+</script>
 </head>
 <body>
 <div class="container">
@@ -32,14 +43,13 @@
 							<input type="hidden" id="messageContent" name="messageContent" value="${messageView.messageContent}"/>
 							<input type="hidden" id="messageType" name="messageType" value="m"/>
 							<input type="hidden" id="senderId" name="senderId" value="${messageView.senderId}">
-							<input type="hidden" id="senderName" name="senderName" value="${messageView.senderName}">
 							<input type="hidden" id="sendState" name="sendState" value="${messageView.sendState}">
 							<div class="form-hr">
-								<div class="fieldLabel" title="发件人">
+								<div class="fieldLabel">
 									<i class="fa fa-user"></i>发件人：
 								</div>
 								<div class="fieldInput">
-									<span id="loginUserName">"${messageView.senderName}"</span>
+									<input type="text" class="form-control" id="senderName" name="senderName" value="${messageView.senderName}" readOnly />
 								</div>
 							</div>
 							

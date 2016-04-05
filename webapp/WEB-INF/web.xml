@@ -16,6 +16,53 @@
 		</param-value>
 	</context-param>
 	
+	<!-- 后端管理  开始-->
+   <!-- 单点登录过滤器 -->
+ 	<filter>
+        <filter-name>SSOFilter</filter-name>
+        <filter-class>com.inspur.gcloud.bsp.SSOFilter</filter-class>
+    </filter>
+	<!-- Session会话整合过滤器 -->
+	<filter>
+        <filter-name>SessionIntegrationFilter</filter-name>
+        <filter-class>org.loushang.bsp.security.AgentSessionIntegrationFilter</filter-class>
+    </filter>
+    
+    <!-- 权限认证过滤器 -->
+    <filter>
+        <filter-name>AuthzFilter</filter-name>
+	    <filter-class>org.loushang.bsp.security.AgentAuthzFilter</filter-class>
+	</filter>
+	<filter-mapping>
+        <filter-name>SSOFilter</filter-name>
+        <url-pattern>*.jsp</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>SSOFilter</filter-name>
+        <url-pattern>/command/ajax/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>SSOFilter</filter-name>
+        <url-pattern>/command/dispatcher/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>SSOFilter</filter-name>
+        <url-pattern>/SSO/logout</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>SessionIntegrationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>AuthzFilter</filter-name>
+        <url-pattern>*.jsp</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>AuthzFilter</filter-name>
+        <url-pattern>/command/ajax/*</url-pattern>
+    </filter-mapping>
+    <!-- 后端管理  结束-->
+	
 	<!-- Spring字符编码过滤器配置，处理中文乱码 -->
 	<filter>
 		<filter-name>characterEncodingFilter</filter-name>
@@ -38,6 +85,17 @@
 	<!-- Spring监听配置，Web容器启动自动装配ApplicationContext的配置信息-->
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	<listener>
+		<listener-class>
+			com.inspur.hsf.config.sca.proxy.HSFSCAContextListener
+		</listener-class>
+	</listener>
+	<listener>
+		<listener-class>
+			com.inspur.hsf.config.ContextLoaderListener
+		</listener-class>
 	</listener>
 	
 	<!-- GC读取资源配置文件监听 -->

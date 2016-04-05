@@ -5,6 +5,8 @@ $(function() {
 	
 	// 初始化UE编辑器
 	var ue = initUESettings("editor", "");
+	$("#senderName").val(loginName);
+	$("#senderId").val(loginId);
 	//设置编辑器内容
 	ue.ready(function(){
 		var content = document.getElementById("messageContent").value;
