@@ -1,6 +1,7 @@
 package com.inspur.gcloud.mc.core.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -71,12 +72,13 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	@Override
 	public void delete(Map map) {
 
-		String ids = (String) map.get("ids");
-		String messageIds = (String) map.get("messageIdArray");
-		String[] messageIdArray = messageIds.split(",");
-		String[] idArray = ids.split(",");
-		envelopeDao.batchDelete(idArray);
-		messageDao.batchDelete(messageIdArray);
+		List<Envelope> envelopeList = (List<Envelope>) map.get("envelopeList");
+		for(int i = 0;i < envelopeList.size();i++){
+			Map changeMap = new HashMap();
+			changeMap.put("id", envelopeList.get(i).getId());
+			changeMap.put("boxType", map.get("boxType"));
+			envelopeDao.changeState(changeMap);
+		}
 	}
 	//插入新信封
 	@Override

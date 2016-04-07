@@ -1,11 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib prefix="ui" uri="/tags/GCloud-UI"%>
+<%@ page import="com.inspur.gcloud.bsp.BspUtil" %>
 <!DOCTYPE html>
+<%
+	//登录用户的用户名
+	String loginName = BspUtil.getInstance().getLoginUserName();
+	//获取当前登录用户id
+	String loginId = BspUtil.getInstance().getLoginUserOrganId();
+%>
 <html>
 <head>
 <title>收件箱</title>
 <ui:ScriptManager hasList="true"></ui:ScriptManager>
+<script type="text/javascript">
+	var loginName = '<%=loginName%>';
+	var loginId = '<%=loginId%>';
+</script>
 </head>
 	<body>
 		<div class="container">
@@ -14,8 +25,8 @@
 					<form class="form-inline queryForm" role="form" onsubmit="return false;">
 						<div class="input-group">
 							<input type="text" class="form-control" placeholder="主题"
-								id="userId">
-							<div class="input-group-addon" id="query">
+								id="messageTopic">
+							<div class="input-group-addon" id="queryBtn">
 								<span class="fa fa-search"></span>
 							</div>
 						</div>
@@ -44,8 +55,8 @@
 									<tr>
 										<th data-number="true">
 										<th data-checkbox="true">
-										<th width="10%" data-field="senderId" data-sortable="false">发件人</th>
-										<th width="60%" data-field="messageTopic">主题</th>
+										<th width="10%" data-field="senderName" data-sortable="false">发件人</th>
+										<th width="60%" data-field="message.messageTopic">主题</th>
 										<th width="20%" data-field="sendTime">日期</th>
 										<th width="10%" data-field="receiveState">状态</th>
 									</tr>
@@ -71,15 +82,15 @@
 				<td class="fieldInput">
 					<label>开始于</label>
 					<div class="input-group" style="display:inline-table">
-					     <input type="text" class="form-control"  id="sendTimeFrom" data-bind="value:startTime" readOnly style="display:inline-table;width: 100%;"></input>
-						 <span class="input-group-addon " onclick="selectCalendar(this);"><i class="fa fa-calendar"></i></span>
+					     <input type="text" class="form-control"  id="sendTimeFrom" data-bind="value:startTime" readOnly onclick="selectTime(this)" style="display:inline-table;width: 100%;"></input>
+						 <span class="input-group-addon "><i class="fa fa-calendar"></i></span>
 					</div>
 				</td>
 				<td class="fieldInput">
 					<label>结束于</label>
 					<div class="input-group" style="display:inline-table">
-						 <input type="text" class="form-control "  id="sendTimeTo" data-bind="value:sendTime" readOnly style="display:inline-table;width: 100%;"></input>
-						 <span class="input-group-addon " onclick="selectCalendar(this);"><i class="fa fa-calendar"></i></span>
+						 <input type="text" class="form-control "  id="sendTimeTo" data-bind="value:sendTime" readOnly onclick="selectTime(this)" style="display:inline-table;width: 100%;"></input>
+						 <span class="input-group-addon "><i class="fa fa-calendar"></i></span>
 				    </div>
 
 				</td>

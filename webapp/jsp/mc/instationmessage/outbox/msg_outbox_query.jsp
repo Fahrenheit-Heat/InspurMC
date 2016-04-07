@@ -1,11 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib prefix="ui" uri="/tags/GCloud-UI"%>
+<%@ page import="com.inspur.gcloud.bsp.BspUtil" %>
 <!DOCTYPE html>
+<%
+	//登录用户的用户名
+	String loginName = BspUtil.getInstance().getLoginUserName();
+	//获取当前登录用户id
+	String loginId = BspUtil.getInstance().getLoginUserOrganId();
+%>
 <html>
 <head>
 <title>发件箱</title>
 <ui:ScriptManager hasList="true"></ui:ScriptManager>
+<script type="text/javascript">
+	var loginName = '<%=loginName%>';
+	var loginId = '<%=loginId%>';
+</script>
 </head>
 	<body>
 		<div class="container">
@@ -15,7 +26,7 @@
 						<div class="input-group">
 							<input type="text" class="form-control" placeholder="主题"
 								id="messageTopic">
-							<div class="input-group-addon" id="query">
+							<div class="input-group-addon" id="queryBtn">
 								<span class="fa fa-search"></span>
 							</div>
 						</div>
@@ -36,13 +47,13 @@
 					</form>
 					<div class="panel panel-default">
 						<div class="panel-body">
-							<table id="inEnvelopeList" class="table table-bordered table-hover">
+							<table id="instationMsgList" class="table table-bordered table-hover">
 								<thead>
 									<tr>
 										<th data-number="true">
 										<th data-checkbox="true">
-										<th width="15%" data-field="senderId" data-sortable="false">收件人</th>
-										<th width="25%" data-field ="messageTopic">主题</th>
+										<th width="15%" data-field="receiverName" data-sortable="false">收件人</th>
+										<th width="25%" data-field ="message.messageTopic">主题</th>
 										<th width="25%" data-field="sendTime">日期</th>
 										<th width="25%" data-field="sendState">状态</th>
 									</tr>
@@ -53,7 +64,7 @@
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript" src="<ui:context/>jsp/mc/outmessage/js/outmessage_query.js"></script>
+		<script type="text/javascript" src="<ui:context/>jsp/mc/instationmessage/outbox/js/msg_outbox_query.js"></script>
 		<script id="mypopover" type="text/html">
 		<table class="table table-moresearch">
 			<tr>
@@ -65,17 +76,18 @@
 				</td>
 			</tr>
 			<tr>
-				<td>
-					
-					<label>从</label>
-					<div class="input-group sameline">
-					     <input type="text" class="form-control"  id="sendTimeFrom" data-bind="value:sendTime" ></input>
-						 <span class="input-group-addon " onclick="selectCalendar(this);"><i class="fa fa-calendar"></i></span>
-					     </div>
-					<label>至</label>
-					<div class="input-group sameline">
-						 <input type="text" class="form-control "  id="sendTimeTo" data-bind="value:sendTime" ></input>
-						 <span class="input-group-addon " onclick="selectCalendar(this);"><i class="fa fa-calendar"></i></span>
+				<td class="fieldInput">
+					<label>开始于</label>
+					<div class="input-group" style="display:inline-table">
+					     <input type="text" class="form-control"  id="sendTimeFrom" data-bind="value:startTime" readOnly onclick="selectTime(this)" style="display:inline-table;width: 100%;"></input>
+						 <span class="input-group-addon "><i class="fa fa-calendar"></i></span>
+					</div>
+				</td>
+				<td class="fieldInput">
+					<label>结束于</label>
+					<div class="input-group" style="display:inline-table">
+						 <input type="text" class="form-control "  id="sendTimeTo" data-bind="value:sendTime" readOnly onclick="selectTime(this)" style="display:inline-table;width: 100%;"></input>
+						 <span class="input-group-addon "><i class="fa fa-calendar"></i></span>
 				    </div>
 
 				</td>

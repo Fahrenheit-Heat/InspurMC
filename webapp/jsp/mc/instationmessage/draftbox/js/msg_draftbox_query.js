@@ -3,19 +3,10 @@ var context = G3.webPath;
 
 //页面初始化
 $(function() {
-	//初始化表格
-	var url = "mc/core/instationmessage/instationMsgList";
-	grid = new G3.Grid("inEnvelopeList");
-	//设置过滤条件：草稿
-	var sendState = "0";
-	//设置过滤条件：消息
-	var messageType = "m";
-	//设置数据请求地址
-	grid.setAjaxUrl(url);
-	grid.setParameter("sendState", sendState);
-	grid.setParameter("messageType", messageType);
-	//初始化
-	grid.init();
+	
+	// 表格初始化查询
+	initGrid();
+
 
 	// 增加
 	$("#editBtn").bind("click", function () {
@@ -90,13 +81,28 @@ $(function() {
 	
 });
 
-/***
-*选择日期
-**/
-//function selectCalendar(obj){
-//    $(obj).prev().datetimepicker('show');
-//}
+function initGrid(){
+	//初始化表格
+	var url = "mc/core/instationmessage/instationMsgList";
+	grid = new G3.Grid("inEnvelopeList");
+	//设置过滤条件：草稿
+	var isDraftmsg = "y";
+	//设置过滤条件：消息
+	var messageType = "m";
+	//设置数据请求地址
+	grid.setAjaxUrl(url);
+	grid.setParameter("isDraftmsg", isDraftmsg);
+	grid.setParameter("messageType", messageType);
+	grid.setParameter("senderName", loginName);
+	grid.setParameter("senderId", loginId);
+	//初始化
+	grid.init();
+}
 
+/**
+*选择日期
+**
+*/
 function selectTime(obj){
 	$(obj).datetimepicker({format: 'yyyy-mm-dd',minView: "month"});
 }
@@ -166,6 +172,8 @@ function query() {
 	grid.setParameter("sendState", sendState);
 	grid.setParameter("receiverName", receiverName);
 	grid.setParameter("messageType", messageType);
+	grid.setParameter("senderName", loginName);
+	grid.setParameter("senderId", loginId);
 	grid.setParameter("sendTimeFrom",sendTimeFrom);
 	grid.setParameter("sendTimeTo",sendTimeTo);
 	grid.load();
@@ -178,19 +186,11 @@ function edit(){
 	var records = grid.getSelectedRow();
 	if (records.length == 1) {
 		var data = records[0];
-		var url = G3.cmdPath + "mc/core/instationmessage/editdraft";
+		var url = "command/mc/core/instationmessage/editdraft";
 		if (data.id != undefined && data.id != "" && data.id != "null") {
 			url += "?id=" + data.id;
 		}
-		
-		G3.showModalDialog("修改", url, {
-			width : 800,
-			height : 500
-		}, function(e, ret) {
-			if (ret == "1") {
-				grid.reload();
-			}
-		});
+		G3.forward(url);
 	} else {
 		G3.alert("提示", "请选择一条消息！");
 	}

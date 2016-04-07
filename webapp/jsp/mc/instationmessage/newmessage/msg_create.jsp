@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false"%>
-<%@page import="com.inspur.gcloud.bsp.BspUtil"%>
 <%@ taglib prefix="ui" uri="/tags/GCloud-UI"%>
+<%@ page import="com.inspur.gcloud.bsp.BspUtil"%>
 <%
 	//登录用户的用户名
 	String loginName = BspUtil.getInstance().getLoginUserName();
-	// 获取当前登录用户id
+	//获取当前登录用户id
 	String loginId = BspUtil.getInstance().getLoginUserOrganId();
 %>
 <html>

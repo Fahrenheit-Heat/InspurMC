@@ -1,26 +1,9 @@
 //上下文根
 var context = G3.webPath;
 
-$('#sendTimeFrom').datetimepicker({
-	minView: "month", //选择日期后，不会再跳转去选择时分秒 　　
-	format: "yyyy-mm-dd", //选择日期后，文本框显示的日期格式 　　
-	language: 'zh-CN', //汉化 　
-	autoclose:true //选择日期后自动关闭
-});
-
-/***
-*选择日期
-**/
-function selectCalendar(obj){
-    $(obj).prev().datetimepicker('show');
+function selectTime(obj){
+	$(obj).datetimepicker({format: 'yyyy-mm-dd',minView: "month"});
 }
-
-$('#sendTimeTo').datetimepicker({
-	minView: "month", //选择日期后，不会再跳转去选择时分秒 　　
-	format: "yyyy-mm-dd", //选择日期后，文本框显示的日期格式 　　
-	language: 'zh-CN', //汉化 　
-	autoclose:true //选择日期后自动关闭
-});
 
 /**
  * 页面初始化
@@ -34,6 +17,12 @@ $(function() {
 	$("#addBtn").bind("click", function () {
 		newMessage();
 	});
+	
+	// 删除
+	$("#delBtn").click(
+		function() {
+			del();
+		});
 	
 	//回复
 	$("#replyBtn").click(function (){
@@ -58,6 +47,7 @@ $(function() {
 	$("body").on("click", "#moreQueryBtn", query);
 	//重置
 	$("body").on("click", "#resetBtn", function(){
+		$("#messageTopic").val("");
 		$("#receiveState").val("");
 		$("#senderName").val("");
 		$("#sendTimeFrom").val("");
@@ -72,6 +62,26 @@ $(function() {
 		}
 		event.stopPropagation();
 	});
+	
+	/**
+	 * 开始日期
+	 */
+	$('#sendTimeFrom').datetimepicker({
+		minView: "month", //选择日期后，不会再跳转去选择时分秒
+		format: "yyyy-mm-dd", //选择日期后，文本框显示的日期格式 　　
+		language: 'zh-CN', //汉化 　
+		autoclose:true //选择日期后自动关闭
+	});
+
+	/**
+	 * 截止日期
+	 */
+	$('#sendTimeTo').datetimepicker({
+		minView: "month", //选择日期后，不会再跳转去选择时分秒 　　
+		format: "yyyy-mm-dd", //选择日期后，文本框显示的日期格式 　　
+		language: 'zh-CN', //汉化 　
+		autoclose:true //选择日期后自动关闭
+	});
 
 });
 
@@ -82,25 +92,26 @@ function initGrid(){
 	//初始化表格
 	var url = "mc/core/instationmessage/instationMsgList";
 	grid = new G3.Grid("instationMsgList");
+	//设置过滤条件：收件
+	var isInmsg = "y";
+	//设置过滤条件：消息
+	var messageType = "m";
 	//设置数据请求地址
 	grid.setAjaxUrl(url);
+	grid.setParameter("isInmsg", isInmsg);
+	grid.setParameter("messageType", messageType);
+	grid.setParameter("senderName", loginName);
+	grid.setParameter("senderId", loginId);
 	//初始化
 	grid.init();
 }
 
 /**
- * 新建消息
+ * 新建消息(跳转)
  */
 function newMessage(){
-	var url = G3.cmdPath + "/mc/core/instationmessage/newMessage";
-	G3.showModalDialog("新建消息", url, {
-		width : 800,
-		height : 500
-	}, function(e, ret) {
-		if (ret == "1") {
-			grid.reload();
-		}
-	});
+	//var url = G3.cmdPath + "mc/core/instationmessage/newMessage";
+	G3.forward("command/mc/core/instationmessage/newMessage");
 }
 
 /**
@@ -157,17 +168,62 @@ function forwardMessage(){
  * 查询数据
  */
 function query() {
-	var userId = $("#userId").val();
-	var userName = $("#userName").val();
-	var nickname = $("#nickname").val();
-	if (userId == undefined) {
-		userId = "";
+	var isInmsg = "y";
+	var messageType = "m";
+	var messageTopic = $("#messageTopic").val();
+	var receiveState = $("#receiveState").val();
+	var sendTimeFrom = $("#sendTimeFrom").val();
+	var sendTimeTo = $("#sendTimeTo").val();
+	if (messageTopic == undefined) {
+		messageTopic = "";
 	}
 	
-	var url = "/mc/core/instationmessage/";
+	var url = "mc/core/instationmessage/query";
 	grid.setAjaxUrl(url);
-	grid.setParameter("userId", userId);
-	grid.setParameter("userName", userName);
-	grid.setParameter("nickname", nickname);
+	grid.setParameter("messageTopic", messageTopic);
+	grid.setParameter("isInmsg", isInmsg);
+	grid.setParameter("messageType", messageType);
+	grid.setParameter("receiveState", receiveState);
+	grid.setParameter("senderName", loginName);
+	grid.setParameter("senderId", loginId);
+	grid.setParameter("sendTimeFrom", sendTimeFrom);
+	grid.setParameter("sendTimeTo", sendTimeTo);
 	grid.load();
+}
+
+function del(){
+	var records = grid.getSelectedRow();
+	if (records.length != 0) {
+		
+		var recordIds = [];
+		//循环遍历获取ID 
+		$.each(records, function(index, item){
+			recordIds.push(item.id);
+		});
+		//草稿箱类型
+		var boxType = "inbox";
+		
+		//删除警告框
+		G3.confirm("提示", "确认删除记录？",
+			function() {
+				var requestUrl = G3.cmdPath+"mc/core/instationmessage/delete/"+recordIds+"/type/"+boxType;
+				$.ajax({
+					type : "post",
+					dataType : "json",
+					url: requestUrl,
+					error:function(data){
+						G3.alert("提示","删除失败！");
+					},
+					success:function(data){
+						//弹框方式
+						G3.alert("提示","删除成功！",function(){
+							grid.reload();
+						},"success");
+					}
+				});
+			}
+		);
+	} else {
+		G3.alert("提示", "请选择用户！");
+	}
 }

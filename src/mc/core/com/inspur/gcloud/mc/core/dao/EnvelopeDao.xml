@@ -45,8 +45,17 @@
 			<if test="senderId != null and senderId != '' ">
 			 	and sender_id = '${senderId}'
 			</if>
-			<if test="sendState != null and sendState != '' ">
-				and send_state = '${sendState}'
+			<if test="senderName != null and senderName != '' ">
+				AND SENDER_NAME = '${senderName}'
+			</if>
+			<if test="isOutmsg != null and isOutmsg != '' ">
+				AND SEND_STATE = '1'
+			</if>
+			<if test="isInmsg != null and isInmsg != '' ">
+				AND (RECEIVE_STATE = '0' OR RECEIVE_STATE = '1')
+			</if>
+			<if test="isDraftmsg != null and isDraftmsg != '' ">
+				AND SEND_STATE = '0'
 			</if>
         </where>
         <if test="orderfield != null" >
@@ -95,14 +104,14 @@
 		from mc_envelope as e,mc_message as m
 		<where>
 			e.message_id=m.id
-			<if test="receiveState != null and receiveState!= '' ">
-			 	and e.receive_state like '%${receiveState}%'
-			</if>
 			<if test="senderId != null and senderId != '' ">
 			 	and e.sender_Id like '%${senderId}%'
 			</if>
 			<if test="receiverId != null and receiverId != '' ">
 			 	and e.receiver_Id like '%${receiverId}%'
+			</if>
+			<if test="senderName != null and senderName != '' ">
+			 	and e.sender_Name like '%${senderName}%'
 			</if>
 			<if test="receiverName != null and receiverName != '' ">
 			 	and e.receiver_Name like '%${receiverName}%'
@@ -111,10 +120,22 @@
 				and e.send_State like '%${sendState}%'
 			</if>
 			<if test="messageType != null and messageType != '' ">
-				and e.message_Type like '%${messageType}%'
+				and e.message_Type = '${messageType}'
 			</if>
 			<if test="messageTopic != null and messageTopic != '' ">
 				and m.message_topic like '%${messageTopic}%'
+			</if>
+			<if test="isInmsg != null and isInmsg != '' ">
+				and (e.receive_state = '0' or e.receive_state = '1')
+			</if>
+			<if test="isOutmsg != null and isOutmsg != '' ">
+				AND e.SEND_STATE = '1'
+			</if>
+			<if test="isDraftmsg != null and isDraftmsg != '' ">
+				AND e.SEND_STATE = '0'
+			</if>
+			<if test="receiveState != null and receiveState != '' ">
+				and e.receive_state = '${receiveState}'
 			</if>
 			<if test="sendTimeFrom != null and sendTimeFrom != '' 
 					and sendTimeTo != null and sendTimeTo != '' ">
@@ -130,11 +151,11 @@
 	<update id="changeState" parameterType="string">
 		update mc_envelope 
 		<set>
-			<if test="boxType = 'in' or boxType = 'draft'">
-				receive_state = '2'
-			</if>
-			<if test="boxType = 'out'">
+			<if test="boxType == 'draftbox'.toString() or boxType == 'outbox'.toString() ">
 				send_state = '2'
+			</if>
+			<if test="boxType == 'inbox'.toString() ">
+				receive_state = '2'
 			</if>
 		</set>
 		<where>

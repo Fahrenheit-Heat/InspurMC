@@ -1,11 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib prefix="ui" uri="/tags/GCloud-UI"%>
+<%@ page import="com.inspur.gcloud.bsp.BspUtil"%>
+<%
+	//登录用户的用户名
+	String loginName = BspUtil.getInstance().getLoginUserName();
+	//获取当前登录用户id
+	String loginId = BspUtil.getInstance().getLoginUserOrganId();
+%>
 <!DOCTYPE html>
 <html>
 <head>
 <title>草稿箱</title>
 <ui:ScriptManager hasList="true"></ui:ScriptManager>
+<script type="text/javascript">
+	var loginName = '<%=loginName%>';
+	var loginId = '<%=loginId%>';
+</script>
 </head>
 	<body>
 		<div class="container">
@@ -65,17 +76,18 @@
 				</td>
 			</tr>
 			<tr>
-				<td>
-					
-					<label>从</label>
-					<div class="input-group sameline">
-					     <input type="text" class="form-control"  id="sendTimeFrom" onclick="selectTime(this)"></input>
-						 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-					     </div>
-					<label>至</label>
-					<div class="input-group sameline">
-						 <input type="text" class="form-control"  id="sendTimeTo" onclick="selectTime(this)"></input>
-						 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+				<td class="fieldInput">
+					<label>开始于</label>
+					<div class="input-group" style="display:inline-table">
+					     <input type="text" class="form-control"  id="sendTimeFrom" data-bind="value:startTime" readOnly onclick="selectTime(this)" style="display:inline-table;width: 100%;"></input>
+						 <span class="input-group-addon "><i class="fa fa-calendar"></i></span>
+					</div>
+				</td>
+				<td class="fieldInput">
+					<label>结束于</label>
+					<div class="input-group" style="display:inline-table">
+						 <input type="text" class="form-control "  id="sendTimeTo" data-bind="value:sendTime" readOnly onclick="selectTime(this)" style="display:inline-table;width: 100%;"></input>
+						 <span class="input-group-addon "><i class="fa fa-calendar"></i></span>
 				    </div>
 
 				</td>
