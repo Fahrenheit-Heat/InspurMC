@@ -4,13 +4,19 @@
 
 <mapper namespace="com.inspur.gcloud.mc.core.dao.EnvelopeDao">
 
+	<select id="findEnvelopeListByMessageId" parameterType="string" resultType="com.inspur.gcloud.mc.core.data.Envelope">
+		SELECT ID, MESSAGE_ID, MESSAGE_TYPE, RELATED_MESSAGE_ID, RELATED_PATH, SENDER_ID, RECEIVER_ID, RECEIVE_STATE, SEND_STATE, IS_SCHEDULE, IS_READ_RECEIPT, HAS_RECEIPT, SEND_TYPE, RECEIVER_TYPE, SEND_LEVEL, SEND_TIME, READ_TIME, CREATE_TIME, UPDATE_TIME, REMARK, SENDER_NAME, RECEIVER_NAME
+		FROM MC_ENVELOPE 
+		WHERE MESSAGE_ID = #{messageId}
+	</select>
+
     <resultMap type="com.inspur.gcloud.mc.core.data.Envelope" id="envelopeResultMap">
     	<id property="id" column="id" />
         <collection property="message" column="message_id" select="com.inspur.gcloud.mc.core.dao.MessageDao.getMessageById" ></collection>
     </resultMap>
-	
+    
 	<!-- 通过databaseId指定数据库的类型 -->
-    <select id="findList" resultMap="envelopeResultMap" parameterType="map">
+     <select id="findList" resultMap="envelopeResultMap" parameterType="map">
         SELECT 
             id,
             message_id,
@@ -34,7 +40,7 @@
             create_time,
             update_time,
             remark
-        FROM mc_envelope  
+        FROM MC_ENVELOPE
         <where>
         	<if test="messageType != null and messageType != '' ">
 			 	message_type = '${messageType}'
@@ -48,16 +54,20 @@
 			<if test="senderName != null and senderName != '' ">
 				AND SENDER_NAME = '${senderName}'
 			</if>
-			<if test="isOutmsg != null and isOutmsg != '' ">
-				AND SEND_STATE = '1'
+			<if test="isSended != null and isSended != '' ">
+				AND SEND_STATE = '${isSended}'
 			</if>
-			<if test="isInmsg != null and isInmsg != '' ">
-				AND (RECEIVE_STATE = '0' OR RECEIVE_STATE = '1')
+			<if test="isRead != null and isRead != '' 
+				and isNotRead != null and isNotRead != '' ">
+				AND (RECEIVE_STATE = '${isRead}' OR RECEIVE_STATE = '${isNotRead}')
 			</if>
-			<if test="isDraftmsg != null and isDraftmsg != '' ">
-				AND SEND_STATE = '0'
+			<if test="isNotSended != null and isNotSended != '' ">
+				AND SEND_STATE = '${isNotSended}'
 			</if>
         </where>
+        <if test="groupfield != null">
+        	GROUP BY MESSAGE_ID
+        </if>
         <if test="orderfield != null" >
          order by 
         	<choose>    
@@ -125,23 +135,24 @@
 			<if test="messageTopic != null and messageTopic != '' ">
 				and m.message_topic like '%${messageTopic}%'
 			</if>
-			<if test="isInmsg != null and isInmsg != '' ">
-				and (e.receive_state = '0' or e.receive_state = '1')
+			<if test="isSended != null and isSended != '' ">
+				AND e.SEND_STATE = '${isSended}'
 			</if>
-			<if test="isOutmsg != null and isOutmsg != '' ">
-				AND e.SEND_STATE = '1'
+			<if test="isRead != null and isRead != '' 
+				and isNotRead != null and isNotRead != '' ">
+				AND (e.RECEIVE_STATE = '${isRead}' OR e.RECEIVE_STATE = '${isNotRead}')
 			</if>
-			<if test="isDraftmsg != null and isDraftmsg != '' ">
-				AND e.SEND_STATE = '0'
-			</if>
-			<if test="receiveState != null and receiveState != '' ">
-				and e.receive_state = '${receiveState}'
+			<if test="isNotSended != null and isNotSended != '' ">
+				AND e.SEND_STATE = '${isNotSended}'
 			</if>
 			<if test="sendTimeFrom != null and sendTimeFrom != '' 
 					and sendTimeTo != null and sendTimeTo != '' ">
 				and e.create_time between '${sendTimeFrom}' and '${sendTimeTo}'
 			</if>
-		</where>				
+		</where>
+		<if test="groupfield != null">
+        	GROUP BY MESSAGE_ID
+        </if>
 	</select>
 	
 	<select id="getMessageId" parameterType="string" resultType="string">

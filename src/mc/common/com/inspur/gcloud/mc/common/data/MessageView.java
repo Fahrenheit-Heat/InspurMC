@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class MessageView {
 	
-	//信封Id
+	//信封Id串
 	private String envelopeId;
 	
 	//消息Id
@@ -46,8 +46,14 @@ public class MessageView {
 	// 发送类型
 	private String sendType;
 	
-	//发送状态
+	// 发送状态
 	private String sendState;
+	
+	// 接收人类型
+	private String receiverType;
+	
+	// 接受状态
+	private String receiveState;
 	
 	// 消息级别
 	private String messageLevel;
@@ -89,8 +95,8 @@ public class MessageView {
 	
 	public List<String> getReceiverIdList() {
 		List<String> receiverIdList = new ArrayList<String>();
-		if(receiverId.indexOf(";") > -1){
-			String[] rId = receiverId.split(";");
+		if(receiverId.indexOf(",") > -1){
+			String[] rId = receiverId.split(",");
 			for(int i = 0; i < rId.length; i++){
 				receiverIdList.add(rId[i]);
 			}
@@ -110,8 +116,8 @@ public class MessageView {
 	
 	public List<String> getReceiverNameList() {
 		List<String> receiverNameList = new ArrayList<String>();
-		if(receiverName.indexOf(";") > -1){
-			String[] rName = receiverName.split(";");
+		if(receiverName.indexOf(",") > -1){
+			String[] rName = receiverName.split(",");
 			for(int i = 0; i < rName.length; i++){
 				receiverNameList.add(rName[i]);
 			}
@@ -145,6 +151,22 @@ public class MessageView {
 		this.sendType = sendType;
 	}
 
+	public String getReceiverType() {
+		return receiverType;
+	}
+
+	public void setReceiverType(String receiverType) {
+		this.receiverType = receiverType;
+	}
+
+	public String getReceiveState() {
+		return receiveState;
+	}
+
+	public void setReceiveState(String receiveState) {
+		this.receiveState = receiveState;
+	}
+
 	public String getMessageLevel() {
 		return messageLevel;
 	}
@@ -169,7 +191,21 @@ public class MessageView {
 		this.senderName = senderName;
 	}
 
-	public String getEnvelopeId() {
+	public List<String> getEnvelopeIdList() {
+		
+		List<String> envelopeIdList = new ArrayList<String>();
+		if(envelopeId.indexOf(",") > -1) {
+			String[] eId = envelopeId.split(",");
+			for(int i = 0; i < eId.length; i++) {
+				envelopeIdList.add(eId[i]);
+			}
+		} else {
+			envelopeIdList.add(envelopeId);
+		}
+		return envelopeIdList;
+	}
+	
+	public String getEnvelopeId(){
 		return envelopeId;
 	}
 

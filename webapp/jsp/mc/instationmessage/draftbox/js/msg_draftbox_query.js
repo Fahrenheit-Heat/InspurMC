@@ -8,7 +8,7 @@ $(function() {
 	initGrid();
 
 
-	// 增加
+	// 修改
 	$("#editBtn").bind("click", function () {
 		edit();
 	});
@@ -85,16 +85,19 @@ function initGrid(){
 	//初始化表格
 	var url = "mc/core/instationmessage/instationMsgList";
 	grid = new G3.Grid("inEnvelopeList");
-	//设置过滤条件：草稿
-	var isDraftmsg = "y";
+	//设置过滤条件：未发送
+	var isNotSended = "0";
+	//设置信封过滤：多条只显示一条
+	var groupfield = "y";
 	//设置过滤条件：消息
 	var messageType = "m";
 	//设置数据请求地址
 	grid.setAjaxUrl(url);
-	grid.setParameter("isDraftmsg", isDraftmsg);
 	grid.setParameter("messageType", messageType);
 	grid.setParameter("senderName", loginName);
 	grid.setParameter("senderId", loginId);
+	grid.setParameter("groupfield", groupfield);
+	grid.setParameter("isNotSended",isNotSended);
 	//初始化
 	grid.init();
 }
@@ -156,26 +159,27 @@ function query() {
 	var receiverName = $("#receiverName").val();
 	var sendTimeFrom = $("#sendTimeFrom").val();
 	var sendTimeTo = $("#sendTimeTo").val();
-	//设置过滤条件：草稿
-	if(sendState == undefined || sendState == ""){
-		var sendState = "0";
-	}
+	//设置过滤条件：未发送
+	var isNotSended = "0";
 	//设置过滤条件：消息
 	var messageType = "m";
 	if (messageTopic == undefined) {
 		messageTopic = "";
 	}
+	//设置信封过滤：多条只显示一条
+	var groupfield = "y";
 	
 	var url = "mc/core/instationmessage/query";
 	grid.setAjaxUrl(url);
 	grid.setParameter("messageTopic", messageTopic);
-	grid.setParameter("sendState", sendState);
+	grid.setParameter("isNotSended", isNotSended);
 	grid.setParameter("receiverName", receiverName);
 	grid.setParameter("messageType", messageType);
 	grid.setParameter("senderName", loginName);
 	grid.setParameter("senderId", loginId);
 	grid.setParameter("sendTimeFrom",sendTimeFrom);
 	grid.setParameter("sendTimeTo",sendTimeTo);
+	grid.setParameter("groupfield",groupfield);
 	grid.load();
 }
 
@@ -186,9 +190,9 @@ function edit(){
 	var records = grid.getSelectedRow();
 	if (records.length == 1) {
 		var data = records[0];
-		var url = "command/mc/core/instationmessage/editdraft";
-		if (data.id != undefined && data.id != "" && data.id != "null") {
-			url += "?id=" + data.id;
+		var url = "command/mc/core/instationmessage/edit";
+		if (data.message.id != undefined && data.message.id != "" && data.message.id != "null") {
+			url += "?messageId=" + data.message.id;
 		}
 		G3.forward(url);
 	} else {

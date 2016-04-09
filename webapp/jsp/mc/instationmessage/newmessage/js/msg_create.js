@@ -9,13 +9,12 @@ $(function() {
 	$("#senderId").val(loginId);
 	//设置编辑器内容
 	ue.ready(function(){
-		var content = document.getElementById("messageContent").value;
-		ue.setContent(content);
+		ue.setContent($("#messageContent").val());
 	});
 	
 	// 通讯录
 	$("#bookBtn").click(function(){
-		
+		addReceiver();
 		return false;
 	});
 	
@@ -30,6 +29,12 @@ $(function() {
 		sendCheck(ue)
 		return false;
 	});
+	
+	// 返回
+	$("#backBtn").click(function(){
+		goBack();
+		return false;
+	});
 });
 
 /**
@@ -42,7 +47,7 @@ function saveCheck(ue){
 			save(ue);
 		});
 	}else if(G3.isEmpty($("#messageTopic").val())){
-		G3.confirm("提示", "确定真的不填写主题吗？", function(){
+		G3.confirm("提示", "确定不填写主题吗？", function(){
 			save(ue);
 		});
 	}else{
@@ -67,14 +72,34 @@ function sendCheck(ue){
 }
 
 /**
+ * 通讯录通用帮助
+ */
+function addReceiver(){
+	var url = G3.frontStatic.bspUrl + "/jsp/public/help/help.jsp";
+	url += "?helpCode=bsp_contact";
+	G3.showModalDialog("站内通讯录", url, {width:900, height:500}, function(e,ret){
+		// 设置联系人
+		var returnValue = ret.split(";");
+		var organId;
+		var organName;
+		if(returnValue.length > 0){
+			organId = returnValue[0];
+			organName = returnValue[1]; 
+		}
+		$("#receiverId").val(organId);
+		$("#receiverName").val(organName);
+	});
+
+}
+
+/**
  * 保存方法
  * @param ue
  */
 function save(ue){
-	var requestUrl = context + "/mc/core/instationmessage/ajaxsave";
+	var requestUrl = context + "mc/core/instationmessage/ajaxsave";
 	$("#messageContent").val(ue.getContent());
 	$("#sendType").val("0");
-	$("#receiverId").val('1234');
 	$("#sendState").val("0");
 	//表单的异步提交
 	$("#form").ajaxSubmit({
@@ -86,12 +111,12 @@ function save(ue){
 		},
 		success:function(data){
 			//弹框方式
-			G3.alert("提示","保存成功",function(){
+			G3.alert("提示","保存成功,请在草稿箱中查看",function(){
 				G3.closeModalDialog("1");
+				goBack();
 			},"success");
 		}
 	});
-	
 }
 
 /**
@@ -101,6 +126,8 @@ function save(ue){
 function send(ue){
 	$("#messageContent").val(ue.getContent());
 	$("#sendType").val("1");
+	$("#sendState").val("0");
+	$("#receiveState").val("0");
 	var requestUrl = context + "/mc/core/instationmessage/send";
 	//表单的异步提交
 	$("#form").ajaxSubmit({
@@ -114,14 +141,16 @@ function send(ue){
 			//弹框方式
 			G3.alert("提示","发送成功",function(){
 				G3.closeModalDialog("1");
+				goBack();
 			},"success");
 		}
 	});
 }
 
 /**
- * 通讯录方法
+ * 返回方法
  */
-function book(){
-	
+function goBack(){
+	var url = G3.cmdPath + "mc/core/instationmessage/forward";
+	window.location = url;
 }

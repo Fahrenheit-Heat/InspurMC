@@ -5,9 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.inspur.gcloud.mc.common.data.MessageObject;
 import com.inspur.gcloud.mc.core.dao.EnvelopeDao;
@@ -22,11 +25,18 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	
 	@Autowired
 	private EnvelopeDao envelopeDao;
-	
 	@Autowired
 	private MessageDao messageDao;
 	
+	@Resource(name = "transactionTemplate")
+	private TransactionTemplate transactionTemplate;
+	
 	private MessageObject messageObject;
+	
+	@Override
+	public List<Envelope> findEnvelopeListByMessageId(String messageId) {
+		return envelopeDao.findEnvelopeListByMessageId(messageId);
+	}
 
 	@Override
 	public List<Envelope> findList(Map parameters) {
@@ -47,60 +57,77 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	public Message findMessage(String id) {
 		return messageDao.get(id);
 	}
-
-	@Override
+	// 单条保存！！！！======需要修改===========
+	@Transactional
 	public int saveEnvelope(Envelope envelope, String messageId) {
 		int count = 0;
 		if (envelope.getId() != null && !envelope.getId().equals("")) {
             // 更新信封信息
         	count = envelopeDao.update(envelope);
-        	//更新消息信息
-        	envelope.getMessage().setId(messageId);
-        	messageDao.update(envelope.getMessage());
         } else {
             // 保存信封信息
         	envelope.setId(GCloudUtil.getInstance().getNextSeqId(32));
         	envelope.setMessageId(messageId);
         	count = envelopeDao.insert(envelope);
-        	// 保存消息信息
-        	envelope.getMessage().setId(messageId);
-        	messageDao.insert(envelope.getMessage());
         }
         return count;
 	}
-
-	@Override
+	
+	@Transactional
 	public void delete(Map map) {
 
 		List<Envelope> envelopeList = (List<Envelope>) map.get("envelopeList");
-		for(int i = 0;i < envelopeList.size();i++){
+		for(int i = 0; i < envelopeList.size(); i++) {
 			Map changeMap = new HashMap();
 			changeMap.put("id", envelopeList.get(i).getId());
 			changeMap.put("boxType", map.get("boxType"));
 			envelopeDao.changeState(changeMap);
 		}
 	}
+	
+	//物理删除：用于批量更新前删除
+	@Transactional
+	public void physicalDelete(List<Envelope> envelopeList, String messageId) {
+		//删除消息
+		messageDao.delete(messageId);
+		//删除信封
+		String[] envelopeIds = new String[envelopeList.size()];
+		for (int i = 0; i < envelopeList.size(); i++) {
+			envelopeIds[i] = envelopeList.get(i).getId();
+		}
+		envelopeDao.batchDelete(envelopeIds);
+	}
+	
 	//插入新信封
-	@Override
-	public int batchSaveEnvelope(List<Envelope> envelopeList, String messageId) {
+	@Transactional
+	public Boolean batchInsertEnvelope(List<Envelope> envelopeList, Message message) {
 		List<Envelope> newEnvelopeList = new ArrayList<Envelope>();
+		message.setId(GCloudUtil.getInstance().getNextSeqId(32));
 		for(int i = 0; i < envelopeList.size(); i++){
 			Envelope envelope = envelopeList.get(i);
 			envelope.setId(GCloudUtil.getInstance().getNextSeqId(32));
-			envelope.setMessageId(messageId);
+			envelope.setMessageId(message.getId());
+			envelope.setMessage(message);
 			newEnvelopeList.add(envelope);
 		}
-		return envelopeDao.batchInsert(newEnvelopeList);
+		messageDao.insert(message);
+		envelopeDao.batchInsert(newEnvelopeList);
+		return true;
 	}
+	
 	//更新原有信封
-	public int batchUpdateEnvelope(List<Envelope> envelopeList, String messageId){
+	@Transactional
+	public Boolean batchUpdateEnvelope(List<Envelope> envelopeList, String messageId){
 		List<Envelope> newEnvelopeList = new ArrayList<Envelope>();
 		for(int i = 0; i < envelopeList.size(); i++){
 			Envelope envelope = envelopeList.get(i);
 			envelope.setMessageId(messageId);
+			envelope.setMessage(messageDao.get(messageId));
 			newEnvelopeList.add(envelope);
 		}
-		return envelopeDao.batchUpdate(newEnvelopeList);
+		messageDao.update(messageDao.getMessageById(messageId));
+		envelopeDao.batchUpdate(newEnvelopeList);
+		return true;
 	}
 
 	@Override
@@ -114,7 +141,5 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 		messageObject.setMessage(messageDao.getMessageById(messageId));
 		return messageObject;
 	}
-
-
 
 }

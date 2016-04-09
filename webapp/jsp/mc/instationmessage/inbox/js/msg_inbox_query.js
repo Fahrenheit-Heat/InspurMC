@@ -14,15 +14,9 @@ $(function() {
 	initGrid();
 
 	// 增加按钮事件
-	$("#addBtn").bind("click", function () {
+	$("#addBtn").click("click", function () {
 		newMessage();
 	});
-	
-	// 删除
-	$("#delBtn").click(
-		function() {
-			del();
-		});
 	
 	//回复
 	$("#replyBtn").click(function (){
@@ -45,6 +39,7 @@ $(function() {
 
 	// 更多查询
 	$("body").on("click", "#moreQueryBtn", query);
+	
 	//重置
 	$("body").on("click", "#resetBtn", function(){
 		$("#messageTopic").val("");
@@ -92,16 +87,17 @@ function initGrid(){
 	//初始化表格
 	var url = "mc/core/instationmessage/instationMsgList";
 	grid = new G3.Grid("instationMsgList");
-	//设置过滤条件：收件
-	var isInmsg = "y";
+	//设置过滤条件：未读和已读
+	var isNotRead = "0";
+	var isRead = "1";
 	//设置过滤条件：消息
 	var messageType = "m";
 	//设置数据请求地址
 	grid.setAjaxUrl(url);
-	grid.setParameter("isInmsg", isInmsg);
 	grid.setParameter("messageType", messageType);
-	grid.setParameter("senderName", loginName);
-	grid.setParameter("senderId", loginId);
+	grid.setParameter("receiverId", loginId);
+	grid.setParameter("isNotRead", isNotRead);
+	grid.setParameter("isRead", isRead);
 	//初始化
 	grid.init();
 }
@@ -110,8 +106,8 @@ function initGrid(){
  * 新建消息(跳转)
  */
 function newMessage(){
-	//var url = G3.cmdPath + "mc/core/instationmessage/newMessage";
-	G3.forward("command/mc/core/instationmessage/newMessage");
+	var url = G3.cmdPath + "mc/core/instationmessage/newMessage";
+	window.location = url;
 }
 
 /**
@@ -122,10 +118,9 @@ function replayMessage(){
 	if (records.length == 1) {
 		var data = records[0];
 		var url = G3.cmdPath + "/mc/core/instationmessage/replayMessage";
-		if (data.id != undefined && data.id != "" && data.id != "null") {
-			url += "?id=" + data.id;
+		if (data.message.id != undefined && data.message.id != "" && data.message.id != "null") {
+			url += "?messageId=" + data.message.id;
 		}
-		
 		G3.showModalDialog("回复消息", url, {
 			width : 800,
 			height : 500
@@ -147,8 +142,8 @@ function forwardMessage(){
 	if (records.length == 1) {
 		var data = records[0];
 		var url = G3.cmdPath + "/mc/core/instationmessage/forwardMessage";
-		if (data.id != undefined && data.id != "" && data.id != "null") {
-			url += "?id=" + data.id;
+		if (data.message.id != undefined && data.message.id != "" && data.message.id != "null") {
+			url += "?messageId=" + data.message.id;
 		}
 		
 		G3.showModalDialog("转发消息", url, {
@@ -160,7 +155,7 @@ function forwardMessage(){
 			}
 		});
 	} else {
-		G3.alert("提示", "请选择要回复的邮件！");
+		G3.alert("提示", "请选择要转发的邮件！");
 	}
 }
 
@@ -168,10 +163,14 @@ function forwardMessage(){
  * 查询数据
  */
 function query() {
-	var isInmsg = "y";
+	//设置过滤条件：未读和已读
+	var isNotRead = "0";
+	var isRead = "1";
+	//设置过滤条件：消息
 	var messageType = "m";
 	var messageTopic = $("#messageTopic").val();
 	var receiveState = $("#receiveState").val();
+	var senderName = $("#senderName").val();
 	var sendTimeFrom = $("#sendTimeFrom").val();
 	var sendTimeTo = $("#sendTimeTo").val();
 	if (messageTopic == undefined) {
@@ -181,49 +180,12 @@ function query() {
 	var url = "mc/core/instationmessage/query";
 	grid.setAjaxUrl(url);
 	grid.setParameter("messageTopic", messageTopic);
-	grid.setParameter("isInmsg", isInmsg);
+	grid.setParameter("isNotRead", isNotRead);
+	grid.setParameter("isRead", isRead);
 	grid.setParameter("messageType", messageType);
 	grid.setParameter("receiveState", receiveState);
-	grid.setParameter("senderName", loginName);
-	grid.setParameter("senderId", loginId);
+	grid.setParameter("senderName", senderName);
 	grid.setParameter("sendTimeFrom", sendTimeFrom);
 	grid.setParameter("sendTimeTo", sendTimeTo);
 	grid.load();
-}
-
-function del(){
-	var records = grid.getSelectedRow();
-	if (records.length != 0) {
-		
-		var recordIds = [];
-		//循环遍历获取ID 
-		$.each(records, function(index, item){
-			recordIds.push(item.id);
-		});
-		//草稿箱类型
-		var boxType = "inbox";
-		
-		//删除警告框
-		G3.confirm("提示", "确认删除记录？",
-			function() {
-				var requestUrl = G3.cmdPath+"mc/core/instationmessage/delete/"+recordIds+"/type/"+boxType;
-				$.ajax({
-					type : "post",
-					dataType : "json",
-					url: requestUrl,
-					error:function(data){
-						G3.alert("提示","删除失败！");
-					},
-					success:function(data){
-						//弹框方式
-						G3.alert("提示","删除成功！",function(){
-							grid.reload();
-						},"success");
-					}
-				});
-			}
-		);
-	} else {
-		G3.alert("提示", "请选择用户！");
-	}
 }

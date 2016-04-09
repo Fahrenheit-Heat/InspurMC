@@ -1,20 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib prefix="ui" uri="/tags/GCloud-UI"%>
-<%@ page import="com.inspur.gcloud.bsp.BspUtil" %>
-<!DOCTYPE html>
+<%@page import="com.inspur.gcloud.bsp.BspUtil"%>
 <%
-	//登录用户的用户名
-	String loginName = BspUtil.getInstance().getLoginUserName();
-	//获取当前登录用户id
+	// 获取当前登录用户id
 	String loginId = BspUtil.getInstance().getLoginUserOrganId();
 %>
+<!DOCTYPE html>
 <html>
 <head>
 <title>收件箱</title>
 <ui:ScriptManager hasList="true"></ui:ScriptManager>
 <script type="text/javascript">
-	var loginName = '<%=loginName%>';
 	var loginId = '<%=loginId%>';
 </script>
 </head>

@@ -22,13 +22,13 @@
         <filter-name>SSOFilter</filter-name>
         <filter-class>com.inspur.gcloud.bsp.SSOFilter</filter-class>
     </filter>
-<!-- Session会话整合过滤器 -->
+	<!-- Session会话整合过滤器 -->
 	<filter>
         <filter-name>SessionIntegrationFilter</filter-name>
         <filter-class>org.loushang.bsp.security.AgentSessionIntegrationFilter</filter-class>
     </filter>
     
-<!--     权限认证过滤器 -->
+    <!-- 权限认证过滤器 -->
     <filter>
         <filter-name>AuthzFilter</filter-name>
 	    <filter-class>org.loushang.bsp.security.AgentAuthzFilter</filter-class>
@@ -61,9 +61,9 @@
         <filter-name>AuthzFilter</filter-name>
         <url-pattern>/command/ajax/*</url-pattern>
     </filter-mapping>
-<!--     后端管理  结束 -->
+    <!-- 后端管理  结束-->
 	
-<!-- Spring字符编码过滤器配置，处理中文乱码 -->
+	<!-- Spring字符编码过滤器配置，处理中文乱码 -->
 	<filter>
 		<filter-name>characterEncodingFilter</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

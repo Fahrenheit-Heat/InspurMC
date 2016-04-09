@@ -20,8 +20,8 @@ public interface IEnvelopeService {
 	
 	public MessageObject makeUpMessageObject(Envelope envelope,String messageId);
 	
-	 // ////////////////////////////////查询//////////////////////////////////
-
+	public List<Envelope> findEnvelopeListByMessageId(String messageId);
+	
 	 /**
      * 查询当前用户的收件箱、已发送、草稿箱列表
      * 
@@ -96,14 +96,14 @@ public interface IEnvelopeService {
      * @param messageId 消息Id
      * @return 
      */
-    public int batchSaveEnvelope(List<Envelope> envelopeList, String messageId);
+    public Boolean batchInsertEnvelope(List<Envelope> envelopeList, Message message);
     
-    public int batchUpdateEnvelope(List<Envelope> envelopeList, String messageId);
+    public Boolean batchUpdateEnvelope(List<Envelope> envelopeList, String messageId);
 
     // ////////////////////////////////删除//////////////////////////////////
 
     /**
-     * 根据ID删除信封
+     * 根据ID删除信封，逻辑删除
      * 
      * @param id [ID主键]
      * 
@@ -111,11 +111,11 @@ public interface IEnvelopeService {
     public void delete(Map map);
 
     /**
-     * 根据ID批量删除信封
+     * 根据ID批量删除信封，物理删除，更新时使用
      * 
      * @param ids [ID主键数组]
      * 
      */
-   // public void delete(String[] ids);
+    public void physicalDelete(List<Envelope> envelopeList, String messageId);
 
 }

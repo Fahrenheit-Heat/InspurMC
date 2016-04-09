@@ -35,14 +35,14 @@ List<Message> getByParams(Map map);
 //////////// 删除   ///////////////////////////
 
 /**
-* 删除已发送的消息
+* 删除消息
 * 
 * @param map, key 分别为 ： 
 *              <code>id<code>[信封ID]
 *              <code>boxType<code>[邮箱类型：in：收件箱；out:已发送；draft:草稿箱]
 * 
 */
-void delete(Map map);
+//void delete(Map map);
 
 Message getMessageById(String id);
 

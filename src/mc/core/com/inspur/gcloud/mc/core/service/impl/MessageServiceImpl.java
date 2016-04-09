@@ -30,7 +30,7 @@ public class MessageServiceImpl implements IMessageService {
      * 
      */
 	 @Transactional
-    public String saveMessage(Message message) {
+    public String insertMessage(Message message) {
         // 保存消息信息
     	String id = GCloudUtil.getInstance().getNextSeqId(32);
     	message.setId(id);

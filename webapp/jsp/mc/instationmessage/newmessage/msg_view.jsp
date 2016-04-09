@@ -2,20 +2,11 @@
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <%@page import="com.inspur.gcloud.bsp.BspUtil"%>
 <%@ taglib prefix="ui" uri="/tags/GCloud-UI"%>
-<%
-	//登录用户的用户名
-	String loginName = BspUtil.getInstance().getLoginUserName();
-	// 获取当前登录用户id
-	String loginId = BspUtil.getInstance().getLoginUserOrganId();
-%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>新建消息</title>
+<title>查看消息</title>
 <ui:ScriptManager></ui:ScriptManager>
-<script type="text/javascript">
-	var loginName = '<%=loginName%>';
-	var loginId = '<%=loginId%>';
-</script>
 </head>
 <body>
 <div class="container">
@@ -56,7 +47,6 @@
 									<input type="text" class="form-control" id="senderName" name="senderName" value="${messageView.senderName}" readOnly />
 								</div>
 							</div>
-							
 							<div class="form-hr">
 								<div class="fieldLabel">
 									<em>*</em><i class="fa fa-user"></i>收件人：
@@ -67,7 +57,6 @@
 										value="${messageView.receiverName}" placeholder="收件人" />
 								</div>
 							</div>
-							
 							<div class="form-hr">
 								<div class="fieldLabel">
 									<i class="fa fa-pencil-square-o"></i>主&nbsp;&nbsp;&nbsp;&nbsp;题：
@@ -77,7 +66,9 @@
 										value="${messageView.messageTopic}" placeholder="主题" />
 								</div>
 							</div>
-							<div id="editor" style="width:100%; height:120px;"></div>
+							<div>
+								<span id="messageShow"></span>
+							</div>
 						</div>
 					</div>
 				</form>
@@ -85,12 +76,6 @@
 		</div>
 	</div> 
 </div>
-<!-- 配置文件 -->
-<script type="text/javascript" src="<ui:context/>skins/common/plugin/ueditor/ueditor.config.js"></script>
-<!-- 编辑器源码文件 -->
-<script type="text/javascript" src="<ui:context/>skins/common/plugin/ueditor/ueditor.all.js"></script>
-<!-- 编辑器配置 -->
-<script type="text/javascript" src="<ui:context/>jsp/mc/common/js/common_ue_settings.js"></script>
-<script type="text/javascript" src="<ui:context/>jsp/mc/instationmessage/newmessage/js/msg_create.js"></script>
+<script type="text/javascript" src="<ui:context/>jsp/mc/instationmessage/newmessage/js/msg_view.js"></script>
 </body>
 </html>

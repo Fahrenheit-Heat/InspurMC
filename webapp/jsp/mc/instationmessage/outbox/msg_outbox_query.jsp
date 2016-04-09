@@ -34,11 +34,8 @@
 						<a class="btn btn-moresearch" id="moresearch"><i
 							class="fa fa-angle-double-down"></i>更多查询</a>
 						<div class="pull-right">
-							<button class="btn btn-primary" type="button" id="addBtn">
-								<i class="fa fa-plus fa-fw"></i>新建邮件
-							</button>
-							<button class="btn btn-primary" type="button" id="forwardBtn">
-								<i class="fa fa-share "></i>转发
+							<button class="btn btn-primary" type="button" id="editBtn">
+								<i class="fa fa-edit fa-fw"></i>编辑
 							</button>
 							<button class="btn btn-danger" type="button" id="delBtn">
 								<i class="fa fa-trash-o fa-fw"></i>删除
