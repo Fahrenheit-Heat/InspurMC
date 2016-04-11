@@ -1,6 +1,5 @@
 eclipse.preferences.version=1
 encoding//src/resource/security.properties=UTF-8
 encoding//src/resource/service.properties=UTF-8
-encoding//webapp/jsp/mc/instationmessage/scrapbox/msg_scrapbox_query.jsp=UTF-8
 encoding//webapp/sql/oracle/0_mc/INIT/0_Create/0_mc.sql=UTF-8
 encoding/<project>=UTF-8

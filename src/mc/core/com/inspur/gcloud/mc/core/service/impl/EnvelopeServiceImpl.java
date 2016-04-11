@@ -37,6 +37,11 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	public List<Envelope> findEnvelopeListByMessageId(String messageId) {
 		return envelopeDao.findEnvelopeListByMessageId(messageId);
 	}
+	
+	@Override
+	public Envelope findEnvelopeByMessageIdAndLoginId(String messageId, String loginId) {
+		return envelopeDao.findEnvelopeByMessageIdAndLoginId(messageId, loginId);
+	}
 
 	@Override
 	public List<Envelope> findList(Map parameters) {
@@ -141,5 +146,7 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 		messageObject.setMessage(messageDao.getMessageById(messageId));
 		return messageObject;
 	}
+
+
 
 }

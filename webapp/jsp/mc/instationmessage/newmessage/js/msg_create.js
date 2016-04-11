@@ -4,7 +4,7 @@ var context = G3.cmdPath;
 $(function() {
 	
 	// 初始化UE编辑器
-	var ue = initUESettings("editor", "");
+	var ue = initUESettings("editor", "edit");
 	$("#senderName").val(loginName);
 	$("#senderId").val(loginId);
 	//设置编辑器内容

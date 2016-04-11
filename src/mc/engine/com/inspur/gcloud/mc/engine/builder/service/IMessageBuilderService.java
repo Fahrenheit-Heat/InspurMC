@@ -10,8 +10,10 @@ public interface IMessageBuilderService {
 	
 	public MessageView builderMessage(Message message, List<Envelope> envelopeList);
 	
-	public MessageView builderReplyMessage(Message message, List<Envelope> envelopeList);
+	public MessageView builderViewMessage(Message message, Envelope envelope);
 	
-	public MessageView builderForwardMessage(Message message, List<Envelope> envelopeList);
+	public MessageView builderReplyMessage(Message message, Envelope envelope);
+	
+	public MessageView builderForwardMessage(Message message, Envelope envelope);
 
 }

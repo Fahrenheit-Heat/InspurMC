@@ -160,6 +160,15 @@ function forwardMessage(){
 }
 
 /**
+* 渲染主题连接方法
+*/
+function messageShowLink(data, type, full){
+	var messageId = full.message.id;
+	var url = G3.cmdPath + "mc/core/instationmessage/showMessage?messageId="+messageId+"&type=view";
+	return '<a href='+url+'>'+data+'</a>';
+}
+
+/**
  * 查询数据
  */
 function query() {
@@ -188,4 +197,24 @@ function query() {
 	grid.setParameter("sendTimeFrom", sendTimeFrom);
 	grid.setParameter("sendTimeTo", sendTimeTo);
 	grid.load();
+}
+
+/**
+ * 渲染envelope状态
+ * @param data
+ * @param type
+ * @param full
+ * @returns {String}
+ */
+function RenderState(data, type, full) {
+	if (data != "" || data != null) {
+		if (data == "0") {
+			data = "未读";
+		} else if(data == "1") {
+			data = "已读";
+		} else {
+			data = "";
+		}
+	}
+	return data;
 }

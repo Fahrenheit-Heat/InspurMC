@@ -54,7 +54,7 @@ public class MessageBuilderServiceImpl implements IMessageBuilderService {
 	}
 
 	@Override
-	public MessageView builderReplyMessage(Message message, List<Envelope> envelopeList) {
+	public MessageView builderReplyMessage(Message message, Envelope envelope) {
 		
 		MessageView messageView = new MessageView();
 		messageView.setMessageId(message.getId());
@@ -64,10 +64,10 @@ public class MessageBuilderServiceImpl implements IMessageBuilderService {
 		messageView.setMessageTopic("回复：" + messageTopic);
 		
 		// 构建消息内容
-		String senderName = envelopeList.get(0).getSenderName();
-		String senderId = envelopeList.get(0).getSenderId();
+		String senderName = envelope.getSenderName();
+		String senderId = envelope.getSenderId();
 		String messageContent = message.getMessageContent();
-		Date createTime = envelopeList.get(0).getCreateTime();
+		Date createTime = envelope.getCreateTime();
 		SimpleDateFormat sdf =   new SimpleDateFormat( " yyyy-MM-dd HH:mm:ss " );
 		String sendTime = sdf.format(createTime);
 		messageContent = "<br/><br/><hr>发件人："+senderName+"<br/>发送时间："+sendTime+"<br/>主题："+messageTopic+"<br/>" + messageContent;
@@ -81,7 +81,7 @@ public class MessageBuilderServiceImpl implements IMessageBuilderService {
 	}
 
 	@Override
-	public MessageView builderForwardMessage(Message message, List<Envelope> envelopeList) {
+	public MessageView builderForwardMessage(Message message, Envelope envelope) {
 		MessageView messageView = new MessageView();
 		messageView.setMessageId(message.getId());
 		
@@ -90,14 +90,39 @@ public class MessageBuilderServiceImpl implements IMessageBuilderService {
 		messageView.setMessageTopic("转发：" + messageTopic);
 		
 		// 构建消息内容
-		String senderName = envelopeList.get(0).getSenderName();
+		String senderName = envelope.getSenderName();
 		String messageContent = message.getMessageContent();
-		Date createTime = envelopeList.get(0).getCreateTime();
+		Date createTime = envelope.getCreateTime();
 		SimpleDateFormat sdf =   new SimpleDateFormat( " yyyy-MM-dd HH:mm:ss " );
 		String sendTime = sdf.format(createTime);
 		messageContent = "<br/><br/><hr>发件人："+senderName+"<br/>发送时间："+sendTime+"<br/>主题："+messageTopic+"<br/>" + messageContent;
 		messageView.setMessageContent(messageContent);
 		
+		return messageView;
+	}
+	@Override
+	public MessageView builderViewMessage(Message message, Envelope envelope) {
+		MessageView messageView = new MessageView();
+		// 构建信封信息
+		messageView.setEnvelopeId(envelope.getId());
+		messageView.setMessageId(message.getId());
+		
+		// 构建消息主题
+		messageView.setMessageTopic(message.getMessageTopic());
+		
+		// 构建消息内容
+		messageView.setMessageType(envelope.getMessageType());
+		messageView.setSenderId(envelope.getSenderId());
+		messageView.setSenderName(envelope.getSenderName());
+		messageView.setReceiverId(envelope.getReceiverId());
+		messageView.setReceiverName(envelope.getReceiverName());
+		messageView.setIsSchedule(envelope.getIsSchedule());
+		messageView.setIsReadReceipt(envelope.getIsReadReceipt());
+		messageView.setSendType(envelope.getSendType());
+		messageView.setSendState(envelope.getSendState());
+		messageView.setMessageLevel(message.getMessageLevel());
+		messageView.setMessageContent(message.getMessageContent());
+
 		return messageView;
 	}
 

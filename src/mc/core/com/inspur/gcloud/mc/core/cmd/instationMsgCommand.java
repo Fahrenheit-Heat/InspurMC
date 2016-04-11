@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.inspur.gcloud.mc.common.McConstants;
 import com.inspur.gcloud.mc.common.data.MessageObject;
 import com.inspur.gcloud.mc.common.data.MessageView;
 import com.inspur.gcloud.mc.common.data.ResultMap;
@@ -49,9 +50,28 @@ public class instationMsgCommand {
 	@Autowired
 	private IMessageBuilderService messageBuilderService;
 	
-	@RequestMapping("/forward")
-	public String forwardInstationMsgList(){
-		return "mc/instationmessage/inbox/msg_inbox_query";
+	/**
+	 * 返回按钮页面跳转方法
+	 * @param forwardType 跳转类型：
+	 * 	             <code>收件箱：instationMsgIn</code>
+	 * 				 <code>发件箱：instationMsgOut</code>
+	 *  			 <code>草稿箱：instationMsgDraft</code>
+	 *     			 <code>废件箱：instationMsgScrap</code>
+	 * @return Url
+	 */
+	@RequestMapping("/forward/{forwardType}")
+	public String forwardInstationMsgList(@PathVariable(value = "forwardType") String forwardType){
+		if(McConstants.INSTATIONMSG_IN_BOX.equals(forwardType)){
+			return "mc/instationmessage/inbox/msg_inbox_query";
+		}else if(McConstants.INSTATIONMSG_OUT_BOX.equals(forwardType)){
+			return "mc/instationmessage/inbox/msg_outbox_query";
+		}else if(McConstants.INSTATIONMSG_DRAFT_BOX.equals(forwardType)){
+			return "mc/instationmessage/inbox/msg_draftbox_query";
+		}else if(McConstants.INSTATIONMSG_SCRAP_BOX.equals(forwardType)){
+			return "mc/instationmessage/inbox/msg_scrapbox_query";
+		}else{
+			return "";
+		}
 	}
 	
 	@RequestMapping("/instationMsgList")
@@ -119,16 +139,16 @@ public class instationMsgCommand {
         return new ModelAndView("mc/instationmessage/newmessage/msg_create", model);
     }
     
-    
     @RequestMapping("/replayMessage")
-    public ModelAndView replayMessage(@RequestParam(value = "messageId", required = false) String messageId){
+    public ModelAndView replayMessage(@RequestParam(value = "messageId", required = false) String messageId,
+    		@RequestParam(value="loginId", required = false) String loginId){
     	MessageView messageView = new MessageView();
     	if(messageId != null && !"".equals(messageId)){
     		Map<String, Object> paramterMap = new HashMap<String, Object>();
     		paramterMap.put("messageId", messageId);
-    		List<Envelope> envelopeList = envelopeService.findEnvelopeListByMessageId(messageId);
+    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(messageId, loginId);
     		Message message = messageService.findMessageById(messageId);
-    		messageView = messageBuilderService.builderReplyMessage(message, envelopeList);
+    		messageView = messageBuilderService.builderReplyMessage(message, envelope);
     	}
     	Map<String, Object> model = new HashMap<String, Object>();
     	model.put("messageView", messageView);
@@ -136,21 +156,77 @@ public class instationMsgCommand {
     }
     
     @RequestMapping("/forwardMessage")
-    public ModelAndView forwardMessage(@RequestParam(value = "messageId", required = true) String messageId){
+    public ModelAndView forwardMessage(@RequestParam(value = "messageId", required = true) String messageId,
+    		@RequestParam(value="loginId", required = false) String loginId){
     	MessageView messageView = new MessageView();
     	if(messageId != null && !"".equals(messageId)){
     		Map<String, Object> paramterMap = new HashMap<String, Object>();
     		paramterMap.put("messageId", messageId);
-    		List<Envelope> envelopeList = envelopeService.findEnvelopeListByMessageId(messageId);
+    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(messageId, loginId);
     		Message message = messageService.findMessageById(messageId);
-    		messageView = messageBuilderService.builderForwardMessage(message, envelopeList);
+    		messageView = messageBuilderService.builderForwardMessage(message, envelope);
     	}
     	Map<String, Object> model = new HashMap<String, Object>();
     	model.put("messageView", messageView);
     	return new ModelAndView("mc/instationmessage/newmessage/msg_create", model);
     }
-	
-	
+    
+    /**
+     * 查看消息加载数据方法
+     * @param messageId 消息ID
+     * @param loginId 登录人ID
+     * @return MessageView {Object}
+     */
+    @RequestMapping(value = "/viewMessage/{messageId}/{loginId}", method = RequestMethod.POST)
+    @ResponseBody
+    public MessageView viewMessage(@PathVariable("messageId") String messageId, 
+    		@PathVariable("loginId") String loginId){
+    	MessageView messageView = new MessageView();
+    	if(messageId != null && !"".equals(messageId)){
+    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(messageId, loginId);
+    		Message message = messageService.findMessageById(messageId);
+    		messageView = messageBuilderService.builderViewMessage(message, envelope);
+    	}
+    	return messageView;
+    }
+
+    /**
+     * 展示消息内容方法
+     * <p>用途：编辑/查看/转发等操作时，控制页面跳转</p>
+     * @param messageId 消息ID
+     * @param type 类型：
+     * 				 <code>edit：编辑</code>
+     * 				 <code>forward：转发</code>
+     * 				 <code>reply：回复</code>
+     * 				 <code>view：查看</code>
+     * @return ModelAndView
+     */
+    @RequestMapping("/showMessage")
+    public ModelAndView showMessage(@RequestParam(value = "messageId", required = true) String messageId, 
+    		@RequestParam(value = "type", required = true) String type){
+    	
+    	Map<String, Object> model = new HashMap<String, Object>();
+    	model.put("messageId", messageId);
+    	
+    	if(McConstants.OPER_CODE_EDIT.equals(type)){
+    		// 编辑
+    		model.put("type", type);
+    		return new ModelAndView("mc/instationmessage/newmessage/msg_create", model);
+    	}else if(McConstants.OPER_CODE_FORWARD.equals(type)){
+    		// 转发
+    		model.put("type", type);
+    		return new ModelAndView("mc/instationmessage/newmessage/msg_create", model);
+    	}else if(McConstants.OPER_CODE_REPLY.equals(type)){
+    		// 回复
+    		model.put("type", type);
+    		return new ModelAndView("mc/instationmessage/newmessage/msg_create", model);
+    	}else if(McConstants.OPER_CODE_VIEW.equals(type)){
+    		// 查看
+    		return new ModelAndView("mc/instationmessage/newmessage/msg_view", model);
+    	}else{
+    		return new ModelAndView("", model);
+    	}
+    }
     
     /**
      * 新增、修改用户的保存操作

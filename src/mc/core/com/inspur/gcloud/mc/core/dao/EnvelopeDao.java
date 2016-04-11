@@ -17,7 +17,9 @@ import com.inspur.gcloud.mc.core.data.Envelope;
  */
 public interface EnvelopeDao extends EntityMapper<Envelope> {
 	
-	List<Envelope> findEnvelopeListByMessageId(String messageId);
+	public List<Envelope> findEnvelopeListByMessageId(String messageId);
+	
+	public Envelope findEnvelopeByMessageIdAndLoginId(String messageId, String loginId);
 	
 	 /**
      * 查询当前用户的收件箱、已发送、草稿箱列表
@@ -35,7 +37,7 @@ public interface EnvelopeDao extends EntityMapper<Envelope> {
      * @return List, 内容为Envelope对象列表
      * 
      */
-    List<Envelope> findList(Map map);
+	public List<Envelope> findList(Map map);
     
     /**
      * 根据消息主题、消息状态（已读或未读）发件人或收件人 查找信息
@@ -47,14 +49,14 @@ public interface EnvelopeDao extends EntityMapper<Envelope> {
      * @return List， 内容为 Envelope对象列表
      * 
      */
-    List<Envelope> getByParams(Map map);
+	public List<Envelope> getByParams(Map map);
     
     /**
      * 根据Envelope的id找对应的MessageId
      * @param id
      * @return MessageId
      */
-    String getMessageId(String id);
+	public String getMessageId(String id);
     
     /**
      * 删除已发送的信封
@@ -64,7 +66,7 @@ public interface EnvelopeDao extends EntityMapper<Envelope> {
      *              <code>boxType<code>[邮箱类型：in：收件箱；out:已发送；draft:草稿箱]
      * 
      */
-    void changeState(Map map);
+	public void changeState(Map map);
     
     /**
      * 删除已发送的信封

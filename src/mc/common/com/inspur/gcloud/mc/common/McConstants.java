@@ -56,8 +56,53 @@ public class McConstants {
 	public static final String ERROR_TYPE_PARSER = "errorParser";
 	
 	/**
+	 * 错误类型-消息构建器
+	 */
+	public static final String ERROR_TYPE_BUILDER = "errorBuilder";
+	
+	/**
 	 * 错误类型-消息发送器
 	 */
 	public static final String ERROR_TYPE_SENDER = "errorSender";
+	
+	/**
+	 * 操作码-编辑
+	 */
+	public static final String OPER_CODE_EDIT = "edit";
+	
+	/**
+	 * 操作码-回复
+	 */
+	public static final String OPER_CODE_REPLY = "reply";
+	
+	/**
+	 * 操作码-转发
+	 */
+	public static final String OPER_CODE_FORWARD = "forward";
+	
+	/**
+	 * 操作码-查看
+	 */
+	public static final String OPER_CODE_VIEW = "view";
+	
+	/**
+	 * 站内消息-收件箱
+	 */
+	public static final String INSTATIONMSG_IN_BOX = "instationMsgIn";
+	
+	/**
+	 * 站内消息-发件箱
+	 */
+	public static final String INSTATIONMSG_OUT_BOX = "instationMsgOut";
+	
+	/**
+	 * 站内消息-草稿箱
+	 */
+	public static final String INSTATIONMSG_DRAFT_BOX = "instationMsgDraft";
+	
+	/**
+	 * 站内消息-废件箱
+	 */
+	public static final String INSTATIONMSG_SCRAP_BOX = "instationMsgScrap";
 
 }

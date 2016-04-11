@@ -50,21 +50,21 @@ public class MessageParserService implements IMessageParserService {
 			
 			// 解析envelope对象
 			List<String> receiverIdList = messageView.getReceiverIdList();
-			List<String> receiverNameList = messageView.getReceiverNameList();
-			List<String> envelopeIdList = messageView.getEnvelopeIdList();
 			List<Envelope> envelopeList = new ArrayList<Envelope>();
 			MessageObject messageObject = new MessageObject();
 			if(receiverIdList.size() > 0){
 				for(int i = 0; i < receiverIdList.size(); i++){
 					Envelope envelope = new Envelope();
-					envelope.setId(envelopeIdList.get(i));
+					if(messageView.getEnvelopeId() != null && !messageView.getEnvelopeId().equals("")){
+						envelope.setId(messageView.getEnvelopeId());
+					}
 					envelope.setMessageType(messageView.getMessageType());
 					envelope.setRelatedMessageId("");
 					envelope.setRelatedPath("");
 					envelope.setSenderId(messageView.getSenderId());
 					envelope.setSenderName(messageView.getSenderName());
 					envelope.setReceiverId(receiverIdList.get(i));
-					envelope.setReceiverName(receiverNameList.get(i));
+					envelope.setReceiverName(messageView.getReceiverName());
 					envelope.setReceiveState(messageView.getReceiveState());
 					envelope.setSendState(messageView.getSendState());
 					envelope.setIsSchedule("");

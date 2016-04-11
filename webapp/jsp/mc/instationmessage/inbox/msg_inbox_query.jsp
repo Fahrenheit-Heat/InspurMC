@@ -53,9 +53,9 @@
 										<th data-number="true">
 										<th data-checkbox="true">
 										<th width="10%" data-field="senderName" data-sortable="false">发件人</th>
-										<th width="60%" data-field="message.messageTopic">主题</th>
+										<th width="60%" data-field="message.messageTopic" data-render="messageShowLink">主题</th>
 										<th width="20%" data-field="sendTime">日期</th>
-										<th width="10%" data-field="receiveState">状态</th>
+										<th width="10%" data-field="receiveState" data-render="RenderState">状态</th>
 									</tr>
 								</thead>
 							</table>

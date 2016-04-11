@@ -22,6 +22,8 @@ public interface IEnvelopeService {
 	
 	public List<Envelope> findEnvelopeListByMessageId(String messageId);
 	
+	public Envelope findEnvelopeByMessageIdAndLoginId(String messageId, String loginId);
+	
 	 /**
      * 查询当前用户的收件箱、已发送、草稿箱列表
      * 

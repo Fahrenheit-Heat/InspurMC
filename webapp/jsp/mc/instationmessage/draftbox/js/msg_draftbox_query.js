@@ -260,6 +260,8 @@ function renderstatus(data, type, full) {
 	if (data != "" || data != null) {
 		if (data == "0") {
 			data = "未发送";
+		} else {
+			data = "";
 		}
 	}
 	return data;

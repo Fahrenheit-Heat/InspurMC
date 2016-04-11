@@ -4,10 +4,27 @@
 
 <mapper namespace="com.inspur.gcloud.mc.core.dao.EnvelopeDao">
 
+	<select id="findEnvelopeByMessageIdAndLoginId" parameterType="string" resultType="com.inspur.gcloud.mc.core.data.Envelope">
+		SELECT 
+			ID, MESSAGE_ID, MESSAGE_TYPE, RELATED_MESSAGE_ID, RELATED_PATH, SENDER_ID, RECEIVER_ID, RECEIVE_STATE, 
+			SEND_STATE, IS_SCHEDULE, IS_READ_RECEIPT, HAS_RECEIPT, SEND_TYPE, RECEIVER_TYPE, SEND_LEVEL, SEND_TIME, 
+			READ_TIME, CREATE_TIME, UPDATE_TIME, REMARK, SENDER_NAME, RECEIVER_NAME
+		FROM 
+			MC_ENVELOPE 
+		WHERE 
+			MESSAGE_ID = #{0} 
+			AND RECEIVER_ID = #{1}
+	</select>
+	
 	<select id="findEnvelopeListByMessageId" parameterType="string" resultType="com.inspur.gcloud.mc.core.data.Envelope">
-		SELECT ID, MESSAGE_ID, MESSAGE_TYPE, RELATED_MESSAGE_ID, RELATED_PATH, SENDER_ID, RECEIVER_ID, RECEIVE_STATE, SEND_STATE, IS_SCHEDULE, IS_READ_RECEIPT, HAS_RECEIPT, SEND_TYPE, RECEIVER_TYPE, SEND_LEVEL, SEND_TIME, READ_TIME, CREATE_TIME, UPDATE_TIME, REMARK, SENDER_NAME, RECEIVER_NAME
-		FROM MC_ENVELOPE 
-		WHERE MESSAGE_ID = #{messageId}
+		SELECT 
+			ID, MESSAGE_ID, MESSAGE_TYPE, RELATED_MESSAGE_ID, RELATED_PATH, SENDER_ID, RECEIVER_ID, RECEIVE_STATE, 
+			SEND_STATE, IS_SCHEDULE, IS_READ_RECEIPT, HAS_RECEIPT, SEND_TYPE, RECEIVER_TYPE, SEND_LEVEL, SEND_TIME, 
+			READ_TIME, CREATE_TIME, UPDATE_TIME, REMARK, SENDER_NAME, RECEIVER_NAME
+		FROM 
+			MC_ENVELOPE 
+		WHERE 
+			MESSAGE_ID = #{messageId} 
 	</select>
 
     <resultMap type="com.inspur.gcloud.mc.core.data.Envelope" id="envelopeResultMap">
@@ -57,12 +74,15 @@
 			<if test="isSended != null and isSended != '' ">
 				AND SEND_STATE = '${isSended}'
 			</if>
-			<if test="isRead != null and isRead != '' 
-				and isNotRead != null and isNotRead != '' ">
+			<if test="(isRead != null and isRead != '' )
+				and (isNotRead != null and isNotRead != '' )">
 				AND (RECEIVE_STATE = '${isRead}' OR RECEIVE_STATE = '${isNotRead}')
 			</if>
 			<if test="isNotSended != null and isNotSended != '' ">
 				AND SEND_STATE = '${isNotSended}'
+			</if>
+			<if test="isScrap != null and isScrap != '' ">
+				AND (SEND_STATE = '${isScrap}' OR RECEIVE_STATE = '${isScrap}')
 			</if>
         </where>
         <if test="groupfield != null">
@@ -145,6 +165,9 @@
 			<if test="isNotSended != null and isNotSended != '' ">
 				AND e.SEND_STATE = '${isNotSended}'
 			</if>
+			<if test="isScrap != null and isScrap != '' ">
+				AND (e.SEND_STATE = '${isScrap}' OR e.RECEIVE_STATE = '${isScrap}')
+			</if>
 			<if test="sendTimeFrom != null and sendTimeFrom != '' 
 					and sendTimeTo != null and sendTimeTo != '' ">
 				and e.create_time between '${sendTimeFrom}' and '${sendTimeTo}'
@@ -160,13 +183,16 @@
 	</select>
 	
 	<update id="changeState" parameterType="string">
-		update mc_envelope 
+		UPDATE MC_ENVELOPE 
 		<set>
 			<if test="boxType == 'draftbox'.toString() or boxType == 'outbox'.toString() ">
-				send_state = '2'
+				SEND_STATE = '2'
 			</if>
 			<if test="boxType == 'inbox'.toString() ">
-				receive_state = '2'
+				RECEIVE_STATE = '2'
+			</if>
+			<if test="boxType == 'scrapbox'.toString() ">
+				SEND_STATE = '3',RECEIVE_STATE = '3'
 			</if>
 		</set>
 		<where>
