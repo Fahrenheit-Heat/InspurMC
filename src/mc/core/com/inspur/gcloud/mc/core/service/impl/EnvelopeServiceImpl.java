@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,8 +40,13 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	}
 	
 	@Override
-	public Envelope findEnvelopeByMessageIdAndLoginId(String messageId, String loginId) {
-		return envelopeDao.findEnvelopeByMessageIdAndLoginId(messageId, loginId);
+	public Envelope findEnvelopeByMessageIdAndLoginId(String messageId, String loginId, String boxType) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("messageId", messageId);
+		map.put("loginId", loginId);
+		map.put("boxType", boxType);
+		Envelope temp = envelopeDao.findEnvelopeByMessageIdAndLoginId(map);
+		return temp;
 	}
 
 	@Override
@@ -147,6 +153,9 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 		return messageObject;
 	}
 
-
+	@Override
+	public int updateEnvelope(Envelope envelope) {
+		return envelopeDao.update(envelope);
+	}
 
 }

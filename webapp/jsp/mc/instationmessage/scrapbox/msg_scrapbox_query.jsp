@@ -2,12 +2,16 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="ui" uri="/tags/GCloud-UI"%>
 <%@ page import="com.inspur.gcloud.bsp.BspUtil" %>
+<%@ page import="com.inspur.gcloud.mc.common.*" %>
 <!DOCTYPE html>
 <%
 	//用户名
 	String loginName = BspUtil.getInstance().getLoginUserName();
 	//用户ID
 	String loginId = BspUtil.getInstance().getLoginUserOrganId();
+	//设定信箱类型
+	String messageType = McConstants.MESSAGE_TYPE_INSTATIONMSG;
+	String boxType = McConstants.INSTATIONMSG_OUT_BOX;
 %>
  <html>
 <head>
@@ -17,6 +21,8 @@
 <Script type="text/javascript">
 	var loginName = '<%=loginName%>';
 	var loginId = '<%=loginId%>';
+	var boxType = '<%=boxType%>';
+	var messageType = '<%=messageType%>';
 </Script>
 </head>
 <body>
@@ -54,9 +60,9 @@
 									<th data-checkbox="true">
 									<th width="10%" data-field="senderName" data-sortable="false">发件人</th>
 									<th width="10%" data-field="receiverName" data-sortable="false">收件人</th>
-									<th width="25%" data-field="message.messageTopic">主题</th>
+									<th width="25%" data-field="message.messageTopic" data-render="messageShowLink">主题</th>
 									<th width="20%" data-field="sendTime">日期</th>
-									<th width="20%" data-field="sendState">状态</th>
+									<th width="20%" data-field="sendState" data-render="renderstatus">状态</th>
 								</tr>
 							</thead>
 						</table>

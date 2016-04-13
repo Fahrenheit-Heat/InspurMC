@@ -1,3 +1,4 @@
+<%@page import="com.inspur.gcloud.mc.common.McConstants"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <%@page import="com.inspur.gcloud.bsp.BspUtil"%>
@@ -33,6 +34,8 @@
 					<div class="panel-body">
 						<div class="form-simple form-simple-edit no-border-bottom form-simple-modal">
 							<input type="hidden" id="messageId" name="messageId" value="${messageId }">
+							<input type="hidden" id="operType" name="operType" value="${operType}">
+							<input type="hidden" id="boxType" name="boxType" value="${boxType}">
 							<input type="hidden" id="senderId" name="senderId">
 							<input type="hidden" id="receiveState" name="receiveState">
 							<div class="form-hr">

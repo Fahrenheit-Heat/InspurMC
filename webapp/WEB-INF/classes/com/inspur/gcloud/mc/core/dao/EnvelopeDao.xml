@@ -4,16 +4,28 @@
 
 <mapper namespace="com.inspur.gcloud.mc.core.dao.EnvelopeDao">
 
-	<select id="findEnvelopeByMessageIdAndLoginId" parameterType="string" resultType="com.inspur.gcloud.mc.core.data.Envelope">
+	<select id="findEnvelopeByMessageIdAndLoginId" parameterType="map" resultType="com.inspur.gcloud.mc.core.data.Envelope">
 		SELECT 
 			ID, MESSAGE_ID, MESSAGE_TYPE, RELATED_MESSAGE_ID, RELATED_PATH, SENDER_ID, RECEIVER_ID, RECEIVE_STATE, 
 			SEND_STATE, IS_SCHEDULE, IS_READ_RECEIPT, HAS_RECEIPT, SEND_TYPE, RECEIVER_TYPE, SEND_LEVEL, SEND_TIME, 
 			READ_TIME, CREATE_TIME, UPDATE_TIME, REMARK, SENDER_NAME, RECEIVER_NAME
 		FROM 
 			MC_ENVELOPE 
-		WHERE 
-			MESSAGE_ID = #{0} 
-			AND RECEIVER_ID = #{1}
+		<where>
+			MESSAGE_ID = #{messageId}
+			<if test="boxType == 'instationMsgIn'.toString() ">
+				AND RECEIVER_ID = #{loginId}
+			</if>
+			<if test="boxType == 'instationMsgDraft'.toString() ">
+				AND SENDER_ID = #{loginId}
+			</if>
+			<if test="boxType == 'instationMsgOut'.toString() ">
+				AND SENDER_ID = #{loginId}
+			</if>
+			<if test="boxType == 'instationMsgScrap'.toString() ">
+				AND (SENDER_ID = #{loginId} OR RECEIVER_ID = #{loginId})
+			</if>
+		</where>	
 	</select>
 	
 	<select id="findEnvelopeListByMessageId" parameterType="string" resultType="com.inspur.gcloud.mc.core.data.Envelope">
@@ -185,13 +197,13 @@
 	<update id="changeState" parameterType="string">
 		UPDATE MC_ENVELOPE 
 		<set>
-			<if test="boxType == 'draftbox'.toString() or boxType == 'outbox'.toString() ">
+			<if test="boxType == 'instationMsgDraft'.toString() or boxType == 'instationMsgOut'.toString() ">
 				SEND_STATE = '2'
 			</if>
-			<if test="boxType == 'inbox'.toString() ">
+			<if test="boxType == 'instationMsgIn'.toString() ">
 				RECEIVE_STATE = '2'
 			</if>
-			<if test="boxType == 'scrapbox'.toString() ">
+			<if test="boxType == 'instationMsgScrap'.toString() ">
 				SEND_STATE = '3',RECEIVE_STATE = '3'
 			</if>
 		</set>

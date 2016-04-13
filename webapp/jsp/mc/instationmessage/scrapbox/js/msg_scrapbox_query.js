@@ -31,8 +31,6 @@ function initGrid(){
 	var isScrap = "2";
 	//设置信封过滤：多条只显示一条
 	var groupfield = "y";
-	//设置过滤条件：消息
-	var messageType = "m";
 	//设置数据请求地址
 	grid.setAjaxUrl(url);
 	grid.setParameter("messageType", messageType);
@@ -48,8 +46,6 @@ function query(){
 	
 	//设置过滤条件：草稿箱
 	var isScrap = "2";
-	//设置过滤条件：消息
-	var messageType = "m";
 	
 	var groupfield = "y";
 	
@@ -86,7 +82,7 @@ function del(){
 		//删除警告框
 		G3.confirm("提示", "确认删除记录？",
 			function() {
-				var requestUrl = G3.cmdPath+"mc/core/instationmessage/delete/"+recordIds+"/type/"+boxType;
+				var requestUrl = G3.cmdPath+"mc/core/instationmessage/delete/"+recordIds+"/"+boxType;
 				$.ajax({
 					type : "post",
 					dataType : "json",
@@ -110,4 +106,29 @@ function del(){
 
 function selectTime(obj){
 	$(obj).datetimepicker({format: 'yyyy-mm-dd',minView: "month"});
+}
+
+//渲染查看链接
+function messageShowLink(data, type, full){
+	var messageId = full.message.id;
+	var url = G3.cmdPath + "mc/core/instationmessage/showMessage?messageId="+messageId+"&operType=view&boxType="+boxType;
+	return '<a href='+url+'>'+data+'</a>';
+}
+
+/**
+ * 渲染envelope状态
+ * @param data
+ * @param type
+ * @param full
+ * @returns {String}
+ */
+function renderstatus(data, type, full) {
+	if (data != "" || data != null) {
+		if (data == "2") {
+			data = "已删除";
+		} else {
+			data = "";
+		}
+	}
+	return data;
 }

@@ -40,11 +40,13 @@
 					<div class="bank1"></div>
 					<div class="panel-body">
 						<div class="form-simple form-simple-edit no-border-bottom form-simple-modal">
-							<input type="hidden" id="envelopeId" name="envelopeId" value="${messageView.envelopeId}">
-							<input type="hidden" id="messageId" name="messageId" value="${messageView.messageId}">
+							<input type="hidden" id="messageId" name="messageId" value="${messageId}">
+							<input type="hidden" id="operType" name="operType" value="${operType}">
+							<input type="hidden" id="boxType" name="boxType" value="${boxType}">
+							<input type="hidden" id="envelopeId" name="envelopeId" value="${messageView.envelopeId }">
 							<input type="hidden" id="sendType" name="sendType" value="${messageView.sendType }" >
-							<input type="hidden" id="sendState" name="sendState" value="${messageView.sendState}">
-							<input type="hidden" id="messageContent" name="messageContent" value="${messageView.messageContent}"/>
+							<input type="hidden" id="sendState" name="sendState" value="${messageView.sendState }">
+							<input type="hidden" id="messageContent" name="messageContent" value="${messageView.messageContent }">
 							<input type="hidden" id="messageType" name="messageType" value="m"/>
 							<input type="hidden" id="senderId" name="senderId" value="${messageView.senderId}">
 							<input type="hidden" id="receiveState" name="receiveState" value="${messageView.receiveState}">

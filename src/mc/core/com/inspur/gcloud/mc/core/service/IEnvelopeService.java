@@ -22,7 +22,7 @@ public interface IEnvelopeService {
 	
 	public List<Envelope> findEnvelopeListByMessageId(String messageId);
 	
-	public Envelope findEnvelopeByMessageIdAndLoginId(String messageId, String loginId);
+	public Envelope findEnvelopeByMessageIdAndLoginId(String messageId, String loginId, String boxType);
 	
 	 /**
      * 查询当前用户的收件箱、已发送、草稿箱列表
@@ -102,8 +102,6 @@ public interface IEnvelopeService {
     
     public Boolean batchUpdateEnvelope(List<Envelope> envelopeList, String messageId);
 
-    // ////////////////////////////////删除//////////////////////////////////
-
     /**
      * 根据ID删除信封，逻辑删除
      * 
@@ -119,5 +117,14 @@ public interface IEnvelopeService {
      * 
      */
     public void physicalDelete(List<Envelope> envelopeList, String messageId);
+    
+    /**
+     * 更新信封表方法
+     * <p>主要用于：更新信封表接收状态和阅读时间</p>
+     * @param envelopeId 信封表主键ID
+     * @param receiveState 接受状态
+     * @return 更新数量
+     */
+    public int updateEnvelope(Envelope envelope);
 
 }

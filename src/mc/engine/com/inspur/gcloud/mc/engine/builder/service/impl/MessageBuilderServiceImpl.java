@@ -83,6 +83,7 @@ public class MessageBuilderServiceImpl implements IMessageBuilderService {
 	@Override
 	public MessageView builderForwardMessage(Message message, Envelope envelope) {
 		MessageView messageView = new MessageView();
+		// 构建信封信息
 		messageView.setMessageId(message.getId());
 		
 		// 构建消息主题
@@ -92,6 +93,8 @@ public class MessageBuilderServiceImpl implements IMessageBuilderService {
 		// 构建消息内容
 		String senderName = envelope.getSenderName();
 		String messageContent = message.getMessageContent();
+		
+		messageView.setSenderName(senderName);
 		Date createTime = envelope.getCreateTime();
 		SimpleDateFormat sdf =   new SimpleDateFormat( " yyyy-MM-dd HH:mm:ss " );
 		String sendTime = sdf.format(createTime);
@@ -100,6 +103,7 @@ public class MessageBuilderServiceImpl implements IMessageBuilderService {
 		
 		return messageView;
 	}
+	
 	@Override
 	public MessageView builderViewMessage(Message message, Envelope envelope) {
 		MessageView messageView = new MessageView();

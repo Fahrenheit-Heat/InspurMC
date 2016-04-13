@@ -3,6 +3,8 @@ package com.inspur.gcloud.mc.common.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mysql.jdbc.StringUtils;
+
 /**
  * <p>页面接受消息对象</p>
  * <p>用途：用于接收页面视图提交表单</p>
@@ -95,7 +97,7 @@ public class MessageView {
 	
 	public List<String> getReceiverIdList() {
 		List<String> receiverIdList = new ArrayList<String>();
-		if(receiverId.indexOf(",") > -1){
+		if(!StringUtils.isNullOrEmpty(receiverId) && receiverId.indexOf(",") > -1){
 			String[] rId = receiverId.split(",");
 			for(int i = 0; i < rId.length; i++){
 				receiverIdList.add(rId[i]);
@@ -116,7 +118,7 @@ public class MessageView {
 	
 	public List<String> getReceiverNameList() {
 		List<String> receiverNameList = new ArrayList<String>();
-		if(receiverName.indexOf(",") > -1){
+		if(!StringUtils.isNullOrEmpty(receiverName) && receiverName.indexOf(",") > -1){
 			String[] rName = receiverName.split(",");
 			for(int i = 0; i < rName.length; i++){
 				receiverNameList.add(rName[i]);
@@ -194,7 +196,7 @@ public class MessageView {
 	public List<String> getEnvelopeIdList() {
 		
 		List<String> envelopeIdList = new ArrayList<String>();
-		if(envelopeId.indexOf(",") > -1) {
+		if(!StringUtils.isNullOrEmpty(envelopeId) && envelopeId.indexOf(",") > -1) {
 			String[] eId = envelopeId.split(",");
 			for(int i = 0; i < eId.length; i++) {
 				envelopeIdList.add(eId[i]);

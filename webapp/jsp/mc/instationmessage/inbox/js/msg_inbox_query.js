@@ -23,6 +23,13 @@ $(function() {
 		replayMessage();
 	});
 	
+	// 删除
+	$("#delBtn").click(
+		function() {
+			del();
+		});
+	
+	
 	//转发
 	$("#forwardBtn").click(function (){
 		forwardMessage();
@@ -106,7 +113,7 @@ function initGrid(){
  * 新建消息(跳转)
  */
 function newMessage(){
-	var url = G3.cmdPath + "mc/core/instationmessage/newMessage";
+	var url = G3.cmdPath + "mc/core/instationmessage/newMessage?boxType="+boxType;
 	window.location = url;
 }
 
@@ -117,18 +124,13 @@ function replayMessage(){
 	var records = grid.getSelectedRow();
 	if (records.length == 1) {
 		var data = records[0];
-		var url = G3.cmdPath + "/mc/core/instationmessage/replayMessage";
+		var url = G3.cmdPath + "mc/core/instationmessage/showMessage";
 		if (data.message.id != undefined && data.message.id != "" && data.message.id != "null") {
 			url += "?messageId=" + data.message.id;
 		}
-		G3.showModalDialog("回复消息", url, {
-			width : 800,
-			height : 500
-		}, function(e, ret) {
-			if (ret == "1") {
-				grid.reload();
-			}
-		});
+		url += "&operType=reply&boxType="+boxType;
+			
+		window.location = url;
 	} else {
 		G3.alert("提示", "请选择要回复的邮件！");
 	}
@@ -141,19 +143,14 @@ function forwardMessage(){
 	var records = grid.getSelectedRow();
 	if (records.length == 1) {
 		var data = records[0];
-		var url = G3.cmdPath + "/mc/core/instationmessage/forwardMessage";
+		var url = G3.cmdPath + "mc/core/instationmessage/showMessage";
 		if (data.message.id != undefined && data.message.id != "" && data.message.id != "null") {
 			url += "?messageId=" + data.message.id;
 		}
+		url += "&operType=forward&boxType="+boxType;
+			
+		window.location = url;
 		
-		G3.showModalDialog("转发消息", url, {
-			width : 800,
-			height : 500
-		}, function(e, ret) {
-			if (ret == "1") {
-				grid.reload();
-			}
-		});
 	} else {
 		G3.alert("提示", "请选择要转发的邮件！");
 	}
@@ -164,7 +161,7 @@ function forwardMessage(){
 */
 function messageShowLink(data, type, full){
 	var messageId = full.message.id;
-	var url = G3.cmdPath + "mc/core/instationmessage/showMessage?messageId="+messageId+"&type=view";
+	var url = G3.cmdPath + "mc/core/instationmessage/showMessage?messageId="+messageId+"&operType=view&boxType="+boxType;
 	return '<a href='+url+'>'+data+'</a>';
 }
 
@@ -197,6 +194,44 @@ function query() {
 	grid.setParameter("sendTimeFrom", sendTimeFrom);
 	grid.setParameter("sendTimeTo", sendTimeTo);
 	grid.load();
+}
+
+/**
+ * 删除
+ */
+function del(){
+	var records = grid.getSelectedRow();
+	if (records.length != 0) {
+		
+		var recordIds = [];
+		//循环遍历获取ID 
+		$.each(records, function(index, item){
+			recordIds.push(item.id);
+		});
+		
+		//删除警告框
+		G3.confirm("提示", "确认删除记录？",
+			function() {
+				var requestUrl = G3.cmdPath+"mc/core/instationmessage/delete/"+recordIds+"/"+boxType;
+				$.ajax({
+					type : "post",
+					dataType : "json",
+					url: requestUrl,
+					error:function(data){
+						G3.alert("提示","删除失败！");
+					},
+					success:function(data){
+						//弹框方式
+						G3.alert("提示","删除成功！",function(){
+							grid.reload();
+						},"success");
+					}
+				});
+			}
+		);
+	} else {
+		G3.alert("提示", "请选择用户！");
+	}
 }
 
 /**

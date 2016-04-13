@@ -30,7 +30,7 @@ public class InstationMsgSenderServiceImpl implements IInstationMsgSenderService
 				envelopeService.saveEnvelope(messageObject.getEnvelopeList().get(0), messageId);
 			}else{
 				Message message = messageObject.getMessage();
-				messageSevice.insertMessage(message);
+				messageSevice.insertMessage(messageObject.getMessage());
 				envelopeService.batchInsertEnvelope(messageObject.getEnvelopeList(), message);
 			}
 			resultMap.setSuccess(true);

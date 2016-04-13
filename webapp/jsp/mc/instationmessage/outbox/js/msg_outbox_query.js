@@ -10,6 +10,12 @@ $(function(){
 		edit();
 	});
 	
+	// 删除
+	$("#delBtn").click(
+		function() {
+			del();
+		});
+	
 	// 条件查询
 	$("#queryBtn").click(query);
 	
@@ -43,8 +49,6 @@ function initGrid(){
 	var isSended = "1";
 	//设置信封过滤：多条只显示一条
 	var groupfield = "y";
-	//设置过滤条件：消息
-	var messageType = "m";
 	//设置数据请求地址
 	grid.setAjaxUrl(url);
 	grid.setParameter("messageType", messageType);
@@ -63,13 +67,51 @@ function edit(){
 	var records = grid.getSelectedRow();
 	if (records.length == 1) {
 		var data = records[0];
-		var url = "command/mc/core/instationmessage/edit";
+		var url = "command/mc/core/instationmessage/showMessage";
 		if (data.message.id != undefined && data.message.id != "" && data.message.id != "null" ) {
-			url += "?messageId=" + data.message.id;
+			url += "/" + data.message.id + "/" + loginId + "/" + boxType;
 		}
 		G3.forward(url);
 	} else {
 		G3.alert("提示","请选择一条消息！");
+	}
+}
+
+/**
+ * 删除
+ */
+function del(){
+	var records = grid.getSelectedRow();
+	if (records.length != 0) {
+		
+		var recordIds = [];
+		//循环遍历获取ID 
+		$.each(records, function(index, item){
+			recordIds.push(item.id);
+		});
+		
+		//删除警告框
+		G3.confirm("提示", "确认删除记录？",
+			function() {
+				var requestUrl = G3.cmdPath+"mc/core/instationmessage/delete/"+recordIds+"/"+boxType;
+				$.ajax({
+					type : "post",
+					dataType : "json",
+					url: requestUrl,
+					error:function(data){
+						G3.alert("提示","删除失败！");
+					},
+					success:function(data){
+						//弹框方式
+						G3.alert("提示","删除成功！",function(){
+							grid.reload();
+						},"success");
+					}
+				});
+			}
+		);
+	} else {
+		G3.alert("提示", "请选择用户！");
 	}
 }
 
@@ -83,8 +125,6 @@ function query(){
 	
 	//设置过滤条件：已发送
 	var isSended = "1";
-	//设置过滤条件：消息
-	var messageType = "m";
 	
 	var groupfield = "y";
 	
@@ -112,4 +152,11 @@ function query(){
 function newMessage(){
 	//var url = G3.cmdPath + "mc/core/instationmessage/newMessage";
 	G3.forward("command/mc/core/instationmessage/newMessage");
+}
+
+//渲染查看链接
+function messageShowLink(data, type, full){
+	var messageId = full.message.id;
+	var url = G3.cmdPath + "mc/core/instationmessage/showMessage?messageId="+messageId+"&operType=view&boxType="+boxType;
+	return '<a href='+url+'>'+data+'</a>';
 }

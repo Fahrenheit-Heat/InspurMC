@@ -3,7 +3,12 @@
  */
 $(function(){
 	// 构建跳转地址
-	var requestUrl = G3.cmdPath+"/mc/core/instationmessage/viewMessage/"+$("#messageId").val()+"/"+loginId;
+	var requestUrl = G3.cmdPath+"mc/core/instationmessage/viewMessage/"
+		+$("#messageId").val()
+		+"/"
+		+loginId
+		+"/"
+		+boxType;
 	// 初始化UE编辑器
 	var ue = initUESettings("editor", "show");
 	// ajax请求表单数据
@@ -23,7 +28,7 @@ $(function(){
 	
 	// 绑定返回按钮触发事件
 	$("#backBtn").click(function(){
-		goBack("instationMsgIn");
+		goBack($("#boxType").val());
 		return false;
 	});
 	
@@ -48,8 +53,8 @@ function initData(ue, data){
 /**
  * 返回方法
  */
-function goBack(forwardType){
-	var url = G3.cmdPath + "mc/core/instationmessage/forward/"+forwardType;
+function goBack(boxType){
+	var url = G3.cmdPath + "mc/core/instationmessage/forward/"+boxType;
 	window.location = url;
 }
 

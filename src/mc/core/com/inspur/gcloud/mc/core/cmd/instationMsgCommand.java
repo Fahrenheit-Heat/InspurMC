@@ -1,6 +1,7 @@
 package com.inspur.gcloud.mc.core.cmd;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +31,8 @@ import com.inspur.gcloud.mc.engine.parser.service.IMessageParserService;
 
 
 /**
- * Controller层，用于前后台交互、前后台数据格式转换
- * 信封Command
+ * <p>Controller层，用于前后台交互、前后台数据格式转换</p>
+ * 站内消息Command
  * @author songH
  *
  */
@@ -59,21 +60,32 @@ public class instationMsgCommand {
 	 *     			 <code>废件箱：instationMsgScrap</code>
 	 * @return Url
 	 */
-	@RequestMapping("/forward/{forwardType}")
-	public String forwardInstationMsgList(@PathVariable(value = "forwardType") String forwardType){
-		if(McConstants.INSTATIONMSG_IN_BOX.equals(forwardType)){
+	@RequestMapping("/forward/{boxType}")
+	public String forwardInstationMsgList(@PathVariable(value = "boxType") String boxType){
+		// 根据消息箱类型跳转至对应页面
+		if(McConstants.INSTATIONMSG_IN_BOX.equals(boxType)){
+			// 收件箱
 			return "mc/instationmessage/inbox/msg_inbox_query";
-		}else if(McConstants.INSTATIONMSG_OUT_BOX.equals(forwardType)){
-			return "mc/instationmessage/inbox/msg_outbox_query";
-		}else if(McConstants.INSTATIONMSG_DRAFT_BOX.equals(forwardType)){
-			return "mc/instationmessage/inbox/msg_draftbox_query";
-		}else if(McConstants.INSTATIONMSG_SCRAP_BOX.equals(forwardType)){
-			return "mc/instationmessage/inbox/msg_scrapbox_query";
+		}else if(McConstants.INSTATIONMSG_OUT_BOX.equals(boxType)){
+			// 发件箱
+			return "mc/instationmessage/outbox/msg_outbox_query";
+		}else if(McConstants.INSTATIONMSG_DRAFT_BOX.equals(boxType)){
+			// 草稿箱
+			return "mc/instationmessage/draftbox/msg_draft_query";
+		}else if(McConstants.INSTATIONMSG_SCRAP_BOX.equals(boxType)){
+			// 废件箱
+			return "mc/instationmessage/scrapbox/msg_scrapbox_query";
 		}else{
+			// 未匹配类型，返回空
 			return "";
 		}
 	}
 	
+	/**
+	 * 初始化展示消息列表方法（查询方法需要修改）
+	 * @param parameters 查询参数
+	 * @return envelopeMap 信封对象
+	 */
 	@RequestMapping("/instationMsgList")
 	@ResponseBody
 	public Map<String, Object> getInMessageList(@RequestBody Map<String, String> parameters) {
@@ -115,60 +127,77 @@ public class instationMsgCommand {
     }
 
 	 /**
-     * 用户修改页面的弹出
-     * 
-     * @param id [主键ID]
-     * 
-     * @return Map key为
-     *          <code>user<code>[User对象]
-     * 
+     * 新建消息页面跳转方法
+     * @param boxType [主键ID]
+     * @return ModelAndView 
      */
     @RequestMapping("/newMessage")
-    public ModelAndView newMessage(@RequestParam(value = "id", required = false) String id) {
-    	Envelope envelope = null;
-    	if(id != null && !"".equals(id)){
-    		envelope = envelopeService.findEnvelopeById(id);
-    		if(envelope != null){
-    			String messageId = envelopeService.findMessageId(id);
-    			Message temp = messageService.findMessageById(messageId);
-    			envelope.setMessage(temp);
-    		}
-    	}
+    public ModelAndView newMessage(@RequestParam(value = "boxType", required = false) String boxType) {
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put("envelope", envelope);
+        model.put("boxType", boxType);
         return new ModelAndView("mc/instationmessage/newmessage/msg_create", model);
     }
     
-    @RequestMapping("/replayMessage")
-    public ModelAndView replayMessage(@RequestParam(value = "messageId", required = false) String messageId,
-    		@RequestParam(value="loginId", required = false) String loginId){
+    /**
+     * 回复消息初始化页面数据方法
+     * @param messageId 消息主键ID
+     * @param loginId 当前登录人OrangeId
+     * @return messageView对象
+     */
+    @RequestMapping("/replyMessage/{messageId}/{loginId}/{boxType}")
+    @ResponseBody
+    public MessageView replayMessage(@PathVariable(value = "messageId") String messageId,
+    		@PathVariable(value="loginId") String loginId,
+    		@PathVariable(value="boxType") String boxType){
+    	// 新建页面视图对象
     	MessageView messageView = new MessageView();
+    	// 判断messageId是否为空
     	if(messageId != null && !"".equals(messageId)){
-    		Map<String, Object> paramterMap = new HashMap<String, Object>();
-    		paramterMap.put("messageId", messageId);
-    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(messageId, loginId);
+    		// messageId不为空，获取组装视图对象的Envelope对象和Message对象
+    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(messageId, loginId, boxType);
     		Message message = messageService.findMessageById(messageId);
+    		// 构建回复页面视图对象
     		messageView = messageBuilderService.builderReplyMessage(message, envelope);
+    		// 判断是否为未读
+    		if(envelope.getReceiveState() == null || "0".equals(envelope.getReceiveState())){
+    			// 未读状态：更新消息状态
+    			envelope.setReadTime(new Date());
+        		envelope.setReceiveState("1");
+        		envelopeService.updateEnvelope(envelope);
+    		}
     	}
-    	Map<String, Object> model = new HashMap<String, Object>();
-    	model.put("messageView", messageView);
-    	return new ModelAndView("mc/instationmessage/newmessage/msg_create", model);
+    	return messageView;
     }
     
-    @RequestMapping("/forwardMessage")
-    public ModelAndView forwardMessage(@RequestParam(value = "messageId", required = true) String messageId,
-    		@RequestParam(value="loginId", required = false) String loginId){
+    /**
+     * 转发消息初始化页面数据方法
+     * @param messageId 消息主键ID
+     * @param loginId 当前登录人OrangeId
+     * @return messageView对象
+     */
+    @RequestMapping("/forwardMessage/{messageId}/{loginId}/{boxType}")
+    @ResponseBody
+    public MessageView forwardMessage(@PathVariable(value = "messageId") String messageId,
+    		@PathVariable(value="loginId") String loginId,
+    		@PathVariable(value="boxType") String boxType){
+    	// 新建页面视图对象 
     	MessageView messageView = new MessageView();
+    	// 判断messageId是否为空
     	if(messageId != null && !"".equals(messageId)){
-    		Map<String, Object> paramterMap = new HashMap<String, Object>();
-    		paramterMap.put("messageId", messageId);
-    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(messageId, loginId);
+    		// messageId不为空，获取组装视图对象的Envelope对象和Message对象
+    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(messageId, loginId, boxType);
     		Message message = messageService.findMessageById(messageId);
+    		// 构建转发页面视图对象
     		messageView = messageBuilderService.builderForwardMessage(message, envelope);
+    		// 判断是否为未读
+    		if(envelope.getReceiveState() == null || "0".equals(envelope.getReceiveState())){
+    			// 未读状态：更新消息状态
+    			envelope.setReadTime(new Date());
+        		envelope.setReceiveState("1");
+        		envelopeService.updateEnvelope(envelope);
+    		}
     	}
-    	Map<String, Object> model = new HashMap<String, Object>();
-    	model.put("messageView", messageView);
-    	return new ModelAndView("mc/instationmessage/newmessage/msg_create", model);
+    	return messageView;
     }
     
     /**
@@ -177,19 +206,31 @@ public class instationMsgCommand {
      * @param loginId 登录人ID
      * @return MessageView {Object}
      */
-    @RequestMapping(value = "/viewMessage/{messageId}/{loginId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/viewMessage/{messageId}/{loginId}/{boxType}", method = RequestMethod.POST)
     @ResponseBody
     public MessageView viewMessage(@PathVariable("messageId") String messageId, 
-    		@PathVariable("loginId") String loginId){
+    		@PathVariable("loginId") String loginId,
+    		@PathVariable("boxType") String boxType){
+    	// 新建页面视图对象 
     	MessageView messageView = new MessageView();
+    	// 判断messageId是否为空
     	if(messageId != null && !"".equals(messageId)){
-    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(messageId, loginId);
+    		// messageId不为空，获取组装视图对象的Envelope对象和Message对象
+    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(messageId, loginId, boxType);
     		Message message = messageService.findMessageById(messageId);
+    		// 构建页面展示消息对象
     		messageView = messageBuilderService.builderViewMessage(message, envelope);
+    		// 判断是否为未读
+    		if(envelope.getReceiveState() == null || "0".equals(envelope.getReceiveState())){
+    			// 未读状态：更新消息状态
+    			envelope.setReadTime(new Date());
+        		envelope.setReceiveState("1");
+        		envelopeService.updateEnvelope(envelope);
+    		}
     	}
     	return messageView;
     }
-
+    
     /**
      * 展示消息内容方法
      * <p>用途：编辑/查看/转发等操作时，控制页面跳转</p>
@@ -203,24 +244,29 @@ public class instationMsgCommand {
      */
     @RequestMapping("/showMessage")
     public ModelAndView showMessage(@RequestParam(value = "messageId", required = true) String messageId, 
-    		@RequestParam(value = "type", required = true) String type){
+    		@RequestParam(value = "operType", required = true) String operType,
+    		@RequestParam(value = "boxType", required = true) String boxType){
     	
+    	// 新建视图对象
     	Map<String, Object> model = new HashMap<String, Object>();
+    	// messageId
     	model.put("messageId", messageId);
+    	// 消息箱类型
+    	model.put("boxType", boxType);
     	
-    	if(McConstants.OPER_CODE_EDIT.equals(type)){
+    	if(McConstants.OPER_CODE_EDIT.equals(operType)){
     		// 编辑
-    		model.put("type", type);
+    		model.put("operType", operType);
     		return new ModelAndView("mc/instationmessage/newmessage/msg_create", model);
-    	}else if(McConstants.OPER_CODE_FORWARD.equals(type)){
+    	}else if(McConstants.OPER_CODE_FORWARD.equals(operType)){
     		// 转发
-    		model.put("type", type);
+    		model.put("operType", operType);
     		return new ModelAndView("mc/instationmessage/newmessage/msg_create", model);
-    	}else if(McConstants.OPER_CODE_REPLY.equals(type)){
+    	}else if(McConstants.OPER_CODE_REPLY.equals(operType)){
     		// 回复
-    		model.put("type", type);
+    		model.put("operType", operType);
     		return new ModelAndView("mc/instationmessage/newmessage/msg_create", model);
-    	}else if(McConstants.OPER_CODE_VIEW.equals(type)){
+    	}else if(McConstants.OPER_CODE_VIEW.equals(operType)){
     		// 查看
     		return new ModelAndView("mc/instationmessage/newmessage/msg_view", model);
     	}else{
@@ -229,11 +275,11 @@ public class instationMsgCommand {
     }
     
     /**
-     * 新增、修改用户的保存操作
+     * 站内消息发送方法
      * 
-     * @param user
+     * @param messageView 消息视图对象
      * 
-     * @return 用户列表页面路径
+     * @return model对象{成功；失败}
      * 
      */
     @RequestMapping(value = "/send", method = RequestMethod.POST)
@@ -264,9 +310,9 @@ public class instationMsgCommand {
     /**
      * 新增、修改消息的异步保存操作
      * 
-     * @param message
+     * @param MessageView  消息视图对象
      * 
-     * @return 用户列表页面路径
+     * @return model  对象{成功；失败}
      * 
      */
     @RequestMapping(value = "/ajaxsave", method = RequestMethod.POST)
@@ -312,8 +358,9 @@ public class instationMsgCommand {
      * @param id
      * @return ModelAndView
      */
-	@RequestMapping(value = "/edit")
-    public ModelAndView editNewDraft(@RequestParam(value = "messageId",required = true)String messageId){
+	@RequestMapping(value = "/editMessage/{messageId}/{loginId}")
+    public ModelAndView editNewDraft(@PathVariable(value = "messageId") String messageId,
+    						@PathVariable(value = "loginId") String loginId){
     	MessageView messageView = new MessageView();
     	if(messageId != null && !"".equals(messageId)){
     		List<Envelope> envelopeList = envelopeService.findEnvelopeListByMessageId(messageId);
@@ -324,8 +371,14 @@ public class instationMsgCommand {
     	model.put("messageView", messageView);
     	return new ModelAndView("mc/instationmessage/newmessage/msg_create",model);
     }
-    
-	@RequestMapping(value = "/delete/{ids}/type/{boxType}",method = RequestMethod.POST)
+
+	/**
+	 * 逻辑删除消息
+	 * @param ids
+	 * @param boxType
+	 * @return model  对象{成功；失败}
+	 */
+	@RequestMapping(value = "/delete/{ids}/{boxType}",method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> delete(@PathVariable("ids") String ids,@PathVariable("boxType") String boxType){
     	Map<String, Object> envelopeMap = new HashMap<String, Object>(); 

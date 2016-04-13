@@ -3,6 +3,7 @@ package com.inspur.gcloud.mc.core.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.loushang.framework.mybatis.mapper.EntityMapper;
 
 import com.inspur.gcloud.mc.core.data.Envelope;
@@ -19,7 +20,7 @@ public interface EnvelopeDao extends EntityMapper<Envelope> {
 	
 	public List<Envelope> findEnvelopeListByMessageId(String messageId);
 	
-	public Envelope findEnvelopeByMessageIdAndLoginId(String messageId, String loginId);
+	public Envelope findEnvelopeByMessageIdAndLoginId(Map<String, String> map);
 	
 	 /**
      * 查询当前用户的收件箱、已发送、草稿箱列表
@@ -68,14 +69,12 @@ public interface EnvelopeDao extends EntityMapper<Envelope> {
      */
 	public void changeState(Map map);
     
-    /**
-     * 删除已发送的信封
-     * @param map, key 分别为 ： 
-     *              <code>id<code>[信封ID]
-     *              <code>boxType<code>[邮箱类型：in：收件箱；out:已发送；draft:草稿箱]
-     *              
-     * 
-     * 
-     */
+	/**
+	 * 更新消息接收状态方法
+	 * @param envelopeId 信封表ID
+	 * @param receiveState 接受状态
+	 * @return 更新数量
+	 */
+	public int updateEnvelope(String envelopeId, String receiveState);
     
 }

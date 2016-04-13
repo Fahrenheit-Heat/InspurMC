@@ -26,7 +26,7 @@ $(function() {
 	
 	//转发
 	$("#forwardBtn").click(function (){
-		forward();
+		forwardMessage();
 	});
 
 	// 条件查询
@@ -89,8 +89,6 @@ function initGrid(){
 	var isNotSended = "0";
 	//设置信封过滤：多条只显示一条
 	var groupfield = "y";
-	//设置过滤条件：消息
-	var messageType = "m";
 	//设置数据请求地址
 	grid.setAjaxUrl(url);
 	grid.setParameter("messageType", messageType);
@@ -122,13 +120,11 @@ function del(){
 		$.each(records, function(index, item){
 			recordIds.push(item.id);
 		});
-		//草稿箱类型
-		var boxType = "draftbox";
 		
 		//删除警告框
 		G3.confirm("提示", "确认删除记录？",
 			function() {
-				var requestUrl = G3.cmdPath+"mc/core/instationmessage/delete/"+recordIds+"/type/"+boxType;
+				var requestUrl = G3.cmdPath+"mc/core/instationmessage/delete/"+recordIds+"/"+boxType;
 				$.ajax({
 					type : "post",
 					dataType : "json",
@@ -161,8 +157,6 @@ function query() {
 	var sendTimeTo = $("#sendTimeTo").val();
 	//设置过滤条件：未发送
 	var isNotSended = "0";
-	//设置过滤条件：消息
-	var messageType = "m";
 	if (messageTopic == undefined) {
 		messageTopic = "";
 	}
@@ -190,10 +184,11 @@ function edit(){
 	var records = grid.getSelectedRow();
 	if (records.length == 1) {
 		var data = records[0];
-		var url = "command/mc/core/instationmessage/edit";
+		var url = "command/mc/core/instationmessage/showMessage";
 		if (data.message.id != undefined && data.message.id != "" && data.message.id != "null") {
 			url += "?messageId=" + data.message.id;
 		}
+		url += "&operType=edit&boxType="+boxType;
 		G3.forward(url);
 	} else {
 		G3.alert("提示", "请选择一条消息！");
@@ -225,28 +220,30 @@ function reply(){
 }
 
 /**
- * 转发
+ * 转发消息
  */
-function forward(){
+function forwardMessage(){
 	var records = grid.getSelectedRow();
 	if (records.length == 1) {
 		var data = records[0];
-		var url = G3.cmdPath + "mc/core/forward";
-		if (data.id != undefined && data.id != "" && data.id != "null") {
-			url += "?id=" + data.id;
+		var url = G3.cmdPath + "mc/core/instationmessage/showMessage";
+		if (data.message.id != undefined && data.message.id != "" && data.message.id != "null") {
+			url += "?messageId=" + data.message.id;
 		}
+		url += "&operType=forward&boxType="+boxType;
+			
+		window.location = url;
 		
-		G3.showModalDialog("回复邮件", url, {
-			width : 800,
-			height : 500
-		}, function(e, ret) {
-			if (ret == "1") {
-				grid.reload();
-			}
-		});
 	} else {
-		G3.alert("提示", "请选择要回复的邮件！");
+		G3.alert("提示", "请选择要转发的邮件！");
 	}
+}
+
+//渲染查看链接
+function messageShowLink(data, type, full){
+	var messageId = full.message.id;
+	var url = G3.cmdPath + "mc/core/instationmessage/showMessage?messageId="+messageId+"&operType=view&boxType="+boxType;
+	return '<a href='+url+'>'+data+'</a>';
 }
 
 /**

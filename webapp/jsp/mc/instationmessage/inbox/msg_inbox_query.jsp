@@ -13,6 +13,7 @@
 <ui:ScriptManager hasList="true"></ui:ScriptManager>
 <script type="text/javascript">
 	var loginId = '<%=loginId%>';
+	var boxType = "instationMsgIn";
 </script>
 </head>
 	<body>
