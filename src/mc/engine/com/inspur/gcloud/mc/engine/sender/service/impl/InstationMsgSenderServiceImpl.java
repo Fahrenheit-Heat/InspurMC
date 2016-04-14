@@ -25,7 +25,7 @@ public class InstationMsgSenderServiceImpl implements IInstationMsgSenderService
 	public ResultMap sendMessage(MessageObject messageObject) {
 		ResultMap resultMap = new ResultMap();
 		if(messageObject != null){
-			if(messageObject.getEnvlopeCount() == 1){
+			if(messageObject.getEnvlopeCount() <= 1){
 				String messageId = messageSevice.insertMessage(messageObject.getMessage());
 				envelopeService.saveEnvelope(messageObject.getEnvelopeList().get(0), messageId);
 			}else{

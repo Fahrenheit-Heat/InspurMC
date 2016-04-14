@@ -58,19 +58,19 @@ public class MessageParserService implements IMessageParserService {
 					if(messageView.getEnvelopeId() != null && !messageView.getEnvelopeId().equals("")){
 						envelope.setId(messageView.getEnvelopeId());
 					}
-					envelope.setMessageType(messageView.getMessageType());
-					envelope.setRelatedMessageId("");
-					envelope.setRelatedPath("");
+					envelope.setMessageType("m");
+					envelope.setRelatedMessageId(messageView.getRelatedMessageId());
+					envelope.setRelatedPath(messageView.getRelatedPath());
 					envelope.setSenderId(messageView.getSenderId());
 					envelope.setSenderName(messageView.getSenderName());
 					envelope.setReceiverId(receiverIdList.get(i));
-					envelope.setReceiverName(messageView.getReceiverName());
+					envelope.setReceiverName(messageView.getReceiverNameList().get(i));
 					envelope.setReceiveState(messageView.getReceiveState());
 					envelope.setSendState(messageView.getSendState());
 					envelope.setIsSchedule("");
-					envelope.setIsReadReceipt("");
+					envelope.setIsReadReceipt("0");
 					envelope.setHasReceipt("");
-					envelope.setSendType("");
+					envelope.setSendType(messageView.getSendType());
 					envelope.setReceiverType(messageView.getReceiverType());
 					envelope.setSendLevel("");
 					envelope.setSendTime(date);

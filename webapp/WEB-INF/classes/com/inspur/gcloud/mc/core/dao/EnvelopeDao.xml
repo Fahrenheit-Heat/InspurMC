@@ -35,8 +35,9 @@
 			READ_TIME, CREATE_TIME, UPDATE_TIME, REMARK, SENDER_NAME, RECEIVER_NAME
 		FROM 
 			MC_ENVELOPE 
-		WHERE 
-			MESSAGE_ID = #{messageId} 
+		<where>
+			MESSAGE_ID = #{messageId}
+		</where>
 	</select>
 
     <resultMap type="com.inspur.gcloud.mc.core.data.Envelope" id="envelopeResultMap">

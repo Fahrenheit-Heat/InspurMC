@@ -217,16 +217,19 @@ public class instationMsgCommand {
     	// 判断messageId是否为空
     	if(messageId != null && !"".equals(messageId)){
     		// messageId不为空，获取组装视图对象的Envelope对象和Message对象
-    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(messageId, loginId, boxType);
+    		List<Envelope> envelopeList = envelopeService.findEnvelopeListByMessageId(messageId);
     		Message message = messageService.findMessageById(messageId);
     		// 构建转发页面视图对象
-    		messageView = messageBuilderService.builderEditMessage(message, envelope);
-    		// 判断是否为未读
-    		if(envelope.getReceiveState() == null || "0".equals(envelope.getReceiveState())){
-    			// 未读状态：更新消息状态
-    			envelope.setReadTime(new Date());
-        		envelope.setReceiveState("1");
-        		envelopeService.updateEnvelope(envelope);
+    		messageView = messageBuilderService.builderMessage(message, envelopeList);
+    		//批量更新envelope状态
+    		for(int i = 0; i < envelopeList.size(); i++){
+    			// 判断是否为未读
+        		if(envelopeList.get(i).getReceiveState() == null || "0".equals(envelopeList.get(i).getReceiveState())){
+        			// 未读状态：更新消息状态
+        			envelopeList.get(i).setReadTime(new Date());
+        			envelopeList.get(i).setReceiveState("1");
+            		envelopeService.updateEnvelope(envelopeList.get(i));
+        		}
     		}
     	}
     	return messageView;
@@ -249,16 +252,19 @@ public class instationMsgCommand {
     	// 判断messageId是否为空
     	if(messageId != null && !"".equals(messageId)){
     		// messageId不为空，获取组装视图对象的Envelope对象和Message对象
-    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(messageId, loginId, boxType);
+    		List<Envelope> envelopeList = envelopeService.findEnvelopeListByMessageId(messageId);
     		Message message = messageService.findMessageById(messageId);
     		// 构建页面展示消息对象
-    		messageView = messageBuilderService.builderViewMessage(message, envelope);
-    		// 判断是否为未读
-    		if(envelope.getReceiveState() == null || "0".equals(envelope.getReceiveState())){
-    			// 未读状态：更新消息状态
-    			envelope.setReadTime(new Date());
-        		envelope.setReceiveState("1");
-        		envelopeService.updateEnvelope(envelope);
+    		messageView = messageBuilderService.builderViewMessage(message, envelopeList);
+    		//批量更新envelope状态
+    		for(int i = 0; i < envelopeList.size(); i++){
+    			// 判断是否为未读
+        		if(envelopeList.get(i).getReceiveState() == null || "0".equals(envelopeList.get(i).getReceiveState())){
+        			// 未读状态：更新消息状态
+        			envelopeList.get(i).setReadTime(new Date());
+        			envelopeList.get(i).setReceiveState("1");
+            		envelopeService.updateEnvelope(envelopeList.get(i));
+        		}
     		}
     	}
     	return messageView;

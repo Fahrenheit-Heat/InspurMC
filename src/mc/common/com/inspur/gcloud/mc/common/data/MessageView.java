@@ -62,6 +62,12 @@ public class MessageView {
 	
 	// 消息内容
 	private String messageContent;
+	
+	// 转发或回复路径
+	private String relatedPath;
+	
+	// 转发或回复上一条消息ID
+	private String relatedMessageId;
 
 	public String getMessageTopic() {
 		return messageTopic;
@@ -229,6 +235,22 @@ public class MessageView {
 
 	public void setSendState(String sendState) {
 		this.sendState = sendState;
+	}
+
+	public String getRelatedPath() {
+		return relatedPath;
+	}
+
+	public void setRelatedPath(String relatedPath) {
+		this.relatedPath = relatedPath;
+	}
+
+	public String getRelatedMessageId() {
+		return relatedMessageId;
+	}
+
+	public void setRelatedMessageId(String relatedMessageId) {
+		this.relatedMessageId = relatedMessageId;
 	}
 	
 }

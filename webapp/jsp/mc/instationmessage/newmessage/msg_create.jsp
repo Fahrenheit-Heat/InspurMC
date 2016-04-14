@@ -46,16 +46,18 @@
 							<input type="hidden" id="envelopeId" name="envelopeId" value="${messageView.envelopeId }">
 							<input type="hidden" id="sendType" name="sendType" value="${messageView.sendType }" >
 							<input type="hidden" id="sendState" name="sendState" value="${messageView.sendState }">
-							<input type="hidden" id="messageContent" name="messageContent" value="${messageView.messageContent }">
-							<input type="hidden" id="messageType" name="messageType" value="m"/>
-							<input type="hidden" id="senderId" name="senderId" value="${messageView.senderId}">
+							<input type="hidden" id="receiveType" name="receiveType" value="${messageView.receiveType}">
 							<input type="hidden" id="receiveState" name="receiveState" value="${messageView.receiveState}">
+							<input type="hidden" id="relatedMessageId" name="relatedMessageId" value="${messageView.relatedMessageId}">
+							<input type="hidden" id="messageContent" name="messageContent" value="${messageView.messageContent }">
 							<div class="form-hr">
 								<div class="fieldLabel">
 									<i class="fa fa-user"></i>发件人：
 								</div>
 								<div class="fieldInput">
-									<input type="text" class="form-control" id="senderName" name="senderName" value="${messageView.senderName}" readOnly />
+									<input type="hidden" id="senderId" name="senderId" value="${messageView.senderId}">
+									<input type="text" class="form-control" id="senderName" name="senderName" 
+										value="${messageView.senderName}" readOnly />
 								</div>
 							</div>
 							
@@ -65,7 +67,7 @@
 								</div>
 								<div class="fieldInput">
 									<input type="hidden" id="receiverId" name="receiverId" value="${messageView.receiverId}" />
-									<input type="text" class="form-control" id="receiverName" name="receiverName"
+									<input type="text" class="form-control" id="receiverName" name="receiverName" 
 										value="${messageView.receiverName}" placeholder="收件人" />
 								</div>
 							</div>

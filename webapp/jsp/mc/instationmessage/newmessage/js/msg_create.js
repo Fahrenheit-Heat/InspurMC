@@ -5,6 +5,13 @@ $(function() {
 	
 	var messageId = $("#messageId").val();
 	var operType = $("#operType").val();
+	var boxType = $("#boxType").val();
+	
+	$("#sendType").val("0");// 设置发送类型为原邮件
+	$("#sendState").val("1");// 设置发送状态为已发送
+	$("#receiveState").val("0");// 设置接受状态为未读
+	$("#receiveType").val("0");// 设置消息类型为一对一
+	
 	var requestUrl;
 	
 	if(messageId != null && messageId != undefined && messageId != ""){
@@ -20,7 +27,7 @@ $(function() {
 		}else{
 			requestUrl += ""
 		}
-		requestUrl += "/"+messageId+"/"+loginId + "/" +boxType;
+		requestUrl += "/" + messageId + "/"+ loginId + "/" + boxType;
 		
 		// 初始化UE编辑器
 		var ue = initUESettings("editor", "edit");
@@ -78,12 +85,17 @@ $(function() {
  * @param data
  */
 function initData(ue, data){
-	$("#senderId").val(data.senderId);
-	$("#senderName").val(data.senderName);
-	$("#receiverId").val(data.receiverId);
-	$("#receiverName").val(data.receiverName);
-	$("#messageTopic").val(data.messageTopic);
-	$("#messageId").val(data.messageId);
+	$("#senderId").val(data.senderId);// 设置发送人ID
+	$("#senderName").val(data.senderName);// 设置发送人名
+	$("#receiverId").val(data.receiverId);// 设置接收人ID
+	$("#receiverName").val(data.receiverName);// 设置接收人名
+	$("#messageTopic").val(data.messageTopic);// 设置消息主题
+	$("#messageId").val(data.messageId);// 设置消息ID
+	$("#sendType").val(data.sendType);// 设置发送类型为原邮件
+	$("#sendState").val(data.sendState);// 设置发送状态为已发送
+	$("#receiveType").val(data.receiveType);// 设置消息类型为一对一
+	$("#receiveState").val(data.receiveState);// 设置接受状态为未读
+	$("#relatedMessageId").val(data.relatedMessageId)// 设置回复消息ID
 	// 初始化UE编辑器数据
 	ue.ready(function(){
 		ue.setContent(data.messageContent);
@@ -177,9 +189,6 @@ function save(ue){
  */
 function send(ue){
 	$("#messageContent").val(ue.getContent());
-	$("#sendType").val("1");
-	$("#sendState").val("0");
-	$("#receiveState").val("0");
 	var requestUrl = context + "/mc/core/instationmessage/send";
 	//表单的异步提交
 	$("#form").ajaxSubmit({

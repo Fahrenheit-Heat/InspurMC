@@ -109,10 +109,8 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	}
 	
 	//插入新信封
-	@Transactional
 	public Boolean batchInsertEnvelope(List<Envelope> envelopeList, Message message) {
 		List<Envelope> newEnvelopeList = new ArrayList<Envelope>();
-		message.setId(GCloudUtil.getInstance().getNextSeqId(32));
 		for(int i = 0; i < envelopeList.size(); i++){
 			Envelope envelope = envelopeList.get(i);
 			envelope.setId(GCloudUtil.getInstance().getNextSeqId(32));
@@ -120,7 +118,6 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 			envelope.setMessage(message);
 			newEnvelopeList.add(envelope);
 		}
-		messageDao.insert(message);
 		envelopeDao.batchInsert(newEnvelopeList);
 		return true;
 	}
