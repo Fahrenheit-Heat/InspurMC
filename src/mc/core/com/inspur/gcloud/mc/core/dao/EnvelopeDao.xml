@@ -110,7 +110,7 @@
                     receiver_id ${orderdir} 
                 </when>  
                 <otherwise> 
-               		send_time ${orderdir}   
+               		send_time
                 </otherwise>    
             </choose>    
         </if>
@@ -170,9 +170,15 @@
 			<if test="isSended != null and isSended != '' ">
 				AND e.SEND_STATE = '${isSended}'
 			</if>
-			<if test="isRead != null and isRead != '' 
-				and isNotRead != null and isNotRead != '' ">
-				AND (e.RECEIVE_STATE = '${isRead}' OR e.RECEIVE_STATE = '${isNotRead}')
+			<if test="isRead != null and isRead != '' and (isNotRead == null or isNotRead == '' )">
+				AND e.RECEIVE_STATE = '${isRead}' 
+			</if>
+			<if test="isNotRead != null and isNotRead != '' and (isRead == null or isRead == '')">
+				AND e.RECEIVE_STATE = '${isNotRead}'
+			</if>
+			<if test="(isRead != null and isRead != '' )
+				and (isNotRead != null and isNotRead != '' )">
+				AND (RECEIVE_STATE = '${isRead}' OR RECEIVE_STATE = '${isNotRead}')
 			</if>
 			<if test="isNotSended != null and isNotSended != '' ">
 				AND e.SEND_STATE = '${isNotSended}'

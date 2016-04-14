@@ -3,12 +3,8 @@
  */
 $(function(){
 	// 构建跳转地址
-	var requestUrl = G3.cmdPath+"mc/core/instationmessage/viewMessage/"
-		+$("#messageId").val()
-		+"/"
-		+loginId
-		+"/"
-		+boxType;
+	var requestUrl = G3.cmdPath+"mc/core/instationmessage/viewMessage/";
+	requestUrl += $("#messageId").val()+"/"+loginId+"/"+boxType;
 	// 初始化UE编辑器
 	var ue = initUESettings("editor", "show");
 	// ajax请求表单数据

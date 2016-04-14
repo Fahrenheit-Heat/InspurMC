@@ -74,11 +74,10 @@
 		<script id="mypopover" type="text/html">
 		<table class="table table-moresearch">
 			<tr>
-				<td class="fieldInput"><label>状态</label>
-					<input type="text" id="sendState" class="form-control" placeholder="状态">
-				</td>
 				<td class="fieldInput"><label>收件人</label>
 					<input type="text" id="receiverName" class="form-control" placeholder="收件人">
+				</td>
+				<td class="fieldInput">
 				</td>
 			</tr>
 			<tr>

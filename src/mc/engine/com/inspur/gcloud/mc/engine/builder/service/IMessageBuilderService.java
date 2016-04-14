@@ -15,5 +15,7 @@ public interface IMessageBuilderService {
 	public MessageView builderReplyMessage(Message message, Envelope envelope);
 	
 	public MessageView builderForwardMessage(Message message, Envelope envelope);
+	
+	public MessageView builderEditMessage(Message message, Envelope envelope);
 
 }

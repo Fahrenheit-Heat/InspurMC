@@ -58,7 +58,7 @@
 										<th width="15%" data-field="receiverName" data-sortable="false">收件人</th>
 										<th width="25%" data-field ="message.messageTopic" data-render="messageShowLink">主题</th>
 										<th width="25%" data-field="sendTime">日期</th>
-										<th width="25%" data-field="sendState">状态</th>
+										<th width="25%" data-field="sendState" data-render="renderstatus">状态</th>
 									</tr>
 								</thead>
 							</table>
@@ -71,12 +71,12 @@
 		<script id="mypopover" type="text/html">
 		<table class="table table-moresearch">
 			<tr>
-				<td class="fieldInput"><label>状态</label>
-					<input type="text" id="sendState" class="form-control" placeholder="状态">
-				</td>
 				<td class="fieldInput"><label>收件人</label>
 					<input type="text" id="receiverName" class="form-control" placeholder="收件人">
 				</td>
+				<td class="fieldInput">
+				</td>
+				
 			</tr>
 			<tr>
 				<td class="fieldInput">

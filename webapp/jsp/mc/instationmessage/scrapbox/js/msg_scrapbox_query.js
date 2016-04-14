@@ -5,18 +5,29 @@ $(function(){
 	// 表格初始化查询
 	initGrid();
 	
-	//
+	//查询
 	$("#queryBtn").click(query);
 	
-	//
+	//更多查询
 	$("body").on("click","#moreQueryBtn",query);
 	
+	//删除
 	$("#delBtn").click(del);
 	
-	//更多查询
+	//更多查询弹出框
 	$("#moresearch").morequery({
 		"title" : "",
 		"content" : template('mypopover',{})
+	});
+	
+	//重置
+	$("body").on("click", "#resetBtn", function(){
+		$("#messageTopic").val("");
+		$("#senderName").val("");
+		$("#receiverName").val("");
+		$("#sendTimeFrom").val("");
+		$("#sendTimeTo").val("");
+		
 	});
 });
 
@@ -40,13 +51,13 @@ function initGrid(){
 	grid.init();
 }
 
+//查询
 function query(){
 	
 	var url = "mc/core/instationmessage/query";
 	
 	//设置过滤条件：草稿箱
 	var isScrap = "2";
-	
 	var groupfield = "y";
 	
 	var messageTopic = $("#messageTopic").val();
@@ -67,7 +78,7 @@ function query(){
 	grid.load();
 }
 
-//
+//删除
 function del(){
 	var records = grid.getSelectedRow();
 	if (records.length != 0) {
@@ -76,8 +87,6 @@ function del(){
 		$.each(records, function(index, item){
 			recordIds.push(item.id);
 		});
-		//草稿箱类型
-		var boxType = "scrapbox";
 		
 		//删除警告框
 		G3.confirm("提示", "确认删除记录？",
@@ -104,6 +113,7 @@ function del(){
 	}
 }
 
+//选择日期
 function selectTime(obj){
 	$(obj).datetimepicker({format: 'yyyy-mm-dd',minView: "month"});
 }

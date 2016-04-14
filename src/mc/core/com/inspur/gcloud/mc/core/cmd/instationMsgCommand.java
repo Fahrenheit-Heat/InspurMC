@@ -71,7 +71,7 @@ public class instationMsgCommand {
 			return "mc/instationmessage/outbox/msg_outbox_query";
 		}else if(McConstants.INSTATIONMSG_DRAFT_BOX.equals(boxType)){
 			// 草稿箱
-			return "mc/instationmessage/draftbox/msg_draft_query";
+			return "mc/instationmessage/draftbox/msg_draftbox_query";
 		}else if(McConstants.INSTATIONMSG_SCRAP_BOX.equals(boxType)){
 			// 废件箱
 			return "mc/instationmessage/scrapbox/msg_scrapbox_query";
@@ -199,11 +199,44 @@ public class instationMsgCommand {
     	}
     	return messageView;
     }
+
+    /**
+     * 编辑消息初始化页面数据方法
+     * @param messageId 消息主键ID
+     * @param loginId 当前登录人OrangeId
+     * @param boxType box类型
+     * @return
+     */
+    @RequestMapping("/editMessage/{messageId}/{loginId}/{boxType}")
+    @ResponseBody
+    public MessageView editMessage(@PathVariable(value = "messageId") String messageId,
+    		@PathVariable(value="loginId") String loginId,
+    		@PathVariable(value="boxType") String boxType){
+    	// 新建页面视图对象 
+    	MessageView messageView = new MessageView();
+    	// 判断messageId是否为空
+    	if(messageId != null && !"".equals(messageId)){
+    		// messageId不为空，获取组装视图对象的Envelope对象和Message对象
+    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(messageId, loginId, boxType);
+    		Message message = messageService.findMessageById(messageId);
+    		// 构建转发页面视图对象
+    		messageView = messageBuilderService.builderEditMessage(message, envelope);
+    		// 判断是否为未读
+    		if(envelope.getReceiveState() == null || "0".equals(envelope.getReceiveState())){
+    			// 未读状态：更新消息状态
+    			envelope.setReadTime(new Date());
+        		envelope.setReceiveState("1");
+        		envelopeService.updateEnvelope(envelope);
+    		}
+    	}
+    	return messageView;
+    }
     
     /**
      * 查看消息加载数据方法
      * @param messageId 消息ID
      * @param loginId 登录人ID
+     * @param boxType box类型
      * @return MessageView {Object}
      */
     @RequestMapping(value = "/viewMessage/{messageId}/{loginId}/{boxType}", method = RequestMethod.POST)
@@ -353,25 +386,6 @@ public class instationMsgCommand {
         return model;
     }
 
-    /**
-     * 编辑消息
-     * @param id
-     * @return ModelAndView
-     */
-	@RequestMapping(value = "/editMessage/{messageId}/{loginId}")
-    public ModelAndView editNewDraft(@PathVariable(value = "messageId") String messageId,
-    						@PathVariable(value = "loginId") String loginId){
-    	MessageView messageView = new MessageView();
-    	if(messageId != null && !"".equals(messageId)){
-    		List<Envelope> envelopeList = envelopeService.findEnvelopeListByMessageId(messageId);
-    		Message message = messageService.findMessageById(messageId);
-    		messageView = messageBuilderService.builderMessage(message, envelopeList);
-    	}
-    	Map<String, Object> model = new HashMap<String, Object>();
-    	model.put("messageView", messageView);
-    	return new ModelAndView("mc/instationmessage/newmessage/msg_create",model);
-    }
-
 	/**
 	 * 逻辑删除消息
 	 * @param ids
@@ -386,8 +400,7 @@ public class instationMsgCommand {
              String[] idArray = ids.split(",");
     		 List<Envelope> envelopeList = new ArrayList<Envelope>();
     		 for(int i = 0;i < idArray.length;i++){
-    			 Envelope temp = envelopeService.findEnvelopeById(idArray[i]);
-    			 envelopeList.add(temp);
+    			 envelopeList.add(envelopeService.findEnvelopeById(idArray[i]));
     		 }
     		 envelopeMap.put("envelopeList", envelopeList);
     		 envelopeMap.put("boxType", boxType);

@@ -53,10 +53,10 @@
 									<tr>
 										<th data-number="true">
 										<th data-checkbox="true">
-										<th width="10%" data-field="senderName" data-sortable="false">发件人</th>
-										<th width="60%" data-field="message.messageTopic" data-render="messageShowLink">主题</th>
-										<th width="20%" data-field="sendTime">日期</th>
-										<th width="10%" data-field="receiveState" data-render="RenderState">状态</th>
+										<th width="15%" data-field="senderName" data-sortable="false">发件人</th>
+										<th width="25%" data-field="message.messageTopic" data-render="messageShowLink">主题</th>
+										<th width="25%" data-field="sendTime">日期</th>
+										<th width="25%" data-field="receiveState" data-render="RenderState">状态</th>
 									</tr>
 								</thead>
 							</table>
@@ -70,7 +70,12 @@
 		<table class="table table-moresearch">
 			<tr>
 				<td class="fieldInput"><label>状态</label>
-					<input type="text" id="receiveState" class="form-control" placeholder="状态">
+					<select class="form-control input-md" name="receiveState" id="receiveState">
+						<option value="-1">请选择</option>
+						<option value="0">未读</option>
+						<option value="1">已读</option>
+					</select>
+					
 				</td>
 				<td class="fieldInput"><label>发件人</label>
 					<input type="text" id="senderName" class="form-control" placeholder="发件人">

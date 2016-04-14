@@ -3,7 +3,6 @@ package com.inspur.gcloud.mc.core.dao;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Param;
 import org.loushang.framework.mybatis.mapper.EntityMapper;
 
 import com.inspur.gcloud.mc.core.data.Envelope;

@@ -6,21 +6,20 @@ $(function(){
 	initGrid();
 	
 	// 修改
-	$("#editBtn").bind("click", function(){
+	$("#editBtn").click(function(){
 		edit();
 	});
 	
 	// 删除
-	$("#delBtn").click(
-		function() {
-			del();
-		});
+	$("#delBtn").click(function() {
+		del();
+	});
 	
 	// 条件查询
 	$("#queryBtn").click(query);
 	
 	// 增加按钮事件
-	$("#addBtn").bind("click",function(){
+	$("#addBtn").click(function(){
 		newMessage();
 	});
 	
@@ -31,6 +30,15 @@ $(function(){
 	$("#moresearch").morequery({
 		"title" : "",
 		"content" : template('mypopover', {})
+	});
+	
+	//重置
+	$("body").on("click", "#resetBtn", function(){
+		$("#messageTopic").val("");
+		$("#receiverName").val("");
+		$("#sendTimeFrom").val("");
+		$("#sendTimeTo").val("");
+		
 	});
 });
 
@@ -69,8 +77,9 @@ function edit(){
 		var data = records[0];
 		var url = "command/mc/core/instationmessage/showMessage";
 		if (data.message.id != undefined && data.message.id != "" && data.message.id != "null" ) {
-			url += "/" + data.message.id + "/" + loginId + "/" + boxType;
+			url += "?messageId=" + data.message.id;
 		}
+		url += "&operType=edit&boxType="+boxType;
 		G3.forward(url);
 	} else {
 		G3.alert("提示","请选择一条消息！");
@@ -150,7 +159,6 @@ function query(){
  * 新建消息(跳转)
  */
 function newMessage(){
-	//var url = G3.cmdPath + "mc/core/instationmessage/newMessage";
 	G3.forward("command/mc/core/instationmessage/newMessage");
 }
 
@@ -159,4 +167,22 @@ function messageShowLink(data, type, full){
 	var messageId = full.message.id;
 	var url = G3.cmdPath + "mc/core/instationmessage/showMessage?messageId="+messageId+"&operType=view&boxType="+boxType;
 	return '<a href='+url+'>'+data+'</a>';
+}
+
+/**
+ * 渲染envelope状态
+ * @param data
+ * @param type
+ * @param full
+ * @returns {String}
+ */
+function renderstatus(data, type, full) {
+	if (data != "" || data != null) {
+		if (data == "1") {
+			data = "已发送";
+		} else {
+			data = "";
+		}
+	}
+	return data;
 }

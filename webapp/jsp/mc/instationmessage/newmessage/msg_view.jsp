@@ -1,4 +1,3 @@
-<%@page import="com.inspur.gcloud.mc.common.McConstants"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <%@page import="com.inspur.gcloud.bsp.BspUtil"%>

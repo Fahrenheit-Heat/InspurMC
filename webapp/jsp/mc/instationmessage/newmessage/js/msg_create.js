@@ -5,7 +5,6 @@ $(function() {
 	
 	var messageId = $("#messageId").val();
 	var operType = $("#operType").val();
-	var boxType = $("#boxType").val();
 	var requestUrl;
 	
 	if(messageId != null && messageId != undefined && messageId != ""){
@@ -21,7 +20,7 @@ $(function() {
 		}else{
 			requestUrl += ""
 		}
-		requestUrl += "/"+messageId+"/"+loginId ;
+		requestUrl += "/"+messageId+"/"+loginId + "/" +boxType;
 		
 		// 初始化UE编辑器
 		var ue = initUESettings("editor", "edit");

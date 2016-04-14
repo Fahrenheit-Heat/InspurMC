@@ -14,7 +14,7 @@ $(function() {
 	initGrid();
 
 	// 增加按钮事件
-	$("#addBtn").click("click", function () {
+	$("#addBtn").click(function () {
 		newMessage();
 	});
 	
@@ -24,10 +24,9 @@ $(function() {
 	});
 	
 	// 删除
-	$("#delBtn").click(
-		function() {
-			del();
-		});
+	$("#delBtn").click(function (){
+		deleteMessage();
+	});
 	
 	
 	//转发
@@ -157,49 +156,9 @@ function forwardMessage(){
 }
 
 /**
-* 渲染主题连接方法
-*/
-function messageShowLink(data, type, full){
-	var messageId = full.message.id;
-	var url = G3.cmdPath + "mc/core/instationmessage/showMessage?messageId="+messageId+"&operType=view&boxType="+boxType;
-	return '<a href='+url+'>'+data+'</a>';
-}
-
-/**
- * 查询数据
+ * 删除消息
  */
-function query() {
-	//设置过滤条件：未读和已读
-	var isNotRead = "0";
-	var isRead = "1";
-	//设置过滤条件：消息
-	var messageType = "m";
-	var messageTopic = $("#messageTopic").val();
-	var receiveState = $("#receiveState").val();
-	var senderName = $("#senderName").val();
-	var sendTimeFrom = $("#sendTimeFrom").val();
-	var sendTimeTo = $("#sendTimeTo").val();
-	if (messageTopic == undefined) {
-		messageTopic = "";
-	}
-	
-	var url = "mc/core/instationmessage/query";
-	grid.setAjaxUrl(url);
-	grid.setParameter("messageTopic", messageTopic);
-	grid.setParameter("isNotRead", isNotRead);
-	grid.setParameter("isRead", isRead);
-	grid.setParameter("messageType", messageType);
-	grid.setParameter("receiveState", receiveState);
-	grid.setParameter("senderName", senderName);
-	grid.setParameter("sendTimeFrom", sendTimeFrom);
-	grid.setParameter("sendTimeTo", sendTimeTo);
-	grid.load();
-}
-
-/**
- * 删除
- */
-function del(){
+function deleteMessage(){
 	var records = grid.getSelectedRow();
 	if (records.length != 0) {
 		
@@ -216,6 +175,7 @@ function del(){
 				$.ajax({
 					type : "post",
 					dataType : "json",
+					async : false,
 					url: requestUrl,
 					error:function(data){
 						G3.alert("提示","删除失败！");
@@ -232,6 +192,54 @@ function del(){
 	} else {
 		G3.alert("提示", "请选择用户！");
 	}
+}
+
+/**
+* 渲染主题连接方法
+*/
+function messageShowLink(data, type, full){
+	var messageId = full.message.id;
+	var url = G3.cmdPath + "mc/core/instationmessage/showMessage?messageId="+messageId+"&operType=view&boxType="+boxType;
+	return '<a href='+url+'>'+data+'</a>';
+}
+
+/**
+ * 查询数据
+ */
+function query() {
+
+	//设置过滤条件：消息
+	var messageType = "m";
+	var messageTopic = $("#messageTopic").val();
+	var senderName = $("#senderName").val();
+	var sendTimeFrom = $("#sendTimeFrom").val();
+	var sendTimeTo = $("#sendTimeTo").val();
+	if (messageTopic == undefined) {
+		messageTopic = "";
+	}
+	
+	var url = "mc/core/instationmessage/query";
+	grid.setAjaxUrl(url);
+	//设置过滤条件
+	var receiveState = $("#receiveState").val();
+	var isNotRead;
+	var isRead;
+	if(receiveState == "0") {
+		isNotRead = "0";
+	} else if (receiveState == "1") {
+		isRead = "1";
+	} else {
+		isNotRead = "0";
+		isRead = "1";
+	}
+	grid.setParameter("isNotRead", isNotRead);
+	grid.setParameter("isRead", isRead);
+	grid.setParameter("messageTopic", messageTopic);
+	grid.setParameter("messageType", messageType);
+	grid.setParameter("senderName", senderName);
+	grid.setParameter("sendTimeFrom", sendTimeFrom);
+	grid.setParameter("sendTimeTo", sendTimeTo);
+	grid.load();
 }
 
 /**

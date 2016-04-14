@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,8 +44,8 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 		map.put("messageId", messageId);
 		map.put("loginId", loginId);
 		map.put("boxType", boxType);
-		Envelope temp = envelopeDao.findEnvelopeByMessageIdAndLoginId(map);
-		return temp;
+		Envelope envelope = envelopeDao.findEnvelopeByMessageIdAndLoginId(map);
+		return envelope;
 	}
 
 	@Override

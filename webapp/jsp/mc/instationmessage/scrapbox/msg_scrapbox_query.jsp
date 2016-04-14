@@ -11,7 +11,7 @@
 	String loginId = BspUtil.getInstance().getLoginUserOrganId();
 	//设定信箱类型
 	String messageType = McConstants.MESSAGE_TYPE_INSTATIONMSG;
-	String boxType = McConstants.INSTATIONMSG_OUT_BOX;
+	String boxType = McConstants.INSTATIONMSG_SCRAP_BOX;
 %>
  <html>
 <head>
@@ -58,11 +58,11 @@
 								<tr>
 									<th data-number="true">
 									<th data-checkbox="true">
-									<th width="10%" data-field="senderName" data-sortable="false">发件人</th>
-									<th width="10%" data-field="receiverName" data-sortable="false">收件人</th>
+									<th width="8%" data-field="senderName" data-sortable="false">发件人</th>
+									<th width="8%" data-field="receiverName" data-sortable="false">收件人</th>
 									<th width="25%" data-field="message.messageTopic" data-render="messageShowLink">主题</th>
-									<th width="20%" data-field="sendTime">日期</th>
-									<th width="20%" data-field="sendState" data-render="renderstatus">状态</th>
+									<th width="25%" data-field="sendTime">日期</th>
+									<th width="25%" data-field="sendState" data-render="renderstatus">状态</th>
 								</tr>
 							</thead>
 						</table>

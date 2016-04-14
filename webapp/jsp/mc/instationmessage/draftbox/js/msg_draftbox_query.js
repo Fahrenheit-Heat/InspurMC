@@ -151,7 +151,6 @@ function del(){
  */
 function query() {
 	var messageTopic = $("#messageTopic").val();
-	var sendState = $("#sendState").val();
 	var receiverName = $("#receiverName").val();
 	var sendTimeFrom = $("#sendTimeFrom").val();
 	var sendTimeTo = $("#sendTimeTo").val();
