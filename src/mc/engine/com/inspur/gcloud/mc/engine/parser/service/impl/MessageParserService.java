@@ -4,19 +4,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Transient;
-
 import org.springframework.stereotype.Service;
 
 import com.inspur.gcloud.mc.common.McConstants;
 import com.inspur.gcloud.mc.common.data.MessageObject;
 import com.inspur.gcloud.mc.common.data.MessageView;
 import com.inspur.gcloud.mc.common.data.ResultMap;
-import com.inspur.gcloud.mc.core.data.Attach;
 import com.inspur.gcloud.mc.core.data.Envelope;
 import com.inspur.gcloud.mc.core.data.Message;
 import com.inspur.gcloud.mc.engine.parser.service.IMessageParserService;
-import com.lc.gcloud.framework.util.GCloudUtil;
 
 /**
  * <p>消息对象解析器</p>

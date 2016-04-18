@@ -154,7 +154,11 @@ public class instationMsgCommand {
     	// 判断messageId是否为空
     	if(messageId != null && !"".equals(messageId)){
     		// messageId不为空，获取组装视图对象的Envelope对象和Message对象
-    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(messageId, loginId, boxType);
+    		Map<String, String> map = new HashMap<String, String>();
+    		map.put("messageId", messageId);
+    		map.put("loginId", loginId);
+    		map.put("boxType", boxType);
+    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(map);
     		Message message = messageService.findMessageById(messageId);
     		// 构建回复页面视图对象
     		messageView = messageBuilderService.builderReplyMessage(message, envelope);
@@ -185,16 +189,21 @@ public class instationMsgCommand {
     	// 判断messageId是否为空
     	if(messageId != null && !"".equals(messageId)){
     		// messageId不为空，获取组装视图对象的Envelope对象和Message对象
-    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(messageId, loginId, boxType);
+    		Map<String, String> map = new HashMap<String, String>();
+    		map.put("messageId", messageId);
+    		map.put("loginId", loginId);
+    		map.put("boxType", boxType);
+    		Envelope envelope = envelopeService.findEnvelopeByMessageIdAndLoginId(map);
     		Message message = messageService.findMessageById(messageId);
     		// 构建转发页面视图对象
     		messageView = messageBuilderService.builderForwardMessage(message, envelope);
-    		// 判断是否为未读
-    		if(envelope.getReceiveState() == null || "0".equals(envelope.getReceiveState())){
-    			// 未读状态：更新消息状态
+    		//更新收件箱envelope状态
+    		if(boxType.equals(McConstants.INSTATIONMSG_IN_BOX)){
     			envelope.setReadTime(new Date());
-        		envelope.setReceiveState("1");
+    			envelope.setReceiveState("1");
         		envelopeService.updateEnvelope(envelope);
+    		} else {
+    			//草稿箱则不更新状态
     		}
     	}
     	return messageView;
@@ -221,16 +230,6 @@ public class instationMsgCommand {
     		Message message = messageService.findMessageById(messageId);
     		// 构建转发页面视图对象
     		messageView = messageBuilderService.builderMessage(message, envelopeList);
-    		//批量更新envelope状态
-    		for(int i = 0; i < envelopeList.size(); i++){
-    			// 判断是否为未读
-        		if(envelopeList.get(i).getReceiveState() == null || "0".equals(envelopeList.get(i).getReceiveState())){
-        			// 未读状态：更新消息状态
-        			envelopeList.get(i).setReadTime(new Date());
-        			envelopeList.get(i).setReceiveState("1");
-            		envelopeService.updateEnvelope(envelopeList.get(i));
-        		}
-    		}
     	}
     	return messageView;
     }
@@ -258,8 +257,8 @@ public class instationMsgCommand {
     		messageView = messageBuilderService.builderViewMessage(message, envelopeList);
     		//批量更新envelope状态
     		for(int i = 0; i < envelopeList.size(); i++){
-    			// 判断是否为未读
-        		if(envelopeList.get(i).getReceiveState() == null || "0".equals(envelopeList.get(i).getReceiveState())){
+    			// 收件箱判断是否为未读
+    			if(envelopeList.get(i).getReceiverId().equals(loginId) && (envelopeList.get(i).getReceiveState() == null || "0".equals(envelopeList.get(i).getReceiveState()))){
         			// 未读状态：更新消息状态
         			envelopeList.get(i).setReadTime(new Date());
         			envelopeList.get(i).setReceiveState("1");
@@ -360,32 +359,24 @@ public class instationMsgCommand {
     	List<Envelope> envelopeList = null;
     	String messageId = null;
     	Message message = new Message();
-    	Boolean isNewMessage = null;
-    	
-    	if (messageView.getEnvelopeId() != "" && messageView.getEnvelopeId() != null) {
-    		isNewMessage = false;
-    	} else {
-    		isNewMessage = true;
-    	}
     	
     	ResultMap parserResultMap = messageParserService.instationMsgParser(messageView);
     	MessageObject messageObject = (MessageObject) parserResultMap.get("messageObject");
-    	
-    	if (isNewMessage) {
-    		//新增
-    		message = messageObject.getMessage();
-    		//messageService.insertMessage(message);
-    		envelopeList = messageObject.getEnvelopeList();
-    		envelopeService.batchInsertEnvelope(envelopeList, message);
-    	} else {
+
     		message = messageObject.getMessage();
         	messageId = messageObject.getMessage().getId();
-        	envelopeList = messageObject.getEnvelopeList();
-        	//先删除
-        	envelopeService.physicalDelete(envelopeList, messageId);
-    		//再插入
+        	envelopeList = envelopeService.findEnvelopeListByMessageId(messageId);
+        	//envelopeList = messageObject.getEnvelopeList();
+        	if("0".equals(messageView.getSendState())) {
+        		//草稿箱保存的话先删除
+            	envelopeService.physicalDelete(envelopeList, messageId);
+        	}
+    		//设置发送状态为未发送
+        	for(int i = 0; i < envelopeList.size(); i++) {
+        		envelopeList.get(i).setSendState("0");
+        	}
+        	//插入
         	envelopeService.batchInsertEnvelope(envelopeList, message);
-    	}
     	
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("success", true);

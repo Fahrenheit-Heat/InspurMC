@@ -164,7 +164,6 @@ function save(ue){
 	var requestUrl = context + "mc/core/instationmessage/ajaxsave";
 	$("#messageContent").val(ue.getContent());
 	$("#sendType").val("0");
-	$("#sendState").val("0");
 	//表单的异步提交
 	$("#form").ajaxSubmit({
 		type : "post",
@@ -175,7 +174,7 @@ function save(ue){
 		},
 		success:function(data){
 			//弹框方式
-			G3.alert("提示","保存成功,请在草稿箱中查看",function(){
+			G3.alert("提示","保存成功",function(){
 				G3.closeModalDialog("1");
 				goBack($("#boxType").val());
 			},"success");

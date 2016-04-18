@@ -24,10 +24,10 @@ $(function() {
 			del();
 		});
 	
-	//转发
-	$("#forwardBtn").click(function (){
-		forwardMessage();
-	});
+//	//转发
+//	$("#forwardBtn").click(function (){
+//		forwardMessage();
+//	});
 
 	// 条件查询
 	$("#queryBtn").click(query);
@@ -218,25 +218,25 @@ function reply(){
 	}
 }
 
-/**
- * 转发消息
- */
-function forwardMessage(){
-	var records = grid.getSelectedRow();
-	if (records.length == 1) {
-		var data = records[0];
-		var url = G3.cmdPath + "mc/core/instationmessage/showMessage";
-		if (data.message.id != undefined && data.message.id != "" && data.message.id != "null") {
-			url += "?messageId=" + data.message.id;
-		}
-		url += "&operType=forward&boxType="+boxType;
-			
-		window.location = url;
-		
-	} else {
-		G3.alert("提示", "请选择要转发的邮件！");
-	}
-}
+///**
+// * 转发消息
+// */
+//function forwardMessage(){
+//	var records = grid.getSelectedRow();
+//	if (records.length == 1) {
+//		var data = records[0];
+//		var url = G3.cmdPath + "mc/core/instationmessage/showMessage";
+//		if (data.message.id != undefined && data.message.id != "" && data.message.id != "null") {
+//			url += "?messageId=" + data.message.id;
+//		}
+//		url += "&operType=forward&boxType="+boxType;
+//			
+//		window.location = url;
+//		
+//	} else {
+//		G3.alert("提示", "请选择要转发的邮件！");
+//	}
+//}
 
 //渲染查看链接
 function messageShowLink(data, type, full){

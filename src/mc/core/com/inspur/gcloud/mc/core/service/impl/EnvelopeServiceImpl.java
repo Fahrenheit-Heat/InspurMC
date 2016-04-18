@@ -39,11 +39,7 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	}
 	
 	@Override
-	public Envelope findEnvelopeByMessageIdAndLoginId(String messageId, String loginId, String boxType) {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("messageId", messageId);
-		map.put("loginId", loginId);
-		map.put("boxType", boxType);
+	public Envelope findEnvelopeByMessageIdAndLoginId(Map<String, String> map) {
 		Envelope envelope = envelopeDao.findEnvelopeByMessageIdAndLoginId(map);
 		return envelope;
 	}
@@ -67,7 +63,7 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	public Message findMessage(String id) {
 		return messageDao.get(id);
 	}
-	// 单条保存！！！！======需要修改===========
+	// 单条保存
 	@Transactional
 	public int saveEnvelope(Envelope envelope, String messageId) {
 		int count = 0;
@@ -111,6 +107,7 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	//插入新信封
 	public Boolean batchInsertEnvelope(List<Envelope> envelopeList, Message message) {
 		List<Envelope> newEnvelopeList = new ArrayList<Envelope>();
+		message.setId(GCloudUtil.getInstance().getNextSeqId(32));
 		for(int i = 0; i < envelopeList.size(); i++){
 			Envelope envelope = envelopeList.get(i);
 			envelope.setId(GCloudUtil.getInstance().getNextSeqId(32));
@@ -118,6 +115,7 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 			envelope.setMessage(message);
 			newEnvelopeList.add(envelope);
 		}
+		messageDao.insert(message);
 		envelopeDao.batchInsert(newEnvelopeList);
 		return true;
 	}

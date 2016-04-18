@@ -134,11 +134,9 @@ function messageShowLink(data, type, full){
  */
 function renderstatus(data, type, full) {
 	if (data != "" || data != null) {
-		if (data == "2") {
-			data = "已删除";
-		} else {
-			data = "";
-		}
+		data = "已删除";
+	} else {
+		data = ""
 	}
 	return data;
 }

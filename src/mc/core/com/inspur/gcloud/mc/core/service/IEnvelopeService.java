@@ -22,12 +22,20 @@ public interface IEnvelopeService {
 	
 	public List<Envelope> findEnvelopeListByMessageId(String messageId);
 	
-	public Envelope findEnvelopeByMessageIdAndLoginId(String messageId, String loginId, String boxType);
+	/**
+	 * 根据Map信息获取Envelope
+	 * @param map key 分别为：<br/>
+	 * 				<code>messageId<code>[消息ID]<br/>
+	 * 				<code>loginId<code>[当前用户ID]<br/>
+	 * 				<code>boxType<code>[邮箱类型：in：收件箱；out:已发送；draft:草稿箱]
+	 * @return Envelope对象
+	 */
+	public Envelope findEnvelopeByMessageIdAndLoginId(Map<String, String> map);
 	
 	 /**
      * 查询当前用户的收件箱、已发送、草稿箱列表
      * 
-     * @param map, key 分别为 ： 
+     * @param map key 分别为 ： 
      *              <code>messageType<code>[消息类型：M：站内消息；W：站内邮件；S：短信；    E：电子邮件；]
      *              <code>organId<code>[当前用户ID]
      *              <code>boxType<code>[邮箱类型：in：收件箱；out:已发送；draft:草稿箱]

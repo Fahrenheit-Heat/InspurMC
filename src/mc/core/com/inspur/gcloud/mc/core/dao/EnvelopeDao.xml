@@ -101,20 +101,7 @@
         <if test="groupfield != null">
         	GROUP BY MESSAGE_ID
         </if>
-        <if test="orderfield != null" >
-         order by 
-        	<choose>    
-                <when test="orderfield == 'senderId'">    
-                    sender_id ${orderdir} 
-                </when>  
-                 <when test="orderfield == 'receiverId'">    
-                    receiver_id ${orderdir} 
-                </when>  
-                <otherwise> 
-               		send_time
-                </otherwise>    
-            </choose>    
-        </if>
+        ORDER BY SEND_TIME DESC
     </select>
 	
 	<select id="getByParams" parameterType="map" resultMap="envelopeResultMap">
@@ -195,6 +182,7 @@
 		<if test="groupfield != null">
         	GROUP BY MESSAGE_ID
         </if>
+        ORDER BY SEND_TIME DESC
 	</select>
 	
 	<select id="getMessageId" parameterType="string" resultType="string">
