@@ -43,6 +43,9 @@
 					</a>
 					
 					<div class="pull-right">
+						<button class="btn btn-primary" type="button" id="editBtn">
+							<i class="fa fa-reply fa-fw"></i>恢复
+						</button>
 						<button class="btn btn-danger" type="button" id="delBtn">
 							<i class="fa fa-trash-o fa-fw"></i>彻底删除
 						</button>

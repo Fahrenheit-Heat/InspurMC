@@ -43,13 +43,13 @@
 							<input type="hidden" id="messageId" name="messageId" value="${messageId}">
 							<input type="hidden" id="operType" name="operType" value="${operType}">
 							<input type="hidden" id="boxType" name="boxType" value="${boxType}">
-							<input type="hidden" id="envelopeId" name="envelopeId" value="${messageView.envelopeId }">
-							<input type="hidden" id="sendType" name="sendType" value="${messageView.sendType }" >
-							<input type="hidden" id="sendState" name="sendState" value="${messageView.sendState }">
+							<input type="hidden" id="envelopeId" name="envelopeId" value="${messageView.envelopeId}">
+							<input type="hidden" id="sendType" name="sendType" value="${messageView.sendType}" >
+							<input type="hidden" id="sendState" name="sendState" value="${messageView.sendState}">
 							<input type="hidden" id="receiveType" name="receiveType" value="${messageView.receiveType}">
 							<input type="hidden" id="receiveState" name="receiveState" value="${messageView.receiveState}">
 							<input type="hidden" id="relatedMessageId" name="relatedMessageId" value="${messageView.relatedMessageId}">
-							<input type="hidden" id="messageContent" name="messageContent" value="${messageView.messageContent }">
+							<input type="hidden" id="messageContent" name="messageContent" value="${messageView.messageContent}">
 							<div class="form-hr">
 								<div class="fieldLabel">
 									<i class="fa fa-user"></i>发件人：

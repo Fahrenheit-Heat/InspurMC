@@ -136,7 +136,7 @@ function renderstatus(data, type, full) {
 	if (data != "" || data != null) {
 		data = "已删除";
 	} else {
-		data = ""
+		data = "";
 	}
 	return data;
 }

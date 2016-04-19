@@ -353,9 +353,9 @@ public class instationMsgCommand {
      * @return model  对象{成功；失败}
      * 
      */
-    @RequestMapping(value = "/ajaxsave", method = RequestMethod.POST)
+    @RequestMapping(value = "/ajaxsave/{boxType}", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> ajaxSave(MessageView messageView) {
+    public Map<String, Object> ajaxSave(MessageView messageView, @PathVariable("boxType") String boxType) {
     	List<Envelope> envelopeList = null;
     	String messageId = null;
     	Message message = new Message();
@@ -363,20 +363,20 @@ public class instationMsgCommand {
     	ResultMap parserResultMap = messageParserService.instationMsgParser(messageView);
     	MessageObject messageObject = (MessageObject) parserResultMap.get("messageObject");
 
-    		message = messageObject.getMessage();
-        	messageId = messageObject.getMessage().getId();
-        	envelopeList = envelopeService.findEnvelopeListByMessageId(messageId);
-        	//envelopeList = messageObject.getEnvelopeList();
-        	if("0".equals(messageView.getSendState())) {
-        		//草稿箱保存的话先删除
-            	envelopeService.physicalDelete(envelopeList, messageId);
-        	}
-    		//设置发送状态为未发送
-        	for(int i = 0; i < envelopeList.size(); i++) {
-        		envelopeList.get(i).setSendState("0");
-        	}
-        	//插入
-        	envelopeService.batchInsertEnvelope(envelopeList, message);
+		message = messageObject.getMessage();
+    	messageId = messageObject.getMessage().getId();
+    	//envelopeList = envelopeService.findEnvelopeListByMessageId(messageId);
+    	envelopeList = messageObject.getEnvelopeList();
+    	if(McConstants.INSTATIONMSG_DRAFT_BOX.equals(boxType)) {
+    		//草稿箱保存的话先删除
+        	envelopeService.physicalDelete(envelopeList, messageId);
+    	}
+		//设置发送状态为未发送
+    	for(int i = 0; i < envelopeList.size(); i++) {
+    		envelopeList.get(i).setSendState("0");
+    	}
+    	//插入
+    	envelopeService.batchInsertEnvelope(envelopeList, message);
     	
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("success", true);
@@ -391,7 +391,7 @@ public class instationMsgCommand {
 	 */
 	@RequestMapping(value = "/delete/{ids}/{boxType}",method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> delete(@PathVariable("ids") String ids,@PathVariable("boxType") String boxType){
+    public Map<String, Object> delete(@PathVariable("ids") String ids, @PathVariable("boxType") String boxType){
     	Map<String, Object> envelopeMap = new HashMap<String, Object>(); 
     	if (ids != null) {
              String[] idArray = ids.split(",");
