@@ -82,7 +82,7 @@ public class instationMsgCommand {
 	}
 	
 	/**
-	 * 初始化展示消息列表方法（查询方法需要修改）
+	 * 初始化展示消息列表方法
 	 * @param parameters 查询参数
 	 * @return envelopeMap 信封对象
 	 */
@@ -365,19 +365,19 @@ public class instationMsgCommand {
 
 		message = messageObject.getMessage();
     	messageId = messageObject.getMessage().getId();
-    	//envelopeList = envelopeService.findEnvelopeListByMessageId(messageId);
     	envelopeList = messageObject.getEnvelopeList();
+    	
     	if(McConstants.INSTATIONMSG_DRAFT_BOX.equals(boxType)) {
     		//草稿箱保存的话先删除
         	envelopeService.physicalDelete(envelopeList, messageId);
     	}
+    	
 		//设置发送状态为未发送
     	for(int i = 0; i < envelopeList.size(); i++) {
     		envelopeList.get(i).setSendState("0");
     	}
     	//插入
     	envelopeService.batchInsertEnvelope(envelopeList, message);
-    	
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("success", true);
         return model;
@@ -385,19 +385,27 @@ public class instationMsgCommand {
 
 	/**
 	 * 逻辑删除消息
-	 * @param ids
+	 * @param messageIds
 	 * @param boxType
 	 * @return model  对象{成功；失败}
 	 */
-	@RequestMapping(value = "/delete/{ids}/{boxType}",method = RequestMethod.POST)
+	@RequestMapping(value = "/delete/{messageIds}/{loginId}/{boxType}",method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> delete(@PathVariable("ids") String ids, @PathVariable("boxType") String boxType){
+    public Map<String, Object> delete(@PathVariable("messageIds") String messageIds, 
+    		@PathVariable("loginId") String loginId, 
+    		@PathVariable("boxType") String boxType){
     	Map<String, Object> envelopeMap = new HashMap<String, Object>(); 
-    	if (ids != null) {
-             String[] idArray = ids.split(",");
+    	if (messageIds != null) {
+             String[] messageIdArray = messageIds.split(",");
     		 List<Envelope> envelopeList = new ArrayList<Envelope>();
-    		 for(int i = 0;i < idArray.length;i++){
-    			 envelopeList.add(envelopeService.findEnvelopeById(idArray[i]));
+    		 for(int i = 0;i < messageIdArray.length;i++){
+    			 Map<String, String> map = new HashMap<String, String>();
+    			 map.put("messageId", messageIdArray[i]);
+    			 map.put("boxType",boxType);
+    			 map.put("loginId", loginId);
+    			 //将不同messageId对应的EnvelopeList进行拼接
+    			 List<Envelope> envelopeItem = envelopeService.findEnvelopeListByMessageIdAndLoginId(map);
+    			 envelopeList.addAll(envelopeItem);
     		 }
     		 envelopeMap.put("envelopeList", envelopeList);
     		 envelopeMap.put("boxType", boxType);

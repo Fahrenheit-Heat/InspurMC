@@ -46,6 +46,7 @@ function initGrid(){
 	grid.setAjaxUrl(url);
 	grid.setParameter("messageType", messageType);
 	grid.setParameter("groupfield", groupfield);
+	grid.setParameter("loginId", loginId);
 	grid.setParameter("isScrap", isScrap);
 	//初始化
 	grid.init();
@@ -85,13 +86,13 @@ function del(){
 		var recordIds = [];
 		//循环遍历获取ID 
 		$.each(records, function(index, item){
-			recordIds.push(item.id);
+			recordIds.push(item.message.id);
 		});
 		
 		//删除警告框
 		G3.confirm("提示", "确认删除记录？",
 			function() {
-				var requestUrl = G3.cmdPath+"mc/core/instationmessage/delete/"+recordIds+"/"+boxType;
+				var requestUrl = G3.cmdPath+"mc/core/instationmessage/delete/"+recordIds+"/"+loginId+"/"+boxType;
 				$.ajax({
 					type : "post",
 					dataType : "json",
@@ -136,7 +137,7 @@ function renderstatus(data, type, full) {
 	if (data != "" || data != null) {
 		data = "已删除";
 	} else {
-		data = "";
+		data = ""
 	}
 	return data;
 }

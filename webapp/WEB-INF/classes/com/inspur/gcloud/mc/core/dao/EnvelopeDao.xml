@@ -25,6 +25,30 @@
 			<if test="boxType == 'instationMsgScrap'.toString() ">
 				AND (SENDER_ID = #{loginId} OR RECEIVER_ID = #{loginId})
 			</if>
+		</where>
+	</select>
+	
+	<select id="findEnvelopeListByMessageIdAndLoginId" parameterType="map" resultType="com.inspur.gcloud.mc.core.data.Envelope">
+		SELECT 
+			ID, MESSAGE_ID, MESSAGE_TYPE, RELATED_MESSAGE_ID, RELATED_PATH, SENDER_ID, RECEIVER_ID, RECEIVE_STATE, 
+			SEND_STATE, IS_SCHEDULE, IS_READ_RECEIPT, HAS_RECEIPT, SEND_TYPE, RECEIVER_TYPE, SEND_LEVEL, SEND_TIME, 
+			READ_TIME, CREATE_TIME, UPDATE_TIME, REMARK, SENDER_NAME, RECEIVER_NAME
+		FROM 
+			MC_ENVELOPE 
+		<where>
+			MESSAGE_ID = #{messageId}
+			<if test="boxType == 'instationMsgIn'.toString() ">
+				AND RECEIVER_ID = #{loginId}
+			</if>
+			<if test="boxType == 'instationMsgDraft'.toString() ">
+				AND SENDER_ID = #{loginId}
+			</if>
+			<if test="boxType == 'instationMsgOut'.toString() ">
+				AND SENDER_ID = #{loginId}
+			</if>
+			<if test="boxType == 'instationMsgScrap'.toString() ">
+				AND (SENDER_ID = #{loginId} OR RECEIVER_ID = #{loginId})
+			</if>
 		</where>	
 	</select>
 	
@@ -48,38 +72,38 @@
 	<!-- 通过databaseId指定数据库的类型 -->
      <select id="findList" resultMap="envelopeResultMap" parameterType="map">
         SELECT 
-            id,
-            message_id,
-            message_type,
-            related_message_id,
-            related_path,
-            sender_id,
-            sender_name,
-            receiver_id,
-            receiver_name,
-            receive_state,
-            send_state,
-            is_schedule,
-            is_read_receipt,
-            has_receipt,
-            send_type,
-            receiver_type,
-            send_level,
-            send_time,
-            read_time,
-            create_time,
-            update_time,
-            remark
+            ID,
+            MESSAGE_ID,
+            MESSAGE_TYPE,
+            RELATED_MESSAGE_ID,
+            RELATED_PATH,
+            SENDER_ID,
+            SENDER_NAME,
+            RECEIVER_ID,
+            RECEIVER_NAME,
+            RECEIVE_STATE,
+            SEND_STATE,
+            IS_SCHEDULE,
+            IS_READ_RECEIPT,
+            HAS_RECEIPT,
+            SEND_TYPE,
+            RECEIVER_TYPE,
+            SEND_LEVEL,
+            SEND_TIME,
+            READ_TIME,
+            CREATE_TIME,
+            UPDATE_TIME,
+            REMARK
         FROM MC_ENVELOPE
         <where>
         	<if test="messageType != null and messageType != '' ">
-			 	message_type = '${messageType}'
+			 	MESSAGE_TYPE = '${messageType}'
 			</if>
 			<if test="receiverId != null and receiverId != '' ">
-			 	and receiver_id = '${receiverId}'
+			 	AND RECEIVER_ID = '${receiverId}'
 			</if>
 			<if test="senderId != null and senderId != '' ">
-			 	and sender_id = '${senderId}'
+			 	AND SENDER_ID = '${senderId}'
 			</if>
 			<if test="senderName != null and senderName != '' ">
 				AND SENDER_NAME = '${senderName}'
@@ -95,7 +119,8 @@
 				AND SEND_STATE = '${isNotSended}'
 			</if>
 			<if test="isScrap != null and isScrap != '' ">
-				AND (SEND_STATE = '${isScrap}' OR RECEIVE_STATE = '${isScrap}')
+				AND ((SEND_STATE = '${isScrap}' AND SENDER_ID = '${loginId}') 
+				OR (RECEIVE_STATE = '${isScrap}' AND RECEIVER_ID = '${loginId}'))
 			</if>
         </where>
         <if test="groupfield != null">
@@ -105,55 +130,55 @@
     </select>
 	
 	<select id="getByParams" parameterType="map" resultMap="envelopeResultMap">
-		select
-        e.message_id,
-        e.message_type,
-        e.related_message_id,
-        e.related_path,
-        e.sender_id,
-        e.sender_name,
-        e.receiver_id,
-        e.receiver_name,
-        e.receive_state,
-        e.send_state,
-        e.is_schedule,
-        e.is_read_receipt,
-        e.has_receipt,
-        e.send_type,
-        e.receiver_type,
-        e.send_level,
-        e.send_time,
-        e.read_time,
-        e.create_time,
-        e.update_time,
-		m.id,
-		m.message_level,
-		m.message_topic,
-		m.message_content,
-		m.remark
-		from mc_envelope as e,mc_message as m
+		SELECT
+	        E.MESSAGE_ID,
+	        E.MESSAGE_TYPE,
+	        E.RELATED_MESSAGE_ID,
+	        E.RELATED_PATH,
+	        E.SENDER_ID,
+	        E.SENDER_NAME,
+	        E.RECEIVER_ID,
+	        E.RECEIVER_NAME,
+	        E.RECEIVE_STATE,
+	        E.SEND_STATE,
+	        E.IS_SCHEDULE,
+	        E.IS_READ_RECEIPT,
+	        E.HAS_RECEIPT,
+	        E.SEND_TYPE,
+	        E.RECEIVER_TYPE,
+	        E.SEND_LEVEL,
+	        E.SEND_TIME,
+	        E.READ_TIME,
+	        E.CREATE_TIME,
+	        E.UPDATE_TIME,
+			M.ID,
+			M.MESSAGE_LEVEL,
+			M.MESSAGE_TOPIC,
+			M.MESSAGE_CONTENT,
+			M.REMARK
+		FROM MC_ENVELOPE AS E,MC_MESSAGE AS M
 		<where>
-			e.message_id=m.id
+			E.MESSAGE_ID=M.ID
 			<if test="senderId != null and senderId != '' ">
-			 	and e.sender_Id like '%${senderId}%'
+			 	AND E.SENDER_ID LIKE '%${senderId}%'
 			</if>
 			<if test="receiverId != null and receiverId != '' ">
-			 	and e.receiver_Id like '%${receiverId}%'
+			 	AND E.RECEIVER_ID LIKE '%${receiverId}%'
 			</if>
 			<if test="senderName != null and senderName != '' ">
-			 	and e.sender_Name like '%${senderName}%'
+			 	AND E.SENDER_NAME LIKE '%${senderName}%'
 			</if>
 			<if test="receiverName != null and receiverName != '' ">
-			 	and e.receiver_Name like '%${receiverName}%'
+			 	AND E.RECEIVER_NAME LIKE '%${receiverName}%'
 			</if>
 			<if test="sendState != null and sendState != '' ">
-				and e.send_State like '%${sendState}%'
+				AND E.SEND_STATE LIKE '%${sendState}%'
 			</if>
 			<if test="messageType != null and messageType != '' ">
-				and e.message_Type = '${messageType}'
+				AND E.MESSAGE_TYPE = '${messageType}'
 			</if>
 			<if test="messageTopic != null and messageTopic != '' ">
-				and m.message_topic like '%${messageTopic}%'
+				AND M.MESSAGE_TOPIC LIKE '%${messageTopic}%'
 			</if>
 			<if test="isSended != null and isSended != '' ">
 				AND e.SEND_STATE = '${isSended}'
@@ -172,7 +197,8 @@
 				AND e.SEND_STATE = '${isNotSended}'
 			</if>
 			<if test="isScrap != null and isScrap != '' ">
-				AND (e.SEND_STATE = '${isScrap}' OR e.RECEIVE_STATE = '${isScrap}')
+				AND ((e.SEND_STATE = '${isScrap}' AND e.SENDER_ID = '${loginId}') 
+				OR (e.RECEIVE_STATE = '${isScrap}' AND e.RECEIVER_ID = '${loginId}'))
 			</if>
 			<if test="sendTimeFrom != null and sendTimeFrom != '' 
 					and sendTimeTo != null and sendTimeTo != '' ">
@@ -186,10 +212,10 @@
 	</select>
 	
 	<select id="getMessageId" parameterType="string" resultType="string">
-		select message_id from mc_envelope where id = #{id}
+		SELECT MESSAGE_ID FROM MC_ENVELOPE WHERE id = #{id}
 	</select>
 	
-	<update id="changeState" parameterType="string">
+	<update id="changeState" parameterType="map">
 		UPDATE MC_ENVELOPE 
 		<set>
 			<if test="boxType == 'instationMsgDraft'.toString() or boxType == 'instationMsgOut'.toString() ">

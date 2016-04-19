@@ -58,7 +58,6 @@ public class MessageBuilderServiceImpl implements IMessageBuilderService {
 		
 		MessageView messageView = new MessageView();
 		messageView.setMessageId(message.getId());
-		messageView.setEnvelopeId(envelope.getId());
 		
 		// 构建消息主题
 		String messageTopic = message.getMessageTopic();

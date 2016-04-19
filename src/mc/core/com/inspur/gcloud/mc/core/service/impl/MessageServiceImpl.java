@@ -39,21 +39,15 @@ public class MessageServiceImpl implements IMessageService {
     	}else{
     		return null;
     	}
-    }
-	 
-	 @Transactional
-	 public String updateMessage(Message message){
-         // 更新消息信息
-     	if(messageDao.update(message) == 1){
-     		return message.getId();
-     	}else{
-     		return null;
-     	}
 	 }
 	 
-	@Override
+	    /**
+	     * 通过MessageId查找Message对象
+	     * 
+	     * @param id
+	     * @return Message
+	     */
 	public Message findMessageById(String id) {
-		
 		return messageDao.get(id);
 	}
 }

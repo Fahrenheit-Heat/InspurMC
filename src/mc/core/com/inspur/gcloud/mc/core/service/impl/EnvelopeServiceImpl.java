@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.inspur.gcloud.mc.common.data.MessageObject;
 import com.inspur.gcloud.mc.core.dao.EnvelopeDao;
 import com.inspur.gcloud.mc.core.dao.MessageDao;
 import com.inspur.gcloud.mc.core.data.Envelope;
@@ -31,8 +30,6 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	@Resource(name = "transactionTemplate")
 	private TransactionTemplate transactionTemplate;
 	
-	private MessageObject messageObject;
-	
 	@Override
 	public List<Envelope> findEnvelopeListByMessageId(String messageId) {
 		return envelopeDao.findEnvelopeListByMessageId(messageId);
@@ -43,9 +40,14 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 		Envelope envelope = envelopeDao.findEnvelopeByMessageIdAndLoginId(map);
 		return envelope;
 	}
+	
+	@Override
+	public List<Envelope> findEnvelopeListByMessageIdAndLoginId(Map<String, String> map) {
+		return envelopeDao.findEnvelopeListByMessageIdAndLoginId(map);
+	}
 
 	@Override
-	public List<Envelope> findList(Map parameters) {
+	public List<Envelope> findList(Map<String, String> parameters) {
 		return envelopeDao.findList(parameters);
 	}
 
@@ -80,13 +82,14 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	}
 	
 	@Transactional
-	public void delete(Map map) {
+	public void delete(Map<String, Object> map) {
 
+		@SuppressWarnings("unchecked")
 		List<Envelope> envelopeList = (List<Envelope>) map.get("envelopeList");
 		for(int i = 0; i < envelopeList.size(); i++) {
-			Map changeMap = new HashMap();
+			Map<String, String> changeMap = new HashMap<String, String>();
 			changeMap.put("id", envelopeList.get(i).getId());
-			changeMap.put("boxType", map.get("boxType"));
+			changeMap.put("boxType", (String) map.get("boxType"));
 			envelopeDao.changeState(changeMap);
 		}
 	}
@@ -119,21 +122,6 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 		envelopeDao.batchInsert(newEnvelopeList);
 		return true;
 	}
-	
-	//更新原有信封
-	@Transactional
-	public Boolean batchUpdateEnvelope(List<Envelope> envelopeList, String messageId){
-		List<Envelope> newEnvelopeList = new ArrayList<Envelope>();
-		for(int i = 0; i < envelopeList.size(); i++){
-			Envelope envelope = envelopeList.get(i);
-			envelope.setMessageId(messageId);
-			envelope.setMessage(messageDao.get(messageId));
-			newEnvelopeList.add(envelope);
-		}
-		messageDao.update(messageDao.getMessageById(messageId));
-		envelopeDao.batchUpdate(newEnvelopeList);
-		return true;
-	}
 
 	@Override
 	public String findMessageId(String id) {
@@ -141,15 +129,10 @@ public class EnvelopeServiceImpl implements IEnvelopeService {
 	}
 
 	@Override
-	public MessageObject makeUpMessageObject(Envelope envelope,String messageId) {
-		messageObject.setEnvelopeList(envelopeDao.getAll());//!!!
-		messageObject.setMessage(messageDao.getMessageById(messageId));
-		return messageObject;
-	}
-
-	@Override
 	public int updateEnvelope(Envelope envelope) {
 		return envelopeDao.update(envelope);
 	}
+
+
 
 }

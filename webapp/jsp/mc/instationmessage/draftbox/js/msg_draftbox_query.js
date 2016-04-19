@@ -113,13 +113,13 @@ function del(){
 		var recordIds = [];
 		//循环遍历获取ID 
 		$.each(records, function(index, item){
-			recordIds.push(item.id);
+			recordIds.push(item.message.id);
 		});
 		
 		//删除警告框
 		G3.confirm("提示", "确认删除记录？",
 			function() {
-				var requestUrl = G3.cmdPath+"mc/core/instationmessage/delete/"+recordIds+"/"+boxType;
+				var requestUrl = G3.cmdPath+"mc/core/instationmessage/delete/"+recordIds+"/"+loginId+"/"+boxType;
 				$.ajax({
 					type : "post",
 					dataType : "json",

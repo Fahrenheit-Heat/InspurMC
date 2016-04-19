@@ -39,17 +39,22 @@ public class MessageParserService implements IMessageParserService {
 			message.setMessageContent(messageView.getMessageContent());
 			message.setMessageLevel("");
 			message.setRemark("");
-			message.setId(messageView.getMessageId());
-
+			//涉及到修改时
+			if(messageView.getMessageId() != null && !messageView.getMessageId().equals("")){
+				message.setId(messageView.getMessageId());
+			}
 			
 			// 解析envelope对象
 			List<String> receiverIdList = messageView.getReceiverIdList();
 			List<Envelope> envelopeList = new ArrayList<Envelope>();
+			List<String> envelopeId = messageView.getEnvelopeIdList();
 			MessageObject messageObject = new MessageObject();
 			if(receiverIdList.size() > 0){
 				for(int i = 0; i < receiverIdList.size(); i++){
 					Envelope envelope = new Envelope();
-					envelope.setId(messageView.getEnvelopeId());
+					if(messageView.getEnvelopeId() != null && !messageView.getEnvelopeId().equals("")){
+						envelope.setId(envelopeId.get(i));
+					}
 					envelope.setMessageType("m");
 					envelope.setRelatedMessageId(messageView.getRelatedMessageId());
 					envelope.setRelatedPath(messageView.getRelatedPath());

@@ -85,6 +85,9 @@ $(function() {
  * @param data
  */
 function initData(ue, data){
+	if(data.envelopeId != "" || data.envelopeId != null){
+		$("#envelopeId").val(data.envelopeId);//envelopeId不为空，则初始化其值
+	}
 	$("#senderId").val(data.senderId);// 设置发送人ID
 	$("#senderName").val(data.senderName);// 设置发送人名
 	$("#receiverId").val(data.receiverId);// 设置接收人ID
@@ -160,8 +163,7 @@ function addReceiver(){
  * @param ue
  */
 function save(ue){
-	var boxType = $("#boxType").val();
-	var requestUrl = context + "mc/core/instationmessage/ajaxsave/" + boxType;
+	var requestUrl = context + "mc/core/instationmessage/ajaxsave/" + $("#boxType").val();
 	$("#messageContent").val(ue.getContent());
 	$("#sendType").val("0");
 	$("#sendState").val("0");
@@ -176,7 +178,7 @@ function save(ue){
 		},
 		success:function(data){
 			//弹框方式
-			G3.alert("提示","保存成功",function(){
+			G3.alert("提示","保存成功,请在草稿箱查看",function(){
 				G3.closeModalDialog("1");
 				goBack($("#boxType").val());
 			},"success");

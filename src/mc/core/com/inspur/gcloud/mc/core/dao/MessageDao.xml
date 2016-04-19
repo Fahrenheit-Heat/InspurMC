@@ -10,25 +10,25 @@
 	
 	<!-- 通过databaseId指定数据库的类型 -->
 	<select id="getByParams" parameterType="map" resultMap="MessageResultMap">
-		select * from mc_Message
+		SELECT * FROM MC_MESSAGE
 		<where>
 			<if test="messageTopic != null and messageTopic!= '' ">
-			 	message_topic like '%${messageTopic}%'
+			 	MESSAGE_TOPIC LIKE '%${messageTopic}%'
 			</if>
 			<if test="receiveState != null and receiveState!= '' ">
-			 	and receive_state like '%${receiveState}%'
+			 	AND RECEIVE_STATE LIKE '%${receiveState}%'
 			</if>
 			<if test="senderId != null and senderId != '' ">
-			 	and sender_Id like '%${senderId}%'
+			 	AND SENDER_ID LIKE '%${senderId}%'
 			</if>
 			<if test="receiverId != null and receiverId != '' ">
-			 	and receiver_Id like '%${receiverId}%'
+			 	AND RECEIVER_ID LIKE '%${receiverId}%'
 			</if>
 		</where>				
 	</select>
 	
 	<select id="getMessageById" resultMap="MessageResultMap" parameterType="String">
-        SELECT * FROM mc_Message where id = #{id}
+        SELECT * FROM MC_MESSAGE WHERE id = #{id}
     </select>
 	
 

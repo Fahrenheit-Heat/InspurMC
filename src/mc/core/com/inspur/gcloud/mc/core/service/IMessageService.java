@@ -8,7 +8,7 @@ import com.inspur.gcloud.mc.core.data.Message;
  * 
  * Service层 接口类，用于业务逻辑处理，事务控制等
  * 
- * @author ZXh
+ * @author ZhaoZhenHua
  *
  */
 public interface IMessageService {
@@ -22,10 +22,9 @@ public interface IMessageService {
      * 
      */
     public String insertMessage(Message message);
-    
-    public String updateMessage(Message message);
 
     /**
+     * 通过MessageId查找Message对象
      * 
      * @param id
      * @return Message
