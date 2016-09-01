@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="logcenter" description="logcenter日志中心" protocol="netty">
+	<!--客户端的引用，这里主要有两个属性一个是id，一个是对应的接口 -->
+	<reference id="logCenter.primaryService" 
+		interface="com.inspur.gcloud.logcenter.primary.domain.IPrimaryLogDomain"
+		serviceName="logCenter.primaryService" />	
+</module>

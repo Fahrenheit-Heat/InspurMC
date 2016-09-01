@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inspur.gcloud.mc.core.dao.EnvelopeDao">
+
+	<!-- 获取当前登陆人未读消息数量 开始 -->
+	<select id="getUnreadMessageCount" parameterType="map" resultType="list">
+		SELECT 
+			MESSAGE_TYPE, COUNT(1) CNT 
+		FROM 
+			MC_ENVELOPE 
+		<where>
+			RECEIVER_ID = #{loginId} AND RECEIVE_STATE = '0' 
+			<if test="messageTypes !=null and messageTypes.length != 0">
+				AND MESSAGE_TYPE IN
+				<foreach item="item" index="index" collection="messageTypes" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+		GROUP BY MESSAGE_TYPE
+	</select>
+	<!-- 获取当前登陆人未读消息数量 结束 -->
+	
+	<!-- 获取当前登陆人未读消息总数 开始 -->
+	<select id="getTotalUnreadMessageCount" parameterType="String" resultType="int">
+		SELECT 
+			COUNT(1) CNT 
+		FROM MC_ENVELOPE 
+		<where>
+			RECEIVER_ID = #{loginId} AND RECEIVE_STATE = '0'
+		</where>
+	</select>
+	<!-- 获取当前登陆人未读消息总数 结束 -->
+	
+	<select id="findEnvelopeByMessageIdAndLoginId" parameterType="map" resultType="com.inspur.gcloud.mc.core.data.Envelope">
+		SELECT 
+			ID, MESSAGE_ID, MESSAGE_TYPE, RELATED_MESSAGE_ID, RELATED_PATH, SENDER_ID, RECEIVER_ID, RECEIVE_STATE, 
+			SEND_STATE, IS_SCHEDULE, IS_READ_RECEIPT, HAS_RECEIPT, SEND_TYPE, RECEIVER_TYPE, SEND_LEVEL, SEND_TIME, 
+			READ_TIME, CREATE_TIME, UPDATE_TIME, REMARK, SENDER_NAME, RECEIVER_NAME
+		FROM 
+			MC_ENVELOPE 
+		<where>
+			MESSAGE_ID = #{messageId}
+			<if test="boxType == 'instationMsgIn'.toString() ">
+				AND RECEIVER_ID = #{loginId}
+			</if>
+			<if test="boxType == 'instationMsgDraft'.toString() ">
+				AND SENDER_ID = #{loginId}
+			</if>
+			<if test="boxType == 'instationMsgOut'.toString() ">
+				AND SENDER_ID = #{loginId}
+			</if>
+			<if test="boxType == 'instationMsgScrap'.toString() ">
+				AND (SENDER_ID = #{loginId} OR RECEIVER_ID = #{loginId})
+			</if>
+		</where>
+	</select>
+	
+	<select id="findEnvelopeListByMessageIdAndLoginId" parameterType="map" resultType="com.inspur.gcloud.mc.core.data.Envelope">
+		SELECT 
+			ID, MESSAGE_ID, MESSAGE_TYPE, RELATED_MESSAGE_ID, RELATED_PATH, SENDER_ID, RECEIVER_ID, RECEIVE_STATE, 
+			SEND_STATE, IS_SCHEDULE, IS_READ_RECEIPT, HAS_RECEIPT, SEND_TYPE, RECEIVER_TYPE, SEND_LEVEL, SEND_TIME, 
+			READ_TIME, CREATE_TIME, UPDATE_TIME, REMARK, SENDER_NAME, RECEIVER_NAME
+		FROM 
+			MC_ENVELOPE 
+		<where>
+			MESSAGE_ID = #{messageId}
+			<if test="boxType == 'instationMsgIn'.toString() ">
+				AND RECEIVER_ID = #{loginId}
+			</if>
+			<if test="boxType == 'instationMsgDraft'.toString() ">
+				AND SENDER_ID = #{loginId}
+			</if>
+			<if test="boxType == 'instationMsgOut'.toString() ">
+				AND SENDER_ID = #{loginId}
+			</if>
+			<if test="boxType == 'instationMsgScrap'.toString() ">
+				AND (SENDER_ID = #{loginId} OR RECEIVER_ID = #{loginId})
+			</if>
+		</where>	
+	</select>
+	
+	<select id="findEnvelopeListByMessageId" parameterType="string" resultType="com.inspur.gcloud.mc.core.data.Envelope">
+		SELECT 
+			ID, MESSAGE_ID, MESSAGE_TYPE, RELATED_MESSAGE_ID, RELATED_PATH, SENDER_ID, RECEIVER_ID, RECEIVE_STATE, 
+			SEND_STATE, IS_SCHEDULE, IS_READ_RECEIPT, HAS_RECEIPT, SEND_TYPE, RECEIVER_TYPE, SEND_LEVEL, SEND_TIME, 
+			READ_TIME, CREATE_TIME, UPDATE_TIME, REMARK, SENDER_NAME, RECEIVER_NAME
+		FROM 
+			MC_ENVELOPE 
+		<where>
+			MESSAGE_ID = #{messageId}
+		</where>
+	</select>
+
+	<!-- 站内消息查询列表返回结果对象 开始-->
+	<resultMap type="map" id="instationMsgResultMap">
+		<result property="id" column="ID"/>
+		<result property="messageId" column="MESSAGE_ID"/>
+		<result property="receiverId" column="RECEIVER_ID"/>
+		<result property="sendId" column="SENDER_ID"/>
+		<result property="receiverName" column="RECEIVER_NAME"/>
+		<result property="senderName" column="SENDER_NAME"/>
+		<result property="receiverType" column="RECEIVER_TYPE"/>
+		<result property="receiveState" column="RECEIVE_STATE"/>
+		<result property="sendState" column="SEND_STATE"/>
+		<result property="sendType" column="SEND_TYPE"/>
+		<result property="sendTime" column="SEND_TIME"/>
+		<result property="messageTopic" column="MESSAGE_TOPIC"/>
+	</resultMap>
+	<!-- 站内消息查询列表返回结果对象 结束 -->
+	
+	<!-- 获取站内消息查询列表 开始-->
+	<select id="findInstaticonMsgList" resultMap="instationMsgResultMap" parameterType="map">
+		SELECT
+			E.ID ID, E.MESSAGE_ID MESSAGE_ID, E.RECEIVER_ID RECEIVER_ID, E.SENDER_ID SENDER_ID, 
+			E.RECEIVER_NAME RECEIVER_NAME, E.SENDER_NAME SENDER_NAME, E.RECEIVER_TYPE RECEIVER_TYPE, 
+			E.RECEIVE_STATE RECEIVE_STATE, E.SEND_STATE SEND_STATE, E.SEND_TYPE SEND_TYPE, 
+			E.SEND_TIME SEND_TIME, E.MESSAGE_TYPE MESSAGE_TYPE, M.MESSAGE_TOPIC MESSAGE_TOPIC
+		FROM
+			MC_ENVELOPE E 
+			JOIN 
+			MC_MESSAGE M 
+			ON 
+			E.MESSAGE_ID = M.ID
+		<where>
+			<if test="messageType != null and messageType != '' ">
+			 	MESSAGE_TYPE = '${messageType}'
+			</if>
+			<if test="receiverId != null and receiverId != '' ">
+			 	AND RECEIVER_ID = '${receiverId}'
+			</if>
+			<if test="senderId != null and senderId != '' ">
+			 	AND SENDER_ID = '${senderId}'
+			</if>
+			<if test="senderName != null and senderName != '' ">
+				AND SENDER_NAME = '${senderName}'
+			</if>
+			<if test="isSended != null and isSended != '' ">
+				AND SEND_STATE = '${isSended}'
+			</if>
+			<if test="(isRead != null and isRead != '' )
+				and (isNotRead != null and isNotRead != '' )">
+				AND (RECEIVE_STATE = '${isRead}' OR RECEIVE_STATE = '${isNotRead}')
+			</if>
+			<if test="isNotSended != null and isNotSended != '' ">
+				AND SEND_STATE = '${isNotSended}'
+			</if>
+			<if test="isScrap != null and isScrap != '' ">
+				AND ((SEND_STATE = '${isScrap}' AND SENDER_ID = '${loginId}') 
+				OR (RECEIVE_STATE = '${isScrap}' AND RECEIVER_ID = '${loginId}'))
+			</if>
+		</where>
+		<if test="groupfield != null">
+        	GROUP BY MESSAGE_ID
+        </if>
+        ORDER BY SEND_TIME DESC
+	</select>
+	<!-- 获取站内消息查询列表 结束 -->
+	
+	<!-- 站内消息列表条件查询 开始  -->
+	<select id="getInstationMsgByParams" resultMap="instationMsgResultMap" parameterType="map">
+		SELECT
+	        E.ID ID, E.MESSAGE_ID MESSAGE_ID, E.RECEIVER_ID RECEIVER_ID, E.SENDER_ID SENDER_ID, 
+			E.RECEIVER_NAME RECEIVER_NAME, E.SENDER_NAME SENDER_NAME, E.RECEIVER_TYPE RECEIVER_TYPE, 
+			E.RECEIVE_STATE RECEIVE_STATE, E.SEND_STATE SEND_STATE, E.SEND_TYPE SEND_TYPE, 
+			E.SEND_TIME SEND_TIME, E.MESSAGE_TYPE MESSAGE_TYPE, M.MESSAGE_TOPIC MESSAGE_TOPIC 
+		FROM 
+			MC_ENVELOPE E 
+			JOIN 
+			MC_MESSAGE M 
+			ON 
+			E.MESSAGE_ID = M.ID
+		<where>
+			<if test="senderId != null and senderId != '' ">
+			 	AND E.SENDER_ID = '${senderId}'
+			</if>
+			<if test="receiverId != null and receiverId != '' ">
+			 	AND E.RECEIVER_ID = '${receiverId}'
+			</if>
+			<if test="senderName != null and senderName != '' ">
+			 	AND E.SENDER_NAME LIKE '%${senderName}%'
+			</if>
+			<if test="receiverName != null and receiverName != '' ">
+			 	AND E.RECEIVER_NAME LIKE '%${receiverName}%'
+			</if>
+			<if test="sendState != null and sendState != '' ">
+				AND E.SEND_STATE LIKE '%${sendState}%'
+			</if>
+			<if test="messageType != null and messageType != '' ">
+				AND E.MESSAGE_TYPE = '${messageType}'
+			</if>
+			<if test="messageTopic != null and messageTopic != '' ">
+				AND M.MESSAGE_TOPIC LIKE '%${messageTopic}%'
+			</if>
+			<if test="messageContent != null and messageContent != '' ">
+				AND M.MESSAGE_CONTENT LIKE '%${messageContent}%'
+			</if>
+			<if test="isSended != null and isSended != '' ">
+				AND E.SEND_STATE = '${isSended}'
+			</if>
+			<if test="isSended != null and isSended != '' 
+				and isSending != null and isSending != '' 
+				and sendFailed != null and sendFailed != '' ">
+				AND (E.SEND_STATE = '${isSended}' OR E.SEND_STATE = '${isSending}' OR E.SEND_STATE = '${sendFailed}')
+			</if>
+			<if test="isRead != null and isRead != '' and (isNotRead == null or isNotRead == '' )">
+				AND E.RECEIVE_STATE = '${isRead}' 
+			</if>
+			<if test="isNotRead != null and isNotRead != '' and (isRead == null or isRead == '')">
+				AND E.RECEIVE_STATE = '${isNotRead}'
+			</if>
+			<if test="(isRead != null and isRead != '' )
+				and (isNotRead != null and isNotRead != '' )">
+				AND (E.RECEIVE_STATE = '${isRead}' OR E.RECEIVE_STATE = '${isNotRead}')
+			</if>
+			<if test="isNotSended != null and isNotSended != '' ">
+				AND E.SEND_STATE = '${isNotSended}'
+			</if>
+			<if test="isNotSended != null and isNotSended != '' 
+				and sendFailed != null and sendFailed != '' ">
+				AND (E.SEND_STATE = '${isNotSended}' OR E.SEND_STATE = '${sendFailed}')
+			</if>
+			<if test="isScrap != null and isScrap != '' ">
+				AND ((E.SEND_STATE = '${isScrap}' AND E.SENDER_ID = '${loginId}') 
+				OR (E.RECEIVE_STATE = '${isScrap}' AND E.RECEIVER_ID = '${loginId}'))
+			</if>
+			<if test="sendTimeFrom != null and sendTimeFrom != '' 
+					and sendTimeTo != null and sendTimeTo != '' ">
+				AND E.CREATE_TIME BETWEEN '${sendTimeFrom}' AND '${sendTimeTo}'
+			</if>
+		</where>
+		<if test="groupfield != null">
+        	GROUP BY MESSAGE_ID
+        </if>
+        ORDER BY SEND_TIME DESC
+	</select>
+	<!-- 站内消息列表条件查询 结束 -->
+	
+	<!-- 短信返回结果对象集 开始 -->
+	<resultMap type="map" id="msgResultMap">
+		<result property="id" column="ID"/>
+		<result property="messageId" column="MESSAGE_ID"/>
+		<result property="receiverId" column="RECEIVER_ID"/>
+		<result property="sendId" column="SENDER_ID"/>
+		<result property="receiverName" column="RECEIVER_NAME"/>
+		<result property="senderName" column="SENDER_NAME"/>
+		<result property="receiverType" column="RECEIVER_TYPE"/>
+		<result property="receiveState" column="RECEIVE_STATE"/>
+		<result property="sendState" column="SEND_STATE"/>
+		<result property="sendType" column="SEND_TYPE"/>
+		<result property="sendTime" column="SEND_TIME"/>
+		<result property="messageContent" column="MESSAGE_CONTENT"/>
+	</resultMap>
+    <!-- 短信返回结果对象集 结束 -->
+    
+    <!-- 短信初始化查询列表 开始 -->
+	<select id="findShortMessageList" resultMap="msgResultMap" parameterType="map">
+	    SELECT 
+	        E.ID ID, E.MESSAGE_ID MESSAGE_ID, E.RECEIVER_ID RECEIVER_ID, E.SENDER_ID SENDER_ID, 
+			E.RECEIVER_NAME RECEIVER_NAME, E.SENDER_NAME SENDER_NAME, E.RECEIVER_TYPE RECEIVER_TYPE, 
+			E.RECEIVE_STATE RECEIVE_STATE, E.SEND_STATE SEND_STATE, E.SEND_TYPE SEND_TYPE, 
+			E.SEND_TIME SEND_TIME, E.MESSAGE_TYPE MESSAGE_TYPE, M.MESSAGE_CONTENT MESSAGE_CONTENT 
+	    FROM
+			MC_ENVELOPE E 
+			JOIN 
+			MC_MESSAGE M 
+			ON 
+			E.MESSAGE_ID = M.ID
+	    <where>
+	     	<if test="messageType != null and messageType != '' ">
+			 	MESSAGE_TYPE = '${messageType}'
+			</if>
+			<if test="receiverId != null and receiverId != '' ">
+			 	AND RECEIVER_ID = '${receiverId}'
+			</if>
+			<if test="senderId != null and senderId != '' ">
+			 	AND SENDER_ID = '${senderId}'
+			</if>
+			<if test="senderName != null and senderName != '' ">
+				AND SENDER_NAME = '${senderName}'
+			</if>
+			<if test="isSended != null and isSended != '' 
+				and isSending == null and isSending == '' ">
+				AND SEND_STATE = '${isSended}'
+			</if>
+			<if test="isSended != null and isSended != '' 
+				and isSending != null and isSending != '' 
+				and sendFailed != null and sendFailed !='' ">
+				AND (SEND_STATE = '${isSended}' OR SEND_STATE = '${isSending}' OR SEND_STATE = '${sendFailed}')
+			</if>
+			<if test="(isRead != null and isRead != '' )
+				and (isNotRead != null and isNotRead != '' )">
+				AND (RECEIVE_STATE = '${isRead}' OR RECEIVE_STATE = '${isNotRead}')
+			</if>
+			<if test="isNotSended != null and isNotSended != '' 
+				and sendFailed == null and sendFailed == '' ">
+				AND SEND_STATE = '${isNotSended}'
+			</if>
+			<if test="isScrap != null and isScrap != '' ">
+				AND ((SEND_STATE = '${isScrap}' AND SENDER_ID = '${loginId}') 
+				OR (RECEIVE_STATE = '${isScrap}' AND RECEIVER_ID = '${loginId}'))
+			</if>
+			<if test="isNotSended != null and isNotSended != '' 
+				and sendFailed != null and sendFailed != '' ">
+				AND (SEND_STATE = '${isNotSended}' OR SEND_STATE = '${sendFailed}')
+			</if>
+	     </where>
+	     <if test="groupfield != null">
+	     	GROUP BY MESSAGE_ID
+	     </if>
+	     ORDER BY SEND_TIME DESC
+	 </select>
+	 <!-- 短信初始化查询列表 结束 -->
+	 
+	 <!-- 短信列表条件查询 开始  -->
+	<select id="getShortMsgByParams" resultMap="msgResultMap" parameterType="map">
+		SELECT
+	        E.ID ID, E.MESSAGE_ID MESSAGE_ID, E.RECEIVER_ID RECEIVER_ID, E.SENDER_ID SENDER_ID, 
+			E.RECEIVER_NAME RECEIVER_NAME, E.SENDER_NAME SENDER_NAME, E.RECEIVER_TYPE RECEIVER_TYPE, 
+			E.RECEIVE_STATE RECEIVE_STATE, E.SEND_STATE SEND_STATE, E.SEND_TYPE SEND_TYPE, 
+			E.SEND_TIME SEND_TIME, E.MESSAGE_TYPE MESSAGE_TYPE, M.MESSAGE_CONTENT MESSAGE_CONTENT 
+		FROM 
+			MC_ENVELOPE E 
+			JOIN 
+			MC_MESSAGE M 
+			ON 
+			E.MESSAGE_ID = M.ID
+		<where>
+			<if test="senderId != null and senderId != '' ">
+			 	AND E.SENDER_ID = '${senderId}'
+			</if>
+			<if test="receiverId != null and receiverId != '' ">
+			 	AND E.RECEIVER_ID = '${receiverId}'
+			</if>
+			<if test="senderName != null and senderName != '' ">
+			 	AND E.SENDER_NAME LIKE '%${senderName}%'
+			</if>
+			<if test="receiverName != null and receiverName != '' ">
+			 	AND E.RECEIVER_NAME LIKE '%${receiverName}%'
+			</if>
+			<if test="sendState != null and sendState != '' ">
+				AND E.SEND_STATE = '${sendState}'
+			</if>
+			<if test="messageType != null and messageType != '' ">
+				AND E.MESSAGE_TYPE = '${messageType}'
+			</if>
+			<if test="messageContent != null and messageContent != '' ">
+				AND M.MESSAGE_CONTENT LIKE '%${messageContent}%'
+			</if>
+			<if test="isSended != null and isSended != '' 
+				and isSending != null and isSending != '' 
+				and sendFailed != null and sendFailed != '' ">
+				AND (E.SEND_STATE = '${isSended}' OR E.SEND_STATE = '${isSending}' OR E.SEND_STATE = '${sendFailed}')
+			</if>
+			<if test="isRead != null and isRead != '' and (isNotRead == null or isNotRead == '' )">
+				AND E.RECEIVE_STATE = '${isRead}' 
+			</if>
+			<if test="isNotRead != null and isNotRead != '' and (isRead == null or isRead == '')">
+				AND E.RECEIVE_STATE = '${isNotRead}'
+			</if>
+			<if test="(isRead != null and isRead != '' )
+				and (isNotRead != null and isNotRead != '' )">
+				AND (E.RECEIVE_STATE = '${isRead}' OR E.RECEIVE_STATE = '${isNotRead}')
+			</if>
+			<if test="isNotSended != null and isNotSended != '' 
+				and sendFailed != null and sendFailed != '' ">
+				AND (E.SEND_STATE = '${isNotSended}' OR E.SEND_STATE = '${sendFailed}')
+			</if>
+			<if test="isScrap != null and isScrap != '' ">
+				AND ((E.SEND_STATE = '${isScrap}' AND E.SENDER_ID = '${loginId}') 
+				OR (E.RECEIVE_STATE = '${isScrap}' AND E.RECEIVER_ID = '${loginId}'))
+			</if>
+			<if test="sendTimeFrom != null and sendTimeFrom != '' 
+					and sendTimeTo != null and sendTimeTo != '' ">
+				AND E.CREATE_TIME BETWEEN '${sendTimeFrom}' AND '${sendTimeTo}'
+			</if>
+		</where>
+		<if test="groupfield != null">
+        	GROUP BY MESSAGE_ID
+        </if>
+        ORDER BY SEND_TIME DESC
+	</select>
+	<!-- 短信列表条件查询 结束 -->
+	
+	<select id="getMessageId" parameterType="string" resultType="string">
+		SELECT MESSAGE_ID FROM MC_ENVELOPE WHERE id = #{id}
+	</select>
+	
+	<update id="changeState" parameterType="map">
+		UPDATE MC_ENVELOPE 
+		<set>
+			<if test="boxType == 'instationMsgDraft'.toString() 
+					or boxType == 'instationMsgOut'.toString() 
+					or boxType == 'messageOut'.toString()
+					or boxType == 'messageDraft'.toString() ">
+				SEND_STATE = '2'
+			</if>
+			<if test="boxType == 'instationMsgIn'.toString() ">
+				RECEIVE_STATE = '2'
+			</if>
+			<if test="boxType == 'instationMsgScrap'.toString() 
+					or boxType == 'messageScrap'.toString() ">
+				SEND_STATE = '3',RECEIVE_STATE = '3'
+			</if>
+		</set>
+		<where>
+			id = '${id}'
+		</where>
+	</update>
+	
+	<update id="updateSendStateById" parameterType="map">
+		UPDATE MC_ENVELOPE
+		<set>
+			SEND_STATE = '${sendState}'
+		</set>
+		<where>
+			id = '${id}'
+		</where>
+	</update>
+	
+	<select id="getSystemMessageByLoginId" parameterType="string" resultType="com.inspur.gcloud.mc.core.data.Envelope">
+		SELECT T1.* FROM 
+			( SELECT 
+			  ID, MESSAGE_ID, MESSAGE_TYPE, RELATED_MESSAGE_ID, RELATED_PATH, SENDER_ID, RECEIVER_ID, RECEIVE_STATE, 
+			  SEND_STATE, IS_SCHEDULE, IS_READ_RECEIPT, HAS_RECEIPT, SEND_TYPE, RECEIVER_TYPE, SEND_LEVEL, SEND_TIME, 
+			  READ_TIME, CREATE_TIME, UPDATE_TIME, REMARK, SENDER_NAME, RECEIVER_NAME
+			  FROM MC_ENVELOPE 
+			<where>
+			 	RECEIVER_TYPE = '3'
+			</where>
+ 			) T1 
+			LEFT JOIN 
+			( SELECT MESSAGE_ID FROM MC_ENVELOPE 
+			<where>
+				MESSAGE_TYPE = 'm' AND RECEIVER_ID = #{loginId}
+			</where>  
+			) T2 
+		ON T1.MESSAGE_ID = T2.MESSAGE_ID 
+		<where>
+			T2.MESSAGE_ID IS NULL
+		</where>
+	</select>
+
+</mapper>

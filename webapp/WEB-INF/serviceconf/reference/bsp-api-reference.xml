@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="bsp" description="bsp服务引用" protocol="netty">
+	<!-- 安全服务 -->
+	<reference id="bspSecurityProvider"
+		interface="org.loushang.bsp.share.permit.security.provider.ISecurityProvider" />
+
+
+	<!-- 组织对外接口服务 -->
+	<reference id="bspOrganProvider"
+		interface="org.loushang.bsp.share.organization.provider.IOrganProvider" />
+	
+	<reference id="bspOrganReceiver"
+		interface="org.loushang.bsp.share.organization.provider.IOrganReceiver" />
+ 
+		
+	<!-- 用户管理 -->
+	<reference id="bspUserReceiver"
+		interface="org.loushang.bsp.share.permit.security.provider.IUserReceiver" />
+		
+		
+	<!-- 业务流水服务 -->
+	<reference id="bspIdProvider"
+		interface="org.loushang.bsp.share.id.provider.IIdProvider" />
+		
+	<!-- 字典接口 -->
+	<reference id="bspDictProvider"
+		interface="org.loushang.bsp.share.dict.provider.IDictProvider" />
+
+	<!-- 工作日历 -->
+	<reference id="bspWorkdayProvider"
+		interface="org.loushang.bsp.share.workCalendar.provider.IWorkdayProvider" />
+        
+    <!-- 财务期间 -->
+    <reference id="bspFinancialPeriodProvider"
+        interface="org.loushang.bsp.share.finance.provider.IFinancialPeriodProvider" />
+</module>

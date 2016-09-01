@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inspur.gcloud.mc.core.dao.MessageDao">
+
+    <resultMap type="com.inspur.gcloud.mc.core.data.Message" id="MessageResultMap">
+    	<id property="id" column="message_id" />
+    </resultMap>
+	
+	<!-- 通过databaseId指定数据库的类型 -->
+	<select id="getByParams" parameterType="map" resultMap="MessageResultMap">
+		SELECT * FROM MC_MESSAGE
+		<where>
+			<if test="messageTopic != null and messageTopic!= '' ">
+			 	MESSAGE_TOPIC LIKE '%${messageTopic}%'
+			</if>
+			<if test="receiveState != null and receiveState!= '' ">
+			 	AND RECEIVE_STATE LIKE '%${receiveState}%'
+			</if>
+			<if test="senderId != null and senderId != '' ">
+			 	AND SENDER_ID LIKE '%${senderId}%'
+			</if>
+			<if test="receiverId != null and receiverId != '' ">
+			 	AND RECEIVER_ID LIKE '%${receiverId}%'
+			</if>
+		</where>				
+	</select>
+	
+	<select id="getMessageById" resultMap="MessageResultMap" parameterType="String">
+        SELECT * FROM MC_MESSAGE WHERE id = #{id}
+    </select>
+	
+
+</mapper>

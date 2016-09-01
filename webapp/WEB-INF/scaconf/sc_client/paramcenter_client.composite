@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite name="ParamClientDomain" xmlns="http://www.loushang.com/sca/1.0">
+    <description>ParamClientDomain</description>
+    <component name="ParamClientDomain">
+	    <service name="ParamClientDomain">
+	    	<interface.java interface="com.inspur.gcloud.sc.parametercenter.client.domain.IParamClientDomain"/>
+        	<binding.sca/>
+        </service>
+        <implementation.java impl="com.inspur.gcloud.sc.parametercenter.client.domain.impl.ParamClientDomain"/>	
+    </component>    
+</composite>

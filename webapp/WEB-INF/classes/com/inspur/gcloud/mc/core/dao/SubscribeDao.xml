@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inspur.gcloud.mc.core.dao.SubscribeDao">
+	<resultMap type="com.inspur.gcloud.mc.core.data.Subscribe" id="subscribeResultMap">
+		<id property="id" column="id"></id>
+	</resultMap>
+	
+	<!-- 查询当前用户的组织代码,订阅模块,提醒方式,是否开启订阅,备注 -->
+	<select id="findAll"
+		resultMap="subscribeResultMap" 
+		parameterType="map" databaseId="mysql">
+		SELECT 
+			ID,
+			ORGAN_ID,
+			SUBSCRIBE_MODULE,
+			WARN_TYPE,
+			SUBSCRIBE_OPEN,
+			REMARK
+		FROM mc_subscribe
+	</select>
+	
+	<!-- 根据订阅模块、提醒方式、是否开启订阅查找信息 -->
+	<select id="getByParams" parameterType="map" resultMap="subscribeResultMap">
+		select * from mc_subscribe
+		<where>
+			<if test="organId != null and organId != '' ">
+			 	ORGAN_ID like '%${organId}%'
+			</if>
+			<if test="subscribeModule != null and subscribeModule != '' ">
+			 	and SUBSCRIBE_MODULE like '%${subscribeModule}%'
+			</if>
+			<if test="warnType != null and warnType != '' ">
+			 	and WARN_TYPE like '%${warnType}%'
+			</if>
+			<if test="subscribeOpen != null and subscribeOpen != '' ">
+			 	and SUBSCRIBE_OPEN like '%${subscribeOpen}%'
+			</if>
+		</where>				
+	</select>
+</mapper>

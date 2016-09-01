@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="delploy" default="main" basedir=".">   
+	<!-- ================================================================== -->
+	<!-- 初始化属性						                        			-->
+	<!-- ================================================================== -->
+	<target name="init-properties" description="初始化属性">
+		<property name="deploy.dir" 	value="D:/developtools/7-apache-tomcat/webapps/MC"/>
+		<property name="webapp.dir"     value="webapp"/>
+		<property name="jsp.dir" 		value="jsp"/>
+		<property name="skins.dir" 		value="skins"/>
+		<property name="inf.dir" 		value="WEB-INF"/>
+	</target>
+	
+	<!--拷贝消息服务项目文件 -->
+	<target name="mc_copy" depends="init-properties" description="拷贝项目文件">
+		<!--拷贝jsp-->
+		<copy todir="${deploy.dir}/${jsp.dir}">
+			<fileset dir="${webapp.dir}/${jsp.dir}" includes="**/,**/*.*"/>
+		</copy>
+		<!--拷贝skins-->
+		<copy todir="${deploy.dir}/${skins.dir}">
+			<fileset dir="${webapp.dir}/${skins.dir}" includes="**/,**/*.*"/>
+		</copy>
+		<!--拷贝WEB-INF-->
+		<copy todir="${deploy.dir}/${inf.dir}">
+			<fileset dir="${webapp.dir}/${inf.dir}" includes="**/,**/*.*"/>
+		</copy>
+	</target>
+
+	<target name="main" description="==>发布程序,拷贝">
+		<antcall target="mc_copy"/>
+	</target>
+</project>

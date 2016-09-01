@@ -1,0 +1,18 @@
+#Mon Sep 28 21:02:33 CST 2009
+/jsonlimitlength=800
+/peimitinternel=org.loushang.portal.permit.PortalPermitL5
+/preventSqlInjection=true
+/preventScriptInjection=false
+/upload.sizeMax=5M 
+#productModel true:product model,false:development model
+/productModel=false
+# true:use relative path, false: use absolute path
+/useRelativePath=true
+# system locale, ISO-639 code
+/serverLocale=zh_CN
+# Query the database using precompiled
+/usePreQuery=false
+# Supports the use of wildcards to query the database
+/supportWildcards=true
+# path
+/l5Adapter=false

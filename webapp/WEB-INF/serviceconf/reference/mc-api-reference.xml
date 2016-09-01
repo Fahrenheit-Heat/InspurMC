@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="mc" description="MC服务引用" protocol="netty">
+	<!-- 开放服务接口 -->
+	<reference id="mc.mcServiceHsfProvider" 
+		interface="com.inspur.gcloud.ext.service.IMessageCenterService" serviceName="mc.mcServiceHsfProvider"/>	
+</module>

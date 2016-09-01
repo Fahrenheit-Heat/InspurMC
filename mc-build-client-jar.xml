@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="delploy" default="main" basedir=".">
+	<!--初始化属性-->
+	<target name="init-properties" description="初始化属性">
+		<property name="bin.dir"        value="webapp/WEB-INF/classes"/>
+		<property name="inf.dir"        value="webapp/WEB-INF/lib"/>
+		<property name="jar.name"        value="gcloud-mc-client.jar"/>
+	</target>
+	<target name="jar" depends="init-properties" description="生成jar包">
+		<jar destfile="${inf.dir}/${jar.name}">
+			<fileset dir="${bin.dir}/">
+				<include name="com/inspur/gcloud/mc/common/data/ResultMap.class"/>
+				<include name="com/inspur/gcloud/mc/common/data/MessageView.class" />
+				<include name="com/inspur/gcloud/ext/service/IMessageCenterService.class" />
+				<include name="com/inspur/gcloud/ext/client/GCloudMcUtil.class" />
+			</fileset>
+		</jar>
+	</target>
+	<!--主要任务-->
+	<target name="main" description="==>发布程序,拷贝">
+		<antcall target="jar"/>
+	</target>
+</project>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="gcloudSettingsCenter" description="gcloud设置中心服务引用" protocol="netty">
+
+		
+	<!-- 字典项服务 -->
+	<reference id="sc.dictService" 
+		interface="com.inspur.gcloud.sc.dictionary.service.IDictService"
+		serviceName="sc.dictService" />
+	
+	<!-- 系统参数服务 -->
+	<reference id="gcloudSystemParamsService" 
+		interface="com.inspur.gcloud.systemparameter.client.IParamsConfDao"
+		serviceName="gcloudSystemParamsService" />
+		
+	<!-- 参数中心服务端发布的服务 -->
+	<reference id="sc.paramServerService" 
+		interface="com.inspur.gcloud.sc.parametercenter.domain.IParamServerDomain"
+		serviceName="sc.paramServerService" />
+		
+	<!-- 获取流水号服务 -->
+	<reference id="sc.gcloudSerNumberService" 
+		interface="com.inspur.gcloud.sc.sernumber.service.ISerNumberService"
+		serviceName="sc.gcloudSerNumberService"/>
+		
+	<!-- 业务分类服务 -->
+	<reference id="businessTypeService" 
+		interface="com.inspur.gcloud.sc.businesstype.client.IBusinessTypeDao"
+		serviceName="businessTypeService" />
+		
+	<!-- 证照模板管理服务 -->
+	<reference id="sc.certificationService"
+		interface="com.inspur.gcloud.sc.certification.service.ICertificationService"
+		serviceName="sc.certificationService" />
+		
+	<!-- 业务权限服务 -->
+	<reference id="gcloudAuthorityService" 
+		interface="com.inspur.gcloud.authority.bizauthority.client.IBizLimitDefDao"
+		serviceName="gcloudAuthorityService" />
+		
+	<!-- 常用意见服务 -->
+	<reference id="OpinionTemplateService"
+		interface="com.inspur.gcloud.sc.opiniontemplate.client.IOpinionTemplateDao"
+		serviceName="OpinionTemplateService" />
+		
+	<!-- 常用意见服务 -->
+	<reference id="OpinionTemplateAuthService"
+		interface="com.inspur.gcloud.sc.opiniontemplate.client.IOpinionTemplateAuthDao"
+		serviceName="OpinionTemplateAuthService" />
+		
+	<!-- 常用意见服务 -->
+	<reference id="OpinionTemplateProcService"
+		interface="com.inspur.gcloud.sc.opiniontemplate.client.IOpinionTemplateProcDao"
+		serviceName="OpinionTemplateProcService" />
+		
+	<!-- 打印服务 -->
+	<reference id="sc.printService" 
+			   interface="com.inspur.gcloud.sc.print.service.IPrintService"
+	      serviceName="sc.printService" />
+	
+</module>

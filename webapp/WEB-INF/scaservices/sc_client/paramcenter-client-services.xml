@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SCAServices>
+	<!-- 参数中心客户端服务 -->
+	<service interface="com.inspur.gcloud.sc.parametercenter.client.domain.IParamClientDomain"
+		refScaComponent="ParamClientDomain/ParamClientDomain">
+		<serviceName>sc.paramClientService</serviceName>
+	</service>
+</SCAServices>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inspur.gcloud.mc.core.dao.AttachDao">
+
+    <resultMap type="com.inspur.gcloud.mc.core.data.Attach" id="AttachResultMap">
+    	<id property="id" column="id" />
+    </resultMap>
+	
+	<!-- 通过databaseId指定数据库的类型 -->
+	<select id="getByParams" parameterType="map" resultMap="AttachResultMap">
+		select * from mc_attach
+		<where>
+			id = '${id}'
+		</where>				
+	</select>
+	
+
+</mapper>

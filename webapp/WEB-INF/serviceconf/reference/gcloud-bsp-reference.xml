@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="bsp" description="bsp服务引用" protocol="netty">
+
+    <!-- 获取行政区划简称接口服务 -->
+	<reference id="bspCantDomain"
+		interface="com.inspur.gcloud.bsp.cant.domain.ICantDomain" />
+	<!-- 用户管理 -->
+	<reference id="gcloudUserDomain"
+		interface="com.inspur.gcloud.bsp.organization.service.IGcloudUserDomainService" />
+	 <!-- 单点应用退出路径接口服务 -->
+	<reference id="gcloudSsoService"
+		interface="com.inspur.gcloud.bsp.sso.service.IGcloudSsoService" />
+	<!-- 人员扩展属性接口服务 -->
+	<reference id="gcloudUserExtendService"
+		interface="com.inspur.gcloud.bsp.extinfo.user.domain.IGCloudUserExtendDomain" />
+	<!-- 属性扩展接口服务 -->	
+	<reference id="gcloudOrganPropExtService"
+		interface="com.inspur.gcloud.bsp.extinfo.organ.domain.IGCloudOrganPropExtDomain" />
+		
+	<!-- 组织机构查询接口服务 -->
+	<reference id="gcloudStruService"
+		interface="com.inspur.gcloud.bsp.organization.service.IGCloudStruService" />
+</module>
