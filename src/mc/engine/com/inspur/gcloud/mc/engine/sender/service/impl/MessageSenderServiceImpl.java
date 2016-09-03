@@ -104,8 +104,8 @@ public class MessageSenderServiceImpl implements IMessageSenderService {
 	public boolean sendMessageByQueue(MessageObject messageObject){
 		
 		// 定义消息队列
-		MessagePool messagePool = MessagePool.getInstance();
-
+		MessagePool messagePool = MessagePool.getInstance();		
+		
 		try{
 			// 将已保存入数据库的短信放入短信队列中
 			for(int i = 0; i < messageObject.getEnvlopeCount(); i++){
@@ -118,9 +118,9 @@ public class MessageSenderServiceImpl implements IMessageSenderService {
 			}
 			return true;
 		}catch(Exception e){
-			//打算在这里加逻辑
+			
 			if(log.isDebugEnabled()){
-				log.debug("短信发送放入发送消息队列出错："+e.getMessage());	
+				log.debug("短信发送放入消息队列出错："+e.getMessage());	
 			}
 			
 			return false;
